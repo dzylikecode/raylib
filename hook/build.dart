@@ -31,13 +31,7 @@ Future<void> main(List<String> args) async {
     final builder = CMakeBuilder.create(
       name: input.packageName,
       sourceDir: input.packageRoot.resolveUri(.file('src/raylib/')),
-      defines: {
-        'CMAKE_INSTALL_PREFIX': input.outputDirectory
-            .resolve('install/')
-            .toFilePath(),
-        'BUILD_SHARED_LIBS': 'ON',
-        'BUILD_EXAMPLES': 'OFF',
-      },
+      defines: {'BUILD_SHARED_LIBS': 'ON', 'BUILD_EXAMPLES': 'OFF'},
       logger: logger,
     );
     await builder.run(input: input, output: output, logger: logger);
