@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 import 'package:ffi/ffi.dart' as ffi;
+import 'package:meta/meta.dart';
 
 import 'raylib.g.dart' as raylib;
 
@@ -14,7 +15,9 @@ class Color {
   final Pointer<raylib.Color> ptr;
   bool _disposed = false;
 
-  Color._(this.ptr);
+  Color._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
 
   factory Color({int r = 0, int g = 0, int b = 0, int a = 255}) {
     final ptr = ffi.malloc<raylib.Color>();
@@ -25,7 +28,22 @@ class Color {
       ..a = a;
     return Color._(ptr);
   }
+  factory Color.fromRGBA(int r, int g, int b, int a) =>
+      Color(r: r, g: g, b: b, a: a);
 
+  int get r => ptr.ref.r;
+  set r(int value) => ptr.ref.r = value;
+
+  int get g => ptr.ref.g;
+  set g(int value) => ptr.ref.g = value;
+
+  int get b => ptr.ref.b;
+  set b(int value) => ptr.ref.b = value;
+
+  int get a => ptr.ref.a;
+  set a(int value) => ptr.ref.a = value;
+
+  @mustCallSuper
   void dispose() {
     if (_disposed) return;
     _finalizer.detach(this); // 取消自动释放
