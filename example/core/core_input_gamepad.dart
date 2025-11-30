@@ -19,7 +19,7 @@
 *
 ********************************************************************************************/
 
-import 'package:raylib/raylib.dart';
+import 'package:raylib_dart/raylib_dart.dart';
 
 // NOTE: Gamepad name ID depends on drivers and OS
 const XBOX_ALIAS_1 = "xbox";

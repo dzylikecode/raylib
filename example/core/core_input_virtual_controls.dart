@@ -16,9 +16,7 @@
 *
 ********************************************************************************************/
 
-import 'package:raylib/raylib.dart';
-
-import 'dart:math' as math;
+import 'package:raylib_dart/raylib_dart.dart';
 
 const int BUTTON_MAX = 4;
 

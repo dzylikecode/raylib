@@ -15,7 +15,7 @@
 *
 ********************************************************************************************/
 
-import 'package:raylib/raylib.dart';
+import 'package:raylib_dart/raylib_dart.dart';
 
 import 'dart:math' as math;
 

@@ -5,7 +5,7 @@
 ## quick start
 
 ```dart
-import 'package:raylib/raylib.dart';
+import 'package:raylib_dart/raylib_dart.dart';
 
 int main() {
   const int screenWidth = 800;

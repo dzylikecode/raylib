@@ -15,7 +15,7 @@
 *
 ********************************************************************************************/
 
-import 'package:raylib/raylib.dart';
+import 'package:raylib_dart/raylib_dart.dart';
 
 const int MAX_TOUCH_POINTS = 10;
 
