@@ -56,7 +56,7 @@ Future<void> main(List<String> args) async {
           switch (input.config.code.targetOS) {
             .linux => 'raylib/libraylib.so',
             .macOS => 'raylib/libraylib.dylib',
-            .windows => 'raylib/raylib.dll',
+            .windows => 'raylib/Release/raylib.dll',
             .android => 'raylib/libraylib.so',
             _ => throw UnsupportedError(
               'Unsupported OS: ${input.config.code.targetOS}',

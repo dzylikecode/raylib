@@ -29,3 +29,7 @@
 ## 0.0.8
 
 - fix: windows path
+
+## 0.0.9
+
+- fix: windows dll path
