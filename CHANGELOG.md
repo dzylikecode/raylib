@@ -9,3 +9,7 @@
 ## 0.0.3
 
 - pub: need git clone by self
+
+## 0.0.4
+
+- fix: git clone dest dir

@@ -79,7 +79,7 @@ Future<bool> fetch(Uri root) async {
   } else {
     logger.info('Git repository not found, cloning raylib');
     return await clone(
-      root.resolve("src"),
+      root.resolve("src/raylib"),
       'https://github.com/raysan5/raylib.git',
       repoHash,
     );
