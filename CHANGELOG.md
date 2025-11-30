@@ -17,3 +17,7 @@
 ## 0.0.5
 
 - shallow clone
+
+## 0.0.6
+
+- use tag
