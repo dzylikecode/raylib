@@ -28,10 +28,20 @@ Future<void> main(List<String> args) async {
       throw Exception('Failed to fetch raylib submodule.');
     }
 
+    // Prepare CMake defines based on target OS
+    final defines = {'BUILD_SHARED_LIBS': 'ON', 'BUILD_EXAMPLES': 'OFF'};
+
+    // For Android, disable GLFW (not needed) and prevent X11 lookup
+    if (input.config.code.targetOS.name == 'android') {
+      defines['GLFW_BUILD_X11'] = 'OFF';
+      defines['GLFW_BUILD_WAYLAND'] = 'OFF';
+      defines['PLATFORM'] = 'Android';
+    }
+
     final builder = CMakeBuilder.create(
       name: input.packageName,
       sourceDir: input.packageRoot.resolveUri(.file('src/raylib/')),
-      defines: {'BUILD_SHARED_LIBS': 'ON', 'BUILD_EXAMPLES': 'OFF'},
+      defines: defines,
       logger: logger,
     );
     await builder.run(input: input, output: output, logger: logger);
@@ -45,6 +55,7 @@ Future<void> main(List<String> args) async {
             .linux => 'raylib/libraylib.so',
             .macOS => 'raylib/libraylib.dylib',
             .windows => 'raylib/raylib.dll',
+            .android => 'raylib/libraylib.so',
             _ => throw UnsupportedError(
               'Unsupported OS: ${input.config.code.targetOS}',
             ),

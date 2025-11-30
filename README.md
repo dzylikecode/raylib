@@ -1,30 +1,43 @@
 # raylib
 
-## migrate from c
+[raylib](https://github.com/raysan5/raylib) ffi bindings for Dart.
 
-main
-
-```c
-int main(void)
-```
+## quick start
 
 ```dart
-int main()
+import 'package:raylib/raylib.dart';
+
+int main() {
+  const int screenWidth = 800;
+  const int screenHeight = 450;
+
+  InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+
+  SetTargetFPS(60); 
+
+  while (!WindowShouldClose()) {
+
+    BeginDrawing();
+
+    ClearBackground(RAYWHITE);
+
+    DrawText(
+      "Congrats! You created your first window!",
+      190,
+      200,
+      20,
+      LIGHTGRAY,
+    );
+
+    EndDrawing();
+  }
+
+  CloseWindow(); 
+  return 0;
+}
 ```
 
-float to double, and remove f suffix
 
-
-Vector2 is used from vector_math
-
-
-use dot-shorthands for enum
-
-```c
-IsKeyDown(KEY_RIGHT);
+```bash
+dart run example/core/core_basic_window.dart
 ```
-
-```dart
-IsKeyDown(.KEY_RIGHT);
-```
-

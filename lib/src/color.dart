@@ -50,6 +50,14 @@ class Color {
     ffi.malloc.free(ptr); // 立刻释放
     _disposed = true;
   }
+
+  @override
+  String toString() => 'r: $r, g: $g, b: $b, a: $a';
+}
+
+Color Fade(Color color, double alpha) {
+  final c = raylib.Fade(color.ptr.ref, alpha);
+  return Color.fromRGBA(c.r, c.g, c.b, c.a);
 }
 
 final LIGHTGRAY = Color(r: 200, g: 200, b: 200, a: 255);

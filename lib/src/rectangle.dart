@@ -62,4 +62,7 @@ class Rectangle {
     ffi.malloc.free(ptr); // 立刻释放
     _disposed = true;
   }
+
+  @override
+  String toString() => 'x: $x, y: $y, width: $width, height: $height';
 }

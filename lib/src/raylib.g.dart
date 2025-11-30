@@ -3194,6 +3194,805 @@ external void AttachAudioMixedProcessor(AudioCallback processor);
 @ffi.Native<ffi.Void Function(AudioCallback)>()
 external void DetachAudioMixedProcessor(AudioCallback processor);
 
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlMatrixMode(int mode);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlPushMatrix();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlPopMatrix();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlLoadIdentity();
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float, ffi.Float)>()
+external void rlTranslatef(double x, double y, double z);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float, ffi.Float, ffi.Float)>()
+external void rlRotatef(double angle, double x, double y, double z);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float, ffi.Float)>()
+external void rlScalef(double x, double y, double z);
+
+@ffi.Native<ffi.Void Function(ffi.Pointer<ffi.Float>)>()
+external void rlMultMatrixf(ffi.Pointer<ffi.Float> matf);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+  )
+>()
+external void rlFrustum(
+  double left,
+  double right,
+  double bottom,
+  double top,
+  double znear,
+  double zfar,
+);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+    ffi.Double,
+  )
+>()
+external void rlOrtho(
+  double left,
+  double right,
+  double bottom,
+  double top,
+  double znear,
+  double zfar,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Int, ffi.Int)>()
+external void rlViewport(int x, int y, int width, int height);
+
+@ffi.Native<ffi.Void Function(ffi.Double, ffi.Double)>()
+external void rlSetClipPlanes(double nearPlane, double farPlane);
+
+@ffi.Native<ffi.Double Function()>()
+external double rlGetCullDistanceNear();
+
+@ffi.Native<ffi.Double Function()>()
+external double rlGetCullDistanceFar();
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlBegin(int mode);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnd();
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int)>()
+external void rlVertex2i(int x, int y);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float)>()
+external void rlVertex2f(double x, double y);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float, ffi.Float)>()
+external void rlVertex3f(double x, double y, double z);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float)>()
+external void rlTexCoord2f(double x, double y);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float, ffi.Float)>()
+external void rlNormal3f(double x, double y, double z);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedChar,
+    ffi.UnsignedChar,
+    ffi.UnsignedChar,
+    ffi.UnsignedChar,
+  )
+>()
+external void rlColor4ub(int r, int g, int b, int a);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float, ffi.Float)>()
+external void rlColor3f(double x, double y, double z);
+
+@ffi.Native<ffi.Void Function(ffi.Float, ffi.Float, ffi.Float, ffi.Float)>()
+external void rlColor4f(double x, double y, double z, double w);
+
+@ffi.Native<ffi.Bool Function(ffi.UnsignedInt)>()
+external bool rlEnableVertexArray(int vaoId);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableVertexArray();
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlEnableVertexBuffer(int id);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableVertexBuffer();
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlEnableVertexBufferElement(int id);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableVertexBufferElement();
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlEnableVertexAttribute(int index);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlDisableVertexAttribute(int index);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Pointer<ffi.Void>)>()
+external void rlEnableStatePointer(
+  int vertexAttribType,
+  ffi.Pointer<ffi.Void> buffer,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlDisableStatePointer(int vertexAttribType);
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlActiveTextureSlot(int slot);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlEnableTexture(int id);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableTexture();
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlEnableTextureCubemap(int id);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableTextureCubemap();
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt, ffi.Int, ffi.Int)>()
+external void rlTextureParameters(int id, int param, int value);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt, ffi.Int, ffi.Int)>()
+external void rlCubemapParameters(int id, int param, int value);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlEnableShader(int id);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableShader();
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlEnableFramebuffer(int id);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableFramebuffer();
+
+@ffi.Native<ffi.UnsignedInt Function()>()
+external int rlGetActiveFramebuffer();
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlActiveDrawBuffers(int count);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+  )
+>()
+external void rlBlitFramebuffer(
+  int srcX,
+  int srcY,
+  int srcWidth,
+  int srcHeight,
+  int dstX,
+  int dstY,
+  int dstWidth,
+  int dstHeight,
+  int bufferMask,
+);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt, ffi.UnsignedInt)>()
+external void rlBindFramebuffer(int target, int framebuffer);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableColorBlend();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableColorBlend();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableDepthTest();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableDepthTest();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableDepthMask();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableDepthMask();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableBackfaceCulling();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableBackfaceCulling();
+
+@ffi.Native<ffi.Void Function(ffi.Bool, ffi.Bool, ffi.Bool, ffi.Bool)>()
+external void rlColorMask(bool r, bool g, bool b, bool a);
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlSetCullFace(int mode);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableScissorTest();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableScissorTest();
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Int, ffi.Int)>()
+external void rlScissor(int x, int y, int width, int height);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnablePointMode();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisablePointMode();
+
+@ffi.Native<ffi.Void Function(ffi.Float)>()
+external void rlSetPointSize(double size);
+
+@ffi.Native<ffi.Float Function()>()
+external double rlGetPointSize();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableWireMode();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableWireMode();
+
+@ffi.Native<ffi.Void Function(ffi.Float)>()
+external void rlSetLineWidth(double width);
+
+@ffi.Native<ffi.Float Function()>()
+external double rlGetLineWidth();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableSmoothLines();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableSmoothLines();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableStereoRender();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDisableStereoRender();
+
+@ffi.Native<ffi.Bool Function()>()
+external bool rlIsStereoRenderEnabled();
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedChar,
+    ffi.UnsignedChar,
+    ffi.UnsignedChar,
+    ffi.UnsignedChar,
+  )
+>()
+external void rlClearColor(int r, int g, int b, int a);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlClearScreenBuffers();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlCheckErrors();
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlSetBlendMode(int mode);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Int)>()
+external void rlSetBlendFactors(
+  int glSrcFactor,
+  int glDstFactor,
+  int glEquation,
+);
+
+@ffi.Native<
+  ffi.Void Function(ffi.Int, ffi.Int, ffi.Int, ffi.Int, ffi.Int, ffi.Int)
+>()
+external void rlSetBlendFactorsSeparate(
+  int glSrcRGB,
+  int glDstRGB,
+  int glSrcAlpha,
+  int glDstAlpha,
+  int glEqRGB,
+  int glEqAlpha,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int)>()
+external void rlglInit(int width, int height);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlglClose();
+
+@ffi.Native<ffi.Void Function(ffi.Pointer<ffi.Void>)>()
+external void rlLoadExtensions(ffi.Pointer<ffi.Void> loader);
+
+@ffi.Native<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Char>)>()
+external ffi.Pointer<ffi.Void> rlGetProcAddress(ffi.Pointer<ffi.Char> procName);
+
+@ffi.Native<ffi.Int Function()>()
+external int rlGetVersion();
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlSetFramebufferWidth(int width);
+
+@ffi.Native<ffi.Int Function()>()
+external int rlGetFramebufferWidth();
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlSetFramebufferHeight(int height);
+
+@ffi.Native<ffi.Int Function()>()
+external int rlGetFramebufferHeight();
+
+@ffi.Native<ffi.UnsignedInt Function()>()
+external int rlGetTextureIdDefault();
+
+@ffi.Native<ffi.UnsignedInt Function()>()
+external int rlGetShaderIdDefault();
+
+@ffi.Native<ffi.Pointer<ffi.Int> Function()>()
+external ffi.Pointer<ffi.Int> rlGetShaderLocsDefault();
+
+@ffi.Native<rlRenderBatch Function(ffi.Int, ffi.Int)>()
+external rlRenderBatch rlLoadRenderBatch(int numBuffers, int bufferElements);
+
+@ffi.Native<ffi.Void Function(rlRenderBatch)>()
+external void rlUnloadRenderBatch(rlRenderBatch batch);
+
+@ffi.Native<ffi.Void Function(ffi.Pointer<rlRenderBatch>)>()
+external void rlDrawRenderBatch(ffi.Pointer<rlRenderBatch> batch);
+
+@ffi.Native<ffi.Void Function(ffi.Pointer<rlRenderBatch>)>()
+external void rlSetRenderBatchActive(ffi.Pointer<rlRenderBatch> batch);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlDrawRenderBatchActive();
+
+@ffi.Native<ffi.Bool Function(ffi.Int)>()
+external bool rlCheckRenderBatchLimit(int vCount);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlSetTexture(int id);
+
+@ffi.Native<ffi.UnsignedInt Function()>()
+external int rlLoadVertexArray();
+
+@ffi.Native<
+  ffi.UnsignedInt Function(ffi.Pointer<ffi.Void>, ffi.Int, ffi.Bool)
+>()
+external int rlLoadVertexBuffer(
+  ffi.Pointer<ffi.Void> buffer,
+  int size,
+  bool dynamic,
+);
+
+@ffi.Native<
+  ffi.UnsignedInt Function(ffi.Pointer<ffi.Void>, ffi.Int, ffi.Bool)
+>()
+external int rlLoadVertexBufferElement(
+  ffi.Pointer<ffi.Void> buffer,
+  int size,
+  bool dynamic,
+);
+
+@ffi.Native<
+  ffi.Void Function(ffi.UnsignedInt, ffi.Pointer<ffi.Void>, ffi.Int, ffi.Int)
+>()
+external void rlUpdateVertexBuffer(
+  int bufferId,
+  ffi.Pointer<ffi.Void> data,
+  int dataSize,
+  int offset,
+);
+
+@ffi.Native<
+  ffi.Void Function(ffi.UnsignedInt, ffi.Pointer<ffi.Void>, ffi.Int, ffi.Int)
+>()
+external void rlUpdateVertexBufferElements(
+  int id,
+  ffi.Pointer<ffi.Void> data,
+  int dataSize,
+  int offset,
+);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlUnloadVertexArray(int vaoId);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlUnloadVertexBuffer(int vboId);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedInt,
+    ffi.Int,
+    ffi.Int,
+    ffi.Bool,
+    ffi.Int,
+    ffi.Int,
+  )
+>()
+external void rlSetVertexAttribute(
+  int index,
+  int compSize,
+  int type,
+  bool normalized,
+  int stride,
+  int offset,
+);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt, ffi.Int)>()
+external void rlSetVertexAttributeDivisor(int index, int divisor);
+
+@ffi.Native<
+  ffi.Void Function(ffi.Int, ffi.Pointer<ffi.Void>, ffi.Int, ffi.Int)
+>()
+external void rlSetVertexAttributeDefault(
+  int locIndex,
+  ffi.Pointer<ffi.Void> value,
+  int attribType,
+  int count,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int)>()
+external void rlDrawVertexArray(int offset, int count);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Pointer<ffi.Void>)>()
+external void rlDrawVertexArrayElements(
+  int offset,
+  int count,
+  ffi.Pointer<ffi.Void> buffer,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Int)>()
+external void rlDrawVertexArrayInstanced(int offset, int count, int instances);
+
+@ffi.Native<
+  ffi.Void Function(ffi.Int, ffi.Int, ffi.Pointer<ffi.Void>, ffi.Int)
+>()
+external void rlDrawVertexArrayElementsInstanced(
+  int offset,
+  int count,
+  ffi.Pointer<ffi.Void> buffer,
+  int instances,
+);
+
+@ffi.Native<
+  ffi.UnsignedInt Function(
+    ffi.Pointer<ffi.Void>,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+  )
+>()
+external int rlLoadTexture(
+  ffi.Pointer<ffi.Void> data,
+  int width,
+  int height,
+  int format,
+  int mipmapCount,
+);
+
+@ffi.Native<ffi.UnsignedInt Function(ffi.Int, ffi.Int, ffi.Bool)>()
+external int rlLoadTextureDepth(int width, int height, bool useRenderBuffer);
+
+@ffi.Native<
+  ffi.UnsignedInt Function(ffi.Pointer<ffi.Void>, ffi.Int, ffi.Int, ffi.Int)
+>()
+external int rlLoadTextureCubemap(
+  ffi.Pointer<ffi.Void> data,
+  int size,
+  int format,
+  int mipmapCount,
+);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedInt,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Pointer<ffi.Void>,
+  )
+>()
+external void rlUpdateTexture(
+  int id,
+  int offsetX,
+  int offsetY,
+  int width,
+  int height,
+  int format,
+  ffi.Pointer<ffi.Void> data,
+);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.Int,
+    ffi.Pointer<ffi.UnsignedInt>,
+    ffi.Pointer<ffi.UnsignedInt>,
+    ffi.Pointer<ffi.UnsignedInt>,
+  )
+>()
+external void rlGetGlTextureFormats(
+  int format,
+  ffi.Pointer<ffi.UnsignedInt> glInternalFormat,
+  ffi.Pointer<ffi.UnsignedInt> glFormat,
+  ffi.Pointer<ffi.UnsignedInt> glType,
+);
+
+@ffi.Native<ffi.Pointer<ffi.Char> Function(ffi.UnsignedInt)>()
+external ffi.Pointer<ffi.Char> rlGetPixelFormatName(int format);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlUnloadTexture(int id);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedInt,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Pointer<ffi.Int>,
+  )
+>()
+external void rlGenTextureMipmaps(
+  int id,
+  int width,
+  int height,
+  int format,
+  ffi.Pointer<ffi.Int> mipmaps,
+);
+
+@ffi.Native<
+  ffi.Pointer<ffi.Void> Function(ffi.UnsignedInt, ffi.Int, ffi.Int, ffi.Int)
+>()
+external ffi.Pointer<ffi.Void> rlReadTexturePixels(
+  int id,
+  int width,
+  int height,
+  int format,
+);
+
+@ffi.Native<ffi.Pointer<ffi.UnsignedChar> Function(ffi.Int, ffi.Int)>()
+external ffi.Pointer<ffi.UnsignedChar> rlReadScreenPixels(
+  int width,
+  int height,
+);
+
+@ffi.Native<ffi.UnsignedInt Function()>()
+external int rlLoadFramebuffer();
+
+@ffi.Native<
+  ffi.Void Function(ffi.UnsignedInt, ffi.UnsignedInt, ffi.Int, ffi.Int, ffi.Int)
+>()
+external void rlFramebufferAttach(
+  int fboId,
+  int texId,
+  int attachType,
+  int texType,
+  int mipLevel,
+);
+
+@ffi.Native<ffi.Bool Function(ffi.UnsignedInt)>()
+external bool rlFramebufferComplete(int id);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlUnloadFramebuffer(int id);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Pointer<ffi.Void>,
+  )
+>()
+external void rlCopyFramebuffer(
+  int x,
+  int y,
+  int width,
+  int height,
+  int format,
+  ffi.Pointer<ffi.Void> pixels,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int)>()
+external void rlResizeFramebuffer(int width, int height);
+
+@ffi.Native<
+  ffi.UnsignedInt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)
+>()
+external int rlLoadShaderCode(
+  ffi.Pointer<ffi.Char> vsCode,
+  ffi.Pointer<ffi.Char> fsCode,
+);
+
+@ffi.Native<ffi.UnsignedInt Function(ffi.Pointer<ffi.Char>, ffi.Int)>()
+external int rlCompileShader(ffi.Pointer<ffi.Char> shaderCode, int type);
+
+@ffi.Native<ffi.UnsignedInt Function(ffi.UnsignedInt, ffi.UnsignedInt)>()
+external int rlLoadShaderProgram(int vShaderId, int fShaderId);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlUnloadShaderProgram(int id);
+
+@ffi.Native<ffi.Int Function(ffi.UnsignedInt, ffi.Pointer<ffi.Char>)>()
+external int rlGetLocationUniform(
+  int shaderId,
+  ffi.Pointer<ffi.Char> uniformName,
+);
+
+@ffi.Native<ffi.Int Function(ffi.UnsignedInt, ffi.Pointer<ffi.Char>)>()
+external int rlGetLocationAttrib(
+  int shaderId,
+  ffi.Pointer<ffi.Char> attribName,
+);
+
+@ffi.Native<
+  ffi.Void Function(ffi.Int, ffi.Pointer<ffi.Void>, ffi.Int, ffi.Int)
+>()
+external void rlSetUniform(
+  int locIndex,
+  ffi.Pointer<ffi.Void> value,
+  int uniformType,
+  int count,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, Matrix)>()
+external void rlSetUniformMatrix(int locIndex, Matrix mat);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Pointer<Matrix>, ffi.Int)>()
+external void rlSetUniformMatrices(
+  int locIndex,
+  ffi.Pointer<Matrix> mat,
+  int count,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.UnsignedInt)>()
+external void rlSetUniformSampler(int locIndex, int textureId);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt, ffi.Pointer<ffi.Int>)>()
+external void rlSetShader(int id, ffi.Pointer<ffi.Int> locs);
+
+@ffi.Native<ffi.UnsignedInt Function(ffi.UnsignedInt)>()
+external int rlLoadComputeShaderProgram(int shaderId);
+
+@ffi.Native<
+  ffi.Void Function(ffi.UnsignedInt, ffi.UnsignedInt, ffi.UnsignedInt)
+>()
+external void rlComputeShaderDispatch(int groupX, int groupY, int groupZ);
+
+@ffi.Native<
+  ffi.UnsignedInt Function(ffi.UnsignedInt, ffi.Pointer<ffi.Void>, ffi.Int)
+>()
+external int rlLoadShaderBuffer(
+  int size,
+  ffi.Pointer<ffi.Void> data,
+  int usageHint,
+);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlUnloadShaderBuffer(int ssboId);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedInt,
+    ffi.Pointer<ffi.Void>,
+    ffi.UnsignedInt,
+    ffi.UnsignedInt,
+  )
+>()
+external void rlUpdateShaderBuffer(
+  int id,
+  ffi.Pointer<ffi.Void> data,
+  int dataSize,
+  int offset,
+);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt, ffi.UnsignedInt)>()
+external void rlBindShaderBuffer(int id, int index);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedInt,
+    ffi.Pointer<ffi.Void>,
+    ffi.UnsignedInt,
+    ffi.UnsignedInt,
+  )
+>()
+external void rlReadShaderBuffer(
+  int id,
+  ffi.Pointer<ffi.Void> dest,
+  int count,
+  int offset,
+);
+
+@ffi.Native<
+  ffi.Void Function(
+    ffi.UnsignedInt,
+    ffi.UnsignedInt,
+    ffi.UnsignedInt,
+    ffi.UnsignedInt,
+    ffi.UnsignedInt,
+  )
+>()
+external void rlCopyShaderBuffer(
+  int destId,
+  int srcId,
+  int destOffset,
+  int srcOffset,
+  int count,
+);
+
+@ffi.Native<ffi.UnsignedInt Function(ffi.UnsignedInt)>()
+external int rlGetShaderBufferSize(int id);
+
+@ffi.Native<
+  ffi.Void Function(ffi.UnsignedInt, ffi.UnsignedInt, ffi.Int, ffi.Bool)
+>()
+external void rlBindImageTexture(int id, int index, int format, bool readonly);
+
+@ffi.Native<Matrix Function()>()
+external Matrix rlGetMatrixModelview();
+
+@ffi.Native<Matrix Function()>()
+external Matrix rlGetMatrixProjection();
+
+@ffi.Native<Matrix Function()>()
+external Matrix rlGetMatrixTransform();
+
+@ffi.Native<Matrix Function(ffi.Int)>()
+external Matrix rlGetMatrixProjectionStereo(int eye);
+
+@ffi.Native<Matrix Function(ffi.Int)>()
+external Matrix rlGetMatrixViewOffsetStereo(int eye);
+
+@ffi.Native<ffi.Void Function(Matrix)>()
+external void rlSetMatrixProjection(Matrix proj);
+
+@ffi.Native<ffi.Void Function(Matrix)>()
+external void rlSetMatrixModelview(Matrix view);
+
+@ffi.Native<ffi.Void Function(Matrix, Matrix)>()
+external void rlSetMatrixProjectionStereo(Matrix right, Matrix left);
+
+@ffi.Native<ffi.Void Function(Matrix, Matrix)>()
+external void rlSetMatrixViewOffsetStereo(Matrix right, Matrix left);
+
+@ffi.Native<ffi.Void Function()>()
+external void rlLoadDrawCube();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlLoadDrawQuad();
+
 final class Vector2 extends ffi.Struct {
   @ffi.Float()
   external double x;
@@ -4608,6 +5407,409 @@ typedef DartAudioCallbackFunction =
     void Function(ffi.Pointer<ffi.Void> bufferData, int frames);
 typedef AudioCallback = ffi.Pointer<ffi.NativeFunction<AudioCallbackFunction>>;
 
+final class rlVertexBuffer extends ffi.Struct {
+  @ffi.Int()
+  external int elementCount;
+
+  external ffi.Pointer<ffi.Float> vertices;
+
+  external ffi.Pointer<ffi.Float> texcoords;
+
+  external ffi.Pointer<ffi.Float> normals;
+
+  external ffi.Pointer<ffi.UnsignedChar> colors;
+
+  external ffi.Pointer<ffi.UnsignedInt> indices;
+
+  @ffi.UnsignedInt()
+  external int vaoId;
+
+  @ffi.Array.multi([5])
+  external ffi.Array<ffi.UnsignedInt> vboId;
+}
+
+final class rlDrawCall extends ffi.Struct {
+  @ffi.Int()
+  external int mode;
+
+  @ffi.Int()
+  external int vertexCount;
+
+  @ffi.Int()
+  external int vertexAlignment;
+
+  @ffi.UnsignedInt()
+  external int textureId;
+}
+
+final class rlRenderBatch extends ffi.Struct {
+  @ffi.Int()
+  external int bufferCount;
+
+  @ffi.Int()
+  external int currentBuffer;
+
+  external ffi.Pointer<rlVertexBuffer> vertexBuffer;
+
+  external ffi.Pointer<rlDrawCall> draws;
+
+  @ffi.Int()
+  external int drawCounter;
+
+  @ffi.Float()
+  external double currentDepth;
+}
+
+enum rlGlVersion {
+  RL_OPENGL_11_SOFTWARE(0),
+  RL_OPENGL_11(1),
+  RL_OPENGL_21(2),
+  RL_OPENGL_33(3),
+  RL_OPENGL_43(4),
+  RL_OPENGL_ES_20(5),
+  RL_OPENGL_ES_30(6);
+
+  final int value;
+  const rlGlVersion(this.value);
+
+  static rlGlVersion fromValue(int value) => switch (value) {
+    0 => RL_OPENGL_11_SOFTWARE,
+    1 => RL_OPENGL_11,
+    2 => RL_OPENGL_21,
+    3 => RL_OPENGL_33,
+    4 => RL_OPENGL_43,
+    5 => RL_OPENGL_ES_20,
+    6 => RL_OPENGL_ES_30,
+    _ => throw ArgumentError('Unknown value for rlGlVersion: $value'),
+  };
+}
+
+enum rlTraceLogLevel {
+  RL_LOG_ALL(0),
+  RL_LOG_TRACE(1),
+  RL_LOG_DEBUG(2),
+  RL_LOG_INFO(3),
+  RL_LOG_WARNING(4),
+  RL_LOG_ERROR(5),
+  RL_LOG_FATAL(6),
+  RL_LOG_NONE(7);
+
+  final int value;
+  const rlTraceLogLevel(this.value);
+
+  static rlTraceLogLevel fromValue(int value) => switch (value) {
+    0 => RL_LOG_ALL,
+    1 => RL_LOG_TRACE,
+    2 => RL_LOG_DEBUG,
+    3 => RL_LOG_INFO,
+    4 => RL_LOG_WARNING,
+    5 => RL_LOG_ERROR,
+    6 => RL_LOG_FATAL,
+    7 => RL_LOG_NONE,
+    _ => throw ArgumentError('Unknown value for rlTraceLogLevel: $value'),
+  };
+}
+
+enum rlPixelFormat {
+  RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE(1),
+  RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA(2),
+  RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5(3),
+  RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8(4),
+  RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1(5),
+  RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4(6),
+  RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8(7),
+  RL_PIXELFORMAT_UNCOMPRESSED_R32(8),
+  RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32(9),
+  RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32A32(10),
+  RL_PIXELFORMAT_UNCOMPRESSED_R16(11),
+  RL_PIXELFORMAT_UNCOMPRESSED_R16G16B16(12),
+  RL_PIXELFORMAT_UNCOMPRESSED_R16G16B16A16(13),
+  RL_PIXELFORMAT_COMPRESSED_DXT1_RGB(14),
+  RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA(15),
+  RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA(16),
+  RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA(17),
+  RL_PIXELFORMAT_COMPRESSED_ETC1_RGB(18),
+  RL_PIXELFORMAT_COMPRESSED_ETC2_RGB(19),
+  RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA(20),
+  RL_PIXELFORMAT_COMPRESSED_PVRT_RGB(21),
+  RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA(22),
+  RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA(23),
+  RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA(24);
+
+  final int value;
+  const rlPixelFormat(this.value);
+
+  static rlPixelFormat fromValue(int value) => switch (value) {
+    1 => RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE,
+    2 => RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA,
+    3 => RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5,
+    4 => RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8,
+    5 => RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1,
+    6 => RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4,
+    7 => RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8,
+    8 => RL_PIXELFORMAT_UNCOMPRESSED_R32,
+    9 => RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32,
+    10 => RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32A32,
+    11 => RL_PIXELFORMAT_UNCOMPRESSED_R16,
+    12 => RL_PIXELFORMAT_UNCOMPRESSED_R16G16B16,
+    13 => RL_PIXELFORMAT_UNCOMPRESSED_R16G16B16A16,
+    14 => RL_PIXELFORMAT_COMPRESSED_DXT1_RGB,
+    15 => RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA,
+    16 => RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA,
+    17 => RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA,
+    18 => RL_PIXELFORMAT_COMPRESSED_ETC1_RGB,
+    19 => RL_PIXELFORMAT_COMPRESSED_ETC2_RGB,
+    20 => RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA,
+    21 => RL_PIXELFORMAT_COMPRESSED_PVRT_RGB,
+    22 => RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA,
+    23 => RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA,
+    24 => RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA,
+    _ => throw ArgumentError('Unknown value for rlPixelFormat: $value'),
+  };
+}
+
+enum rlTextureFilter {
+  RL_TEXTURE_FILTER_POINT(0),
+  RL_TEXTURE_FILTER_BILINEAR(1),
+  RL_TEXTURE_FILTER_TRILINEAR(2),
+  RL_TEXTURE_FILTER_ANISOTROPIC_4X(3),
+  RL_TEXTURE_FILTER_ANISOTROPIC_8X(4),
+  RL_TEXTURE_FILTER_ANISOTROPIC_16X(5);
+
+  final int value;
+  const rlTextureFilter(this.value);
+
+  static rlTextureFilter fromValue(int value) => switch (value) {
+    0 => RL_TEXTURE_FILTER_POINT,
+    1 => RL_TEXTURE_FILTER_BILINEAR,
+    2 => RL_TEXTURE_FILTER_TRILINEAR,
+    3 => RL_TEXTURE_FILTER_ANISOTROPIC_4X,
+    4 => RL_TEXTURE_FILTER_ANISOTROPIC_8X,
+    5 => RL_TEXTURE_FILTER_ANISOTROPIC_16X,
+    _ => throw ArgumentError('Unknown value for rlTextureFilter: $value'),
+  };
+}
+
+enum rlBlendMode {
+  RL_BLEND_ALPHA(0),
+  RL_BLEND_ADDITIVE(1),
+  RL_BLEND_MULTIPLIED(2),
+  RL_BLEND_ADD_COLORS(3),
+  RL_BLEND_SUBTRACT_COLORS(4),
+  RL_BLEND_ALPHA_PREMULTIPLY(5),
+  RL_BLEND_CUSTOM(6),
+  RL_BLEND_CUSTOM_SEPARATE(7);
+
+  final int value;
+  const rlBlendMode(this.value);
+
+  static rlBlendMode fromValue(int value) => switch (value) {
+    0 => RL_BLEND_ALPHA,
+    1 => RL_BLEND_ADDITIVE,
+    2 => RL_BLEND_MULTIPLIED,
+    3 => RL_BLEND_ADD_COLORS,
+    4 => RL_BLEND_SUBTRACT_COLORS,
+    5 => RL_BLEND_ALPHA_PREMULTIPLY,
+    6 => RL_BLEND_CUSTOM,
+    7 => RL_BLEND_CUSTOM_SEPARATE,
+    _ => throw ArgumentError('Unknown value for rlBlendMode: $value'),
+  };
+}
+
+enum rlShaderLocationIndex {
+  RL_SHADER_LOC_VERTEX_POSITION(0),
+  RL_SHADER_LOC_VERTEX_TEXCOORD01(1),
+  RL_SHADER_LOC_VERTEX_TEXCOORD02(2),
+  RL_SHADER_LOC_VERTEX_NORMAL(3),
+  RL_SHADER_LOC_VERTEX_TANGENT(4),
+  RL_SHADER_LOC_VERTEX_COLOR(5),
+  RL_SHADER_LOC_MATRIX_MVP(6),
+  RL_SHADER_LOC_MATRIX_VIEW(7),
+  RL_SHADER_LOC_MATRIX_PROJECTION(8),
+  RL_SHADER_LOC_MATRIX_MODEL(9),
+  RL_SHADER_LOC_MATRIX_NORMAL(10),
+  RL_SHADER_LOC_VECTOR_VIEW(11),
+  RL_SHADER_LOC_COLOR_DIFFUSE(12),
+  RL_SHADER_LOC_COLOR_SPECULAR(13),
+  RL_SHADER_LOC_COLOR_AMBIENT(14),
+  RL_SHADER_LOC_MAP_ALBEDO(15),
+  RL_SHADER_LOC_MAP_METALNESS(16),
+  RL_SHADER_LOC_MAP_NORMAL(17),
+  RL_SHADER_LOC_MAP_ROUGHNESS(18),
+  RL_SHADER_LOC_MAP_OCCLUSION(19),
+  RL_SHADER_LOC_MAP_EMISSION(20),
+  RL_SHADER_LOC_MAP_HEIGHT(21),
+  RL_SHADER_LOC_MAP_CUBEMAP(22),
+  RL_SHADER_LOC_MAP_IRRADIANCE(23),
+  RL_SHADER_LOC_MAP_PREFILTER(24),
+  RL_SHADER_LOC_MAP_BRDF(25);
+
+  final int value;
+  const rlShaderLocationIndex(this.value);
+
+  static rlShaderLocationIndex fromValue(int value) => switch (value) {
+    0 => RL_SHADER_LOC_VERTEX_POSITION,
+    1 => RL_SHADER_LOC_VERTEX_TEXCOORD01,
+    2 => RL_SHADER_LOC_VERTEX_TEXCOORD02,
+    3 => RL_SHADER_LOC_VERTEX_NORMAL,
+    4 => RL_SHADER_LOC_VERTEX_TANGENT,
+    5 => RL_SHADER_LOC_VERTEX_COLOR,
+    6 => RL_SHADER_LOC_MATRIX_MVP,
+    7 => RL_SHADER_LOC_MATRIX_VIEW,
+    8 => RL_SHADER_LOC_MATRIX_PROJECTION,
+    9 => RL_SHADER_LOC_MATRIX_MODEL,
+    10 => RL_SHADER_LOC_MATRIX_NORMAL,
+    11 => RL_SHADER_LOC_VECTOR_VIEW,
+    12 => RL_SHADER_LOC_COLOR_DIFFUSE,
+    13 => RL_SHADER_LOC_COLOR_SPECULAR,
+    14 => RL_SHADER_LOC_COLOR_AMBIENT,
+    15 => RL_SHADER_LOC_MAP_ALBEDO,
+    16 => RL_SHADER_LOC_MAP_METALNESS,
+    17 => RL_SHADER_LOC_MAP_NORMAL,
+    18 => RL_SHADER_LOC_MAP_ROUGHNESS,
+    19 => RL_SHADER_LOC_MAP_OCCLUSION,
+    20 => RL_SHADER_LOC_MAP_EMISSION,
+    21 => RL_SHADER_LOC_MAP_HEIGHT,
+    22 => RL_SHADER_LOC_MAP_CUBEMAP,
+    23 => RL_SHADER_LOC_MAP_IRRADIANCE,
+    24 => RL_SHADER_LOC_MAP_PREFILTER,
+    25 => RL_SHADER_LOC_MAP_BRDF,
+    _ => throw ArgumentError('Unknown value for rlShaderLocationIndex: $value'),
+  };
+}
+
+enum rlShaderUniformDataType {
+  RL_SHADER_UNIFORM_FLOAT(0),
+  RL_SHADER_UNIFORM_VEC2(1),
+  RL_SHADER_UNIFORM_VEC3(2),
+  RL_SHADER_UNIFORM_VEC4(3),
+  RL_SHADER_UNIFORM_INT(4),
+  RL_SHADER_UNIFORM_IVEC2(5),
+  RL_SHADER_UNIFORM_IVEC3(6),
+  RL_SHADER_UNIFORM_IVEC4(7),
+  RL_SHADER_UNIFORM_UINT(8),
+  RL_SHADER_UNIFORM_UIVEC2(9),
+  RL_SHADER_UNIFORM_UIVEC3(10),
+  RL_SHADER_UNIFORM_UIVEC4(11),
+  RL_SHADER_UNIFORM_SAMPLER2D(12);
+
+  final int value;
+  const rlShaderUniformDataType(this.value);
+
+  static rlShaderUniformDataType fromValue(int value) => switch (value) {
+    0 => RL_SHADER_UNIFORM_FLOAT,
+    1 => RL_SHADER_UNIFORM_VEC2,
+    2 => RL_SHADER_UNIFORM_VEC3,
+    3 => RL_SHADER_UNIFORM_VEC4,
+    4 => RL_SHADER_UNIFORM_INT,
+    5 => RL_SHADER_UNIFORM_IVEC2,
+    6 => RL_SHADER_UNIFORM_IVEC3,
+    7 => RL_SHADER_UNIFORM_IVEC4,
+    8 => RL_SHADER_UNIFORM_UINT,
+    9 => RL_SHADER_UNIFORM_UIVEC2,
+    10 => RL_SHADER_UNIFORM_UIVEC3,
+    11 => RL_SHADER_UNIFORM_UIVEC4,
+    12 => RL_SHADER_UNIFORM_SAMPLER2D,
+    _ => throw ArgumentError(
+      'Unknown value for rlShaderUniformDataType: $value',
+    ),
+  };
+}
+
+enum rlShaderAttributeDataType {
+  RL_SHADER_ATTRIB_FLOAT(0),
+  RL_SHADER_ATTRIB_VEC2(1),
+  RL_SHADER_ATTRIB_VEC3(2),
+  RL_SHADER_ATTRIB_VEC4(3);
+
+  final int value;
+  const rlShaderAttributeDataType(this.value);
+
+  static rlShaderAttributeDataType fromValue(int value) => switch (value) {
+    0 => RL_SHADER_ATTRIB_FLOAT,
+    1 => RL_SHADER_ATTRIB_VEC2,
+    2 => RL_SHADER_ATTRIB_VEC3,
+    3 => RL_SHADER_ATTRIB_VEC4,
+    _ => throw ArgumentError(
+      'Unknown value for rlShaderAttributeDataType: $value',
+    ),
+  };
+}
+
+enum rlFramebufferAttachType {
+  RL_ATTACHMENT_COLOR_CHANNEL0(0),
+  RL_ATTACHMENT_COLOR_CHANNEL1(1),
+  RL_ATTACHMENT_COLOR_CHANNEL2(2),
+  RL_ATTACHMENT_COLOR_CHANNEL3(3),
+  RL_ATTACHMENT_COLOR_CHANNEL4(4),
+  RL_ATTACHMENT_COLOR_CHANNEL5(5),
+  RL_ATTACHMENT_COLOR_CHANNEL6(6),
+  RL_ATTACHMENT_COLOR_CHANNEL7(7),
+  RL_ATTACHMENT_DEPTH(100),
+  RL_ATTACHMENT_STENCIL(200);
+
+  final int value;
+  const rlFramebufferAttachType(this.value);
+
+  static rlFramebufferAttachType fromValue(int value) => switch (value) {
+    0 => RL_ATTACHMENT_COLOR_CHANNEL0,
+    1 => RL_ATTACHMENT_COLOR_CHANNEL1,
+    2 => RL_ATTACHMENT_COLOR_CHANNEL2,
+    3 => RL_ATTACHMENT_COLOR_CHANNEL3,
+    4 => RL_ATTACHMENT_COLOR_CHANNEL4,
+    5 => RL_ATTACHMENT_COLOR_CHANNEL5,
+    6 => RL_ATTACHMENT_COLOR_CHANNEL6,
+    7 => RL_ATTACHMENT_COLOR_CHANNEL7,
+    100 => RL_ATTACHMENT_DEPTH,
+    200 => RL_ATTACHMENT_STENCIL,
+    _ => throw ArgumentError(
+      'Unknown value for rlFramebufferAttachType: $value',
+    ),
+  };
+}
+
+enum rlFramebufferAttachTextureType {
+  RL_ATTACHMENT_CUBEMAP_POSITIVE_X(0),
+  RL_ATTACHMENT_CUBEMAP_NEGATIVE_X(1),
+  RL_ATTACHMENT_CUBEMAP_POSITIVE_Y(2),
+  RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y(3),
+  RL_ATTACHMENT_CUBEMAP_POSITIVE_Z(4),
+  RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z(5),
+  RL_ATTACHMENT_TEXTURE2D(100),
+  RL_ATTACHMENT_RENDERBUFFER(200);
+
+  final int value;
+  const rlFramebufferAttachTextureType(this.value);
+
+  static rlFramebufferAttachTextureType fromValue(int value) => switch (value) {
+    0 => RL_ATTACHMENT_CUBEMAP_POSITIVE_X,
+    1 => RL_ATTACHMENT_CUBEMAP_NEGATIVE_X,
+    2 => RL_ATTACHMENT_CUBEMAP_POSITIVE_Y,
+    3 => RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y,
+    4 => RL_ATTACHMENT_CUBEMAP_POSITIVE_Z,
+    5 => RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z,
+    100 => RL_ATTACHMENT_TEXTURE2D,
+    200 => RL_ATTACHMENT_RENDERBUFFER,
+    _ => throw ArgumentError(
+      'Unknown value for rlFramebufferAttachTextureType: $value',
+    ),
+  };
+}
+
+enum rlCullMode {
+  RL_CULL_FACE_FRONT(0),
+  RL_CULL_FACE_BACK(1);
+
+  final int value;
+  const rlCullMode(this.value);
+
+  static rlCullMode fromValue(int value) => switch (value) {
+    0 => RL_CULL_FACE_FRONT,
+    1 => RL_CULL_FACE_BACK,
+    _ => throw ArgumentError('Unknown value for rlCullMode: $value'),
+  };
+}
+
 const int RAYLIB_VERSION_MAJOR = 5;
 
 const int RAYLIB_VERSION_MINOR = 6;
@@ -4635,3 +5837,173 @@ const int MATERIAL_MAP_SPECULAR = 1;
 const int SHADER_LOC_MAP_DIFFUSE = 15;
 
 const int SHADER_LOC_MAP_SPECULAR = 16;
+
+const String RLGL_VERSION = '5.0';
+
+const int RL_DEFAULT_BATCH_BUFFER_ELEMENTS = 8192;
+
+const int RL_DEFAULT_BATCH_BUFFERS = 1;
+
+const int RL_DEFAULT_BATCH_DRAWCALLS = 256;
+
+const int RL_DEFAULT_BATCH_MAX_TEXTURE_UNITS = 4;
+
+const int RL_MAX_MATRIX_STACK_SIZE = 32;
+
+const int RL_MAX_SHADER_LOCATIONS = 32;
+
+const double RL_CULL_DISTANCE_NEAR = 0.05;
+
+const double RL_CULL_DISTANCE_FAR = 4000.0;
+
+const int RL_TEXTURE_WRAP_S = 10242;
+
+const int RL_TEXTURE_WRAP_T = 10243;
+
+const int RL_TEXTURE_MAG_FILTER = 10240;
+
+const int RL_TEXTURE_MIN_FILTER = 10241;
+
+const int RL_TEXTURE_FILTER_NEAREST = 9728;
+
+const int RL_TEXTURE_FILTER_LINEAR = 9729;
+
+const int RL_TEXTURE_FILTER_MIP_NEAREST = 9984;
+
+const int RL_TEXTURE_FILTER_NEAREST_MIP_LINEAR = 9986;
+
+const int RL_TEXTURE_FILTER_LINEAR_MIP_NEAREST = 9985;
+
+const int RL_TEXTURE_FILTER_MIP_LINEAR = 9987;
+
+const int RL_TEXTURE_FILTER_ANISOTROPIC = 12288;
+
+const int RL_TEXTURE_MIPMAP_BIAS_RATIO = 16384;
+
+const int RL_TEXTURE_WRAP_REPEAT = 10497;
+
+const int RL_TEXTURE_WRAP_CLAMP = 33071;
+
+const int RL_TEXTURE_WRAP_MIRROR_REPEAT = 33648;
+
+const int RL_TEXTURE_WRAP_MIRROR_CLAMP = 34626;
+
+const int RL_MODELVIEW = 5888;
+
+const int RL_PROJECTION = 5889;
+
+const int RL_TEXTURE = 5890;
+
+const int RL_LINES = 1;
+
+const int RL_TRIANGLES = 4;
+
+const int RL_QUADS = 7;
+
+const int RL_UNSIGNED_BYTE = 5121;
+
+const int RL_FLOAT = 5126;
+
+const int RL_STREAM_DRAW = 35040;
+
+const int RL_STREAM_READ = 35041;
+
+const int RL_STREAM_COPY = 35042;
+
+const int RL_STATIC_DRAW = 35044;
+
+const int RL_STATIC_READ = 35045;
+
+const int RL_STATIC_COPY = 35046;
+
+const int RL_DYNAMIC_DRAW = 35048;
+
+const int RL_DYNAMIC_READ = 35049;
+
+const int RL_DYNAMIC_COPY = 35050;
+
+const int RL_FRAGMENT_SHADER = 35632;
+
+const int RL_VERTEX_SHADER = 35633;
+
+const int RL_COMPUTE_SHADER = 37305;
+
+const int RL_ZERO = 0;
+
+const int RL_ONE = 1;
+
+const int RL_SRC_COLOR = 768;
+
+const int RL_ONE_MINUS_SRC_COLOR = 769;
+
+const int RL_SRC_ALPHA = 770;
+
+const int RL_ONE_MINUS_SRC_ALPHA = 771;
+
+const int RL_DST_ALPHA = 772;
+
+const int RL_ONE_MINUS_DST_ALPHA = 773;
+
+const int RL_DST_COLOR = 774;
+
+const int RL_ONE_MINUS_DST_COLOR = 775;
+
+const int RL_SRC_ALPHA_SATURATE = 776;
+
+const int RL_CONSTANT_COLOR = 32769;
+
+const int RL_ONE_MINUS_CONSTANT_COLOR = 32770;
+
+const int RL_CONSTANT_ALPHA = 32771;
+
+const int RL_ONE_MINUS_CONSTANT_ALPHA = 32772;
+
+const int RL_FUNC_ADD = 32774;
+
+const int RL_MIN = 32775;
+
+const int RL_MAX = 32776;
+
+const int RL_FUNC_SUBTRACT = 32778;
+
+const int RL_FUNC_REVERSE_SUBTRACT = 32779;
+
+const int RL_BLEND_EQUATION = 32777;
+
+const int RL_BLEND_EQUATION_RGB = 32777;
+
+const int RL_BLEND_EQUATION_ALPHA = 34877;
+
+const int RL_BLEND_DST_RGB = 32968;
+
+const int RL_BLEND_SRC_RGB = 32969;
+
+const int RL_BLEND_DST_ALPHA = 32970;
+
+const int RL_BLEND_SRC_ALPHA = 32971;
+
+const int RL_BLEND_COLOR = 32773;
+
+const int RL_READ_FRAMEBUFFER = 36008;
+
+const int RL_DRAW_FRAMEBUFFER = 36009;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION = 0;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD = 1;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_NORMAL = 2;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_COLOR = 3;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_TANGENT = 4;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2 = 5;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_INDICES = 6;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_INSTANCE_TX = 9;
+
+const int RL_SHADER_LOC_MAP_DIFFUSE = 15;
+
+const int RL_SHADER_LOC_MAP_SPECULAR = 16;

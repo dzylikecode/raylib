@@ -7,8 +7,11 @@ void main() {
   FfiGenerator(
     output: .new(dartFile: packageRoot.resolve('lib/src/raylib.g.dart')),
     headers: .new(
-      entryPoints: [packageRoot.resolve('src/raylib/src/raylib.h')],
-      include: (header) => header.path.endsWith('raylib.h'), // 只导出这个文件的接口
+      entryPoints: [
+        packageRoot.resolve('src/raylib/src/raylib.h'),
+        packageRoot.resolve('src/raylib/src/rlgl.h'),
+      ],
+      include: (header) => header.path.contains('raylib'),
     ),
     macros: .includeAll,
     structs: .includeAll,
