@@ -21,3 +21,7 @@
 ## 0.0.6
 
 - use tag
+
+## 0.0.7
+
+- check repo exists

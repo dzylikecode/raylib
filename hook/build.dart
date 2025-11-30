@@ -95,6 +95,11 @@ Future<bool> cloneByTag(Uri destDir, String url, String tag) async {
   final dir = Directory.fromUri(destDir);
   if (!await dir.exists()) {
     await dir.create(recursive: true);
+  } else if ((await dir.list().toList()).isNotEmpty) {
+    logger.info(
+      'Directory $destDir already exists with content, skipping clone',
+    );
+    return true;
   }
 
   logger.info('Cloning $url to $destDir with tag $tag');
@@ -125,6 +130,11 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
   final dir = Directory.fromUri(destDir);
   if (!await dir.exists()) {
     await dir.create(recursive: true);
+  } else if ((await dir.list().toList()).isNotEmpty) {
+    logger.info(
+      'Directory $destDir already exists with content, skipping clone',
+    );
+    return true;
   }
 
   logger.info('Cloning $url to $destDir');
