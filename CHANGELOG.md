@@ -13,3 +13,7 @@
 ## 0.0.4
 
 - fix: git clone dest dir
+
+## 0.0.5
+
+- shallow clone

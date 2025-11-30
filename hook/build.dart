@@ -92,15 +92,39 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
     await dir.create(recursive: true);
   }
 
-  logger.info('Cloning $url to $destDir');
-  final result = await Process.run('git', ['clone', url, destDir.path]);
+  logger.info('Cloning $url to $destDir with depth 1');
+  final result = await Process.run('git', [
+    'clone',
+    '--depth',
+    '1',
+    url,
+    destDir.path,
+  ]);
 
   if (result.exitCode != 0) {
     throw ProcessException(
       'git',
-      ['clone', url, destDir.path],
+      ['clone', '--depth', '1', url, destDir.path],
       'Failed to clone $url: ${result.stderr}',
       result.exitCode,
+    );
+  }
+
+  logger.info('Fetching hash $repoHash');
+  final fetchResult = await Process.run('git', [
+    'fetch',
+    '--depth',
+    '1',
+    'origin',
+    repoHash,
+  ], workingDirectory: destDir.path);
+
+  if (fetchResult.exitCode != 0) {
+    throw ProcessException(
+      'git',
+      ['fetch', '--depth', '1', 'origin', repoHash],
+      'Failed to fetch hash $repoHash: ${fetchResult.stderr}',
+      fetchResult.exitCode,
     );
   }
 
