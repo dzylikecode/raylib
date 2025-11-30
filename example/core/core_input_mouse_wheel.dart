@@ -48,17 +48,23 @@ int main() {
     //----------------------------------------------------------------------------------
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground(.RAYWHITE);
 
-    DrawRectangle(screenWidth ~/ 2 - 40, boxPositionY, 80, 80, MAROON);
+    DrawRectangle(screenWidth ~/ 2 - 40, boxPositionY, 80, 80, .MAROON);
 
-    DrawText("Use mouse wheel to move the cube up and down!", 10, 10, 20, GRAY);
+    DrawText(
+      "Use mouse wheel to move the cube up and down!",
+      10,
+      10,
+      20,
+      .GRAY,
+    );
     DrawText(
       "Box position Y: ${boxPositionY.toStringAsFixed(3)}",
       10,
       40,
       20,
-      LIGHTGRAY,
+      .LIGHTGRAY,
     );
 
     EndDrawing();

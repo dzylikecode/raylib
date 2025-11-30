@@ -27,7 +27,7 @@ int main() {
   InitWindow(screenWidth, screenHeight, "raylib [core] example - input mouse");
 
   Vector2 ballPosition = Vector2(-100.0, -100.0);
-  Color ballColor = DARKBLUE;
+  Color ballColor = .DARKBLUE;
 
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second
   //---------------------------------------------------------------------------------------
@@ -47,26 +47,26 @@ int main() {
     ballPosition = GetMousePosition();
 
     if (IsMouseButtonPressed(.MOUSE_BUTTON_LEFT))
-      ballColor = MAROON;
+      ballColor = .MAROON;
     else if (IsMouseButtonPressed(.MOUSE_BUTTON_MIDDLE))
-      ballColor = LIME;
+      ballColor = .LIME;
     else if (IsMouseButtonPressed(.MOUSE_BUTTON_RIGHT))
-      ballColor = DARKBLUE;
+      ballColor = .DARKBLUE;
     else if (IsMouseButtonPressed(.MOUSE_BUTTON_SIDE))
-      ballColor = PURPLE;
+      ballColor = .PURPLE;
     else if (IsMouseButtonPressed(.MOUSE_BUTTON_EXTRA))
-      ballColor = YELLOW;
+      ballColor = .YELLOW;
     else if (IsMouseButtonPressed(.MOUSE_BUTTON_FORWARD))
-      ballColor = ORANGE;
+      ballColor = .ORANGE;
     else if (IsMouseButtonPressed(.MOUSE_BUTTON_BACK))
-      ballColor = BEIGE;
+      ballColor = .BEIGE;
     //----------------------------------------------------------------------------------
 
     // Draw
     //----------------------------------------------------------------------------------
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground(.RAYWHITE);
 
     DrawCircleV(ballPosition, 40, ballColor);
 
@@ -75,14 +75,14 @@ int main() {
       10,
       10,
       20,
-      DARKGRAY,
+      .DARKGRAY,
     );
-    DrawText("Press 'H' to toggle cursor visibility", 10, 30, 20, DARKGRAY);
+    DrawText("Press 'H' to toggle cursor visibility", 10, 30, 20, .DARKGRAY);
 
     if (IsCursorHidden())
-      DrawText("CURSOR HIDDEN", 20, 60, 20, RED);
+      DrawText("CURSOR HIDDEN", 20, 60, 20, .RED);
     else
-      DrawText("CURSOR VISIBLE", 20, 60, 20, LIME);
+      DrawText("CURSOR VISIBLE", 20, 60, 20, .LIME);
 
     EndDrawing();
     //----------------------------------------------------------------------------------

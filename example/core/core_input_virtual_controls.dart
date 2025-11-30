@@ -66,11 +66,11 @@ int main() {
     "A", // Down
   ];
 
-  final buttonLabelColors = [
-    YELLOW, // Up
-    BLUE, // Left
-    RED, // Right
-    GREEN, // Down
+  final buttonLabelColors = <Color>[
+    .YELLOW, // Up
+    .BLUE, // Left
+    .RED, // Right
+    .GREEN, // Down
   ];
 
   PadButton pressedButton = .BUTTON_NONE;
@@ -134,17 +134,17 @@ int main() {
     //--------------------------------------------------------------------------
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground(.RAYWHITE);
 
     // Draw world
-    DrawCircleV(playerPosition, 50, MAROON);
+    DrawCircleV(playerPosition, 50, .MAROON);
 
     // Draw GUI
     for (int i = 0; i < BUTTON_MAX; i++) {
       DrawCircleV(
         buttonPositions[i],
         buttonRadius,
-        (i == pressedButton.value) ? DARKGRAY : BLACK,
+        (i == pressedButton.value) ? .DARKGRAY : .BLACK,
       );
 
       DrawText(
@@ -156,7 +156,7 @@ int main() {
       );
     }
 
-    DrawText("move the player with D-Pad buttons", 10, 10, 20, DARKGRAY);
+    DrawText("move the player with D-Pad buttons", 10, 10, 20, .DARKGRAY);
 
     EndDrawing();
     //--------------------------------------------------------------------------

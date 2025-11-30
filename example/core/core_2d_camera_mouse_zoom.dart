@@ -109,7 +109,7 @@ int main() {
     // Draw
     //----------------------------------------------------------------------------------
     BeginDrawing();
-    ClearBackground(RAYWHITE);
+    ClearBackground(.RAYWHITE);
 
     BeginMode2D(camera);
     // Draw the 3d grid, rotated 90 degrees and centered around 0,0
@@ -121,19 +121,19 @@ int main() {
     rlPopMatrix();
 
     // Draw a reference circle
-    DrawCircle(GetScreenWidth() ~/ 2, GetScreenHeight() ~/ 2, 50, MAROON);
+    DrawCircle(GetScreenWidth() ~/ 2, GetScreenHeight() ~/ 2, 50, .MAROON);
     EndMode2D();
 
     // Draw mouse reference
     //Vector2 mousePos = GetWorldToScreen2D(GetMousePosition(), camera)
-    DrawCircleV(GetMousePosition(), 4, DARKGRAY);
+    DrawCircleV(GetMousePosition(), 4, .DARKGRAY);
     DrawTextEx(
       GetFontDefault(),
       "[${GetMouseX()}, ${GetMouseY()}]",
       GetMousePosition() + Vector2(-44, -24),
       20,
       2,
-      BLACK,
+      .BLACK,
     );
 
     DrawText(
@@ -141,7 +141,7 @@ int main() {
       20,
       20,
       20,
-      DARKGRAY,
+      .DARKGRAY,
     );
     if (zoomMode == 0)
       DrawText(
@@ -149,7 +149,7 @@ int main() {
         20,
         50,
         20,
-        DARKGRAY,
+        .DARKGRAY,
       );
     else
       DrawText(
@@ -157,7 +157,7 @@ int main() {
         20,
         50,
         20,
-        DARKGRAY,
+        .DARKGRAY,
       );
 
     EndDrawing();
