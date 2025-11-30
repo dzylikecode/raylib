@@ -9,8 +9,6 @@ import 'package:hooks/hooks.dart';
 import 'package:logging/logging.dart';
 import 'package:native_toolchain_cmake/native_toolchain_cmake.dart';
 
-import 'package:path/path.dart' as p;
-
 const hash =
     'ebce9fa97ae643b2b1b17cfac3a8d45dba6de3a9 src/raylib (5.5-1406-gebce9fa9)';
 
