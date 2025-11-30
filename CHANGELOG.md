@@ -25,3 +25,7 @@
 ## 0.0.7
 
 - check repo exists
+
+## 0.0.8
+
+- fix: windows path

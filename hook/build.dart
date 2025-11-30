@@ -102,7 +102,7 @@ Future<bool> cloneByTag(Uri destDir, String url, String tag) async {
     return true;
   }
 
-  logger.info('Cloning $url to $destDir with tag $tag');
+  logger.info('Cloning $url to ${dir.path} with tag $tag');
   final result = await Process.run('git', [
     'clone',
     '--depth',
@@ -110,13 +110,13 @@ Future<bool> cloneByTag(Uri destDir, String url, String tag) async {
     '--branch',
     tag,
     url,
-    destDir.path,
+    dir.path,
   ]);
 
   if (result.exitCode != 0) {
     throw ProcessException(
       'git',
-      ['clone', '--depth', '1', '--branch', tag, url, destDir.path],
+      ['clone', '--depth', '1', '--branch', tag, url, dir.path],
       'Failed to clone $url with tag $tag: ${result.stderr}',
       result.exitCode,
     );
@@ -138,12 +138,12 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
   }
 
   logger.info('Cloning $url to $destDir');
-  final result = await Process.run('git', ['clone', url, destDir.path]);
+  final result = await Process.run('git', ['clone', url, dir.path]);
 
   if (result.exitCode != 0) {
     throw ProcessException(
       'git',
-      ['clone', url, destDir.path],
+      ['clone', url, dir.path],
       'Failed to clone $url: ${result.stderr}',
       result.exitCode,
     );
@@ -153,7 +153,7 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
   final checkoutResult = await Process.run('git', [
     'checkout',
     repoHash,
-  ], workingDirectory: destDir.path);
+  ], workingDirectory: dir.path);
 
   if (checkoutResult.exitCode != 0) {
     throw ProcessException(
@@ -169,7 +169,7 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
 }
 
 Future<bool> fetchSubmodule(Uri repoUri) async {
-  final path = repoUri.path;
+  final path = Directory.fromUri(repoUri).path;
 
   logger.info('Checking for submodule at $path');
 
