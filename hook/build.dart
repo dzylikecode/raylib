@@ -9,10 +9,10 @@ import 'package:hooks/hooks.dart';
 import 'package:logging/logging.dart';
 import 'package:native_toolchain_cmake/native_toolchain_cmake.dart';
 
-const hash =
-    'ebce9fa97ae643b2b1b17cfac3a8d45dba6de3a9 src/raylib (5.5-1406-gebce9fa9)';
+const hash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8 src/raylib (5.5)';
 
-const repoHash = 'ebce9fa97ae643b2b1b17cfac3a8d45dba6de3a';
+const repoHash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8';
+const repoTag = '5.5';
 
 final Logger logger = Logger('raylib hook');
 
@@ -78,12 +78,47 @@ Future<bool> fetch(Uri root) async {
     return await fetchSubmodule(root);
   } else {
     logger.info('Git repository not found, cloning raylib');
-    return await clone(
+    // return await clone(
+    //   root.resolve("src/raylib"),
+    //   'https://github.com/raysan5/raylib.git',
+    //   repoHash,
+    // );
+    return await cloneByTag(
       root.resolve("src/raylib"),
       'https://github.com/raysan5/raylib.git',
-      repoHash,
+      repoTag,
     );
   }
+}
+
+Future<bool> cloneByTag(Uri destDir, String url, String tag) async {
+  final dir = Directory.fromUri(destDir);
+  if (!await dir.exists()) {
+    await dir.create(recursive: true);
+  }
+
+  logger.info('Cloning $url to $destDir with tag $tag');
+  final result = await Process.run('git', [
+    'clone',
+    '--depth',
+    '1',
+    '--branch',
+    tag,
+    url,
+    destDir.path,
+  ]);
+
+  if (result.exitCode != 0) {
+    throw ProcessException(
+      'git',
+      ['clone', '--depth', '1', '--branch', tag, url, destDir.path],
+      'Failed to clone $url with tag $tag: ${result.stderr}',
+      result.exitCode,
+    );
+  }
+
+  logger.info('Successfully cloned and checked out tag $tag');
+  return true;
 }
 
 Future<bool> clone(Uri destDir, String url, String repoHash) async {
@@ -92,39 +127,15 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
     await dir.create(recursive: true);
   }
 
-  logger.info('Cloning $url to $destDir with depth 1');
-  final result = await Process.run('git', [
-    'clone',
-    '--depth',
-    '1',
-    url,
-    destDir.path,
-  ]);
+  logger.info('Cloning $url to $destDir');
+  final result = await Process.run('git', ['clone', url, destDir.path]);
 
   if (result.exitCode != 0) {
     throw ProcessException(
       'git',
-      ['clone', '--depth', '1', url, destDir.path],
+      ['clone', url, destDir.path],
       'Failed to clone $url: ${result.stderr}',
       result.exitCode,
-    );
-  }
-
-  logger.info('Fetching hash $repoHash');
-  final fetchResult = await Process.run('git', [
-    'fetch',
-    '--depth',
-    '1',
-    'origin',
-    repoHash,
-  ], workingDirectory: destDir.path);
-
-  if (fetchResult.exitCode != 0) {
-    throw ProcessException(
-      'git',
-      ['fetch', '--depth', '1', 'origin', repoHash],
-      'Failed to fetch hash $repoHash: ${fetchResult.stderr}',
-      fetchResult.exitCode,
     );
   }
 
