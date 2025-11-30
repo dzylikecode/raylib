@@ -1,8 +1,8 @@
 # raylib
 
-[raylib](https://github.com/raysan5/raylib) ffi bindings for Dart.
+[raylib](https://github.com/raysan5/raylib) ffi bindings for Dart. The API is essentially consistent with C.
 
-## quick start
+## Quick Start
 
 ```dart
 import 'package:raylib/raylib.dart';
@@ -37,7 +37,32 @@ int main() {
 }
 ```
 
+The first time you run the following command, it will compile raylib and generate dynamic libraries, which will take some time.
 
 ```bash
 dart run example/core/core_basic_window.dart
+```
+
+## Migration from C
+
+### Main Function Transformation
+
+```c
+int main(void)
+```
+
+```dart
+int main()
+```
+
+### Enumerations
+
+Use Dart's dot-shorthand syntax:
+
+```c
+IsKeyDown(KEY_RIGHT);
+```
+
+```dart
+IsKeyDown(.KEY_RIGHT);
 ```
