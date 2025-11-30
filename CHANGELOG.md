@@ -5,3 +5,7 @@
 ## 0.0.2
 
 - fix: pubignore for /src/
+
+## 0.0.3
+
+- pub: need git clone by self

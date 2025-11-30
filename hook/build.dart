@@ -9,8 +9,12 @@ import 'package:hooks/hooks.dart';
 import 'package:logging/logging.dart';
 import 'package:native_toolchain_cmake/native_toolchain_cmake.dart';
 
+import 'package:path/path.dart' as p;
+
 const hash =
     'ebce9fa97ae643b2b1b17cfac3a8d45dba6de3a9 src/raylib (5.5-1406-gebce9fa9)';
+
+const repoHash = 'ebce9fa97ae643b2b1b17cfac3a8d45dba6de3a';
 
 final Logger logger = Logger('raylib hook');
 
@@ -24,7 +28,7 @@ Future<void> main(List<String> args) async {
     );
 
   await build(args, (input, output) async {
-    if (!await fetchSubmodule(input.packageRoot.resolveUri(.file('.')))) {
+    if (!await fetch(input.packageRoot)) {
       throw Exception('Failed to fetch raylib submodule.');
     }
 
@@ -67,13 +71,66 @@ Future<void> main(List<String> args) async {
   });
 }
 
+Future<bool> isGitRepository(Uri root) =>
+    Directory.fromUri(root.resolve('.git')).exists();
+
+Future<bool> fetch(Uri root) async {
+  if (await isGitRepository(root)) {
+    logger.info('Git repository exists, fetching submodule');
+    return await fetchSubmodule(root);
+  } else {
+    logger.info('Git repository not found, cloning raylib');
+    return await clone(
+      root.resolve("src"),
+      'https://github.com/raysan5/raylib.git',
+      repoHash,
+    );
+  }
+}
+
+Future<bool> clone(Uri destDir, String url, String repoHash) async {
+  final dir = Directory.fromUri(destDir);
+  if (!await dir.exists()) {
+    await dir.create(recursive: true);
+  }
+
+  logger.info('Cloning $url to $destDir');
+  final result = await Process.run('git', ['clone', url, destDir.path]);
+
+  if (result.exitCode != 0) {
+    throw ProcessException(
+      'git',
+      ['clone', url, destDir.path],
+      'Failed to clone $url: ${result.stderr}',
+      result.exitCode,
+    );
+  }
+
+  logger.info('Checking out hash $repoHash');
+  final checkoutResult = await Process.run('git', [
+    'checkout',
+    repoHash,
+  ], workingDirectory: destDir.path);
+
+  if (checkoutResult.exitCode != 0) {
+    throw ProcessException(
+      'git',
+      ['checkout', repoHash],
+      'Failed to checkout hash $repoHash: ${checkoutResult.stderr}',
+      checkoutResult.exitCode,
+    );
+  }
+
+  logger.info('Successfully cloned and checked out hash $repoHash');
+  return true;
+}
+
 Future<bool> fetchSubmodule(Uri repoUri) async {
   final path = repoUri.path;
-  final repoDir = Directory.fromUri(repoUri);
 
   logger.info('Checking for submodule at $path');
 
-  if (await submoduleExists(repoDir)) {
+  if (await submoduleExists(path)) {
     logger.info('Submodule already exists at $path');
     return true;
   }
@@ -94,11 +151,10 @@ Future<bool> fetchSubmodule(Uri repoUri) async {
       result.exitCode,
     );
   }
-  return await submoduleExists(repoDir);
+  return await submoduleExists(path);
 }
 
-Future<bool> submoduleExists(Directory repoDir) async {
-  final path = repoDir.path;
+Future<bool> submoduleExists(String path) async {
   // Run `git submodule status`, read result
   final result = await Process.run('git', [
     'submodule',
