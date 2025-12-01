@@ -77,7 +77,6 @@ int main() {
     // Update
     //--------------------------------------------------------------------------------------
     // Handle common gestures data
-    int i, ii; // Iterators that will be reused by all for loops
     final currentGesture = GetGestureDetected();
     final currentDragDegrees = GetGestureDragAngle();
     final currentPitchDegrees = GetGesturePinchAngle();
@@ -188,7 +187,7 @@ int main() {
     Vector2 mousePosition = Vector2(0, 0);
     if (currentGesture != GESTURE_NONE) {
       if (touchCount != 0) {
-        for (i = 0; i < touchCount; i++)
+        for (var i = 0; i < touchCount; i++)
           touchPosition[i] = GetTouchPosition(i); // Fill the touch positions
       } else
         mousePosition = GetMousePosition();
@@ -324,7 +323,7 @@ int main() {
       Vector2(lastGesturePosition.x + 159, lastGesturePosition.y + 33),
       lastGesture == GESTURE_PINCH_IN ? VIOLET : LIGHTGRAY,
     );
-    for (i = 0; i < 4; i++)
+    for (var i = 0; i < 4; i++)
       DrawCircle(
         (lastGesturePosition.x + 180).toInt(),
         (lastGesturePosition.y + 7 + i * 15).toInt(),
@@ -507,7 +506,7 @@ int main() {
     // Draw touch and mouse pointer points
     if (currentGesture != GESTURE_NONE) {
       if (touchCount != 0) {
-        for (i = 0; i < touchCount; i++) {
+        for (var i = 0; i < touchCount; i++) {
           DrawCircleV(touchPosition[i], 50.0, Fade(gestureColor, 0.5));
           DrawCircleV(touchPosition[i], 5.0, gestureColor);
         }

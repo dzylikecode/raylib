@@ -25,3 +25,18 @@ extension Camera3DExt on Camera3D {
   void updatePro(Vector3 movement, Vector3 rotation, double zoom) =>
       UpdateCameraPro(this, movement, rotation, zoom);
 }
+
+extension KeyExt on KeyboardKey {
+  bool get isPressed => IsKeyPressed(this);
+  bool get isPressedRepeat => IsKeyPressedRepeat(this);
+  bool get isDown => IsKeyDown(this);
+  bool get isReleased => IsKeyReleased(this);
+  bool get isUp => IsKeyUp(this);
+}
+
+extension MouseButtonExt on MouseButton {
+  bool get isPressed => IsMouseButtonPressed(this);
+  bool get isDown => IsMouseButtonDown(this);
+  bool get isReleased => IsMouseButtonReleased(this);
+  bool get isUp => IsMouseButtonUp(this);
+}
