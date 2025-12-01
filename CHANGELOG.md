@@ -43,3 +43,7 @@
 
 - maintain backward compatibility
 - keep API consistent with C
+
+## 0.0.12
+
+- pubignore: rm build & add example

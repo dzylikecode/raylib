@@ -1,5 +1,6 @@
-example/
+example/core
 resources/
 tools/
 /src/
 ref_code/
+build/
