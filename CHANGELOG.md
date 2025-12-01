@@ -38,3 +38,8 @@
 
 - fix: set dll path
 - export more api
+
+## 0.0.11
+
+- maintain backward compatibility
+- keep API consistent with C
