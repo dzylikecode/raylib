@@ -64,7 +64,8 @@ IsKeyDown(KEY_RIGHT);
 ```
 
 ```dart
-IsKeyDown(.KEY_RIGHT);
+IsKeyDown(KEY_RIGHT); // Deprecated
+IsKeyDown(.right); // Recommended
 ```
 
 ### Math
@@ -122,3 +123,23 @@ SetLoadFileDataCallback((filename) => File(filename).readSync());
 ### TODO
 
 - SetTraceLogCallback: Could be merged into logging
+
+
+## Wrapping Principles
+
+### Keep C API as Much as Possible
+
+- Keep function names unchanged
+- Preserve original enumerations and constants
+
+### Encourage Using Dart's Concise Features
+
+For example, enumerations are recommended to use dot-shorthand syntax to simplify code. Keep the original constants but mark them as Deprecated, and provide the recommended usage.
+
+```dart
+Color color = RED; // Deprecated
+Color color = .red; // Recommended
+
+KeyboardKey key = KEY_A; // Deprecated
+KeyboardKey key = .a; // Recommended
+```
