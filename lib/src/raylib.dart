@@ -20,7 +20,7 @@ void InitWindow(int width, int height, String title) {
 
 void CloseWindow() {
   raylib.CloseWindow();
-  ffi.malloc.free(_titleStack.removeLast());
+  if (_titleStack.isNotEmpty) ffi.malloc.free(_titleStack.removeLast());
 }
 
 bool IsWindowState(raylib.ConfigFlags flags) =>
