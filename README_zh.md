@@ -40,7 +40,7 @@ int main() {
 第一次执行以下命令会编译 raylib 的并生成动态库，会需要消耗比较久的时间
 
 ```bash
-dart run example/core/core_basic_window.dart
+dart run example/core_basic_window.dart
 ```
 
 
