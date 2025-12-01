@@ -36,14 +36,12 @@ class Camera2D {
     }
     _logger.info('Camera2D pointer allocated at ${pointer.address}');
 
-    final obj = Camera2D._(pointer);
     // 不然的话，值是随机的，视野都不知道去哪里了
-    obj.offset = offset ?? .zero();
-    obj.target = target ?? .zero();
-    obj.rotation = rotation;
-    obj.zoom = zoom;
-
-    return obj;
+    return Camera2D._(pointer)
+      ..offset = offset ?? .zero()
+      ..target = target ?? .zero()
+      ..rotation = rotation
+      ..zoom = zoom;
   }
 
   Vector2 get offset => ptr.ref.offset.toDart();
@@ -102,14 +100,14 @@ class Camera3D {
     }
     _logger.info('Camera3D pointer allocated at ${pointer.address}');
 
-    final obj = Camera3D._(pointer);
-    obj.position = position ?? Vector3(0.0, 0.0, 0.0);
-    obj.target = target ?? Vector3(0.0, 0.0, 0.0);
-    obj.up = up ?? Vector3(0.0, 1.0, 0.0);
-    obj.fovy = fovy;
-    obj.projection = projection;
-
-    return obj;
+    return Camera3D._(pointer)
+      ..position = position ?? .zero()
+      ..target = target ?? .zero()
+      ..up =
+          up ??
+          .zero() // TODO: (0,1,0) 应该是这个
+      ..fovy = fovy
+      ..projection = projection;
   }
 
   Vector3 get position => ptr.ref.position.toDart();
