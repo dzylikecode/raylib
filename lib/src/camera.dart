@@ -2,16 +2,19 @@
 
 import 'dart:ffi';
 import 'package:ffi/ffi.dart' as ffi;
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import 'raylib.g.dart' as raylib;
 import 'package:vector_math/vector_math.dart';
 import 'ffi_utils.dart';
 
-final Finalizer<Pointer<raylib.Camera2D>> _finalizer2D =
-    Finalizer<Pointer<raylib.Camera2D>>((ptr) {
-      ffi.malloc.free(ptr);
-    });
+final _logger = Logger('camera');
+
+final _finalizer2D = Finalizer<Pointer<raylib.Camera2D>>((ptr) {
+  ffi.malloc.free(ptr);
+  _logger.info('Camera2D pointer freed at ${ptr.address}');
+});
 
 class Camera2D {
   final Pointer<raylib.Camera2D> ptr;
@@ -21,9 +24,26 @@ class Camera2D {
     _finalizer2D.attach(this, ptr, detach: this);
   }
 
-  factory Camera2D() {
+  factory Camera2D({
+    Vector2? offset,
+    Vector2? target,
+    double rotation = 0.0,
+    double zoom = 1.0,
+  }) {
     final pointer = ffi.malloc<raylib.Camera2D>();
-    return Camera2D._(pointer);
+    if (pointer == nullptr) {
+      throw Exception('Failed to allocate memory for Camera2D');
+    }
+    _logger.info('Camera2D pointer allocated at ${pointer.address}');
+
+    final obj = Camera2D._(pointer);
+    // 不然的话，值是随机的，视野都不知道去哪里了
+    obj.offset = offset ?? .zero();
+    obj.target = target ?? .zero();
+    obj.rotation = rotation;
+    obj.zoom = zoom;
+
+    return obj;
   }
 
   Vector2 get offset => ptr.ref.offset.toDart();
@@ -48,17 +68,18 @@ class Camera2D {
   void dispose() {
     if (_disposed) return;
     _finalizer2D.detach(this); // 取消自动释放
-    ffi.malloc.free(ptr); // 立刻释放
+    _logger.info('Camera2D pointer freed at ${ptr.address}');
+    ffi.malloc.free(ptr);
     _disposed = true;
   }
 }
 
 void BeginMode2D(Camera2D camera) => raylib.BeginMode2D(camera.ptr.ref);
 
-final Finalizer<Pointer<raylib.Camera3D>> _finalizer3D =
-    Finalizer<Pointer<raylib.Camera3D>>((ptr) {
-      ffi.malloc.free(ptr);
-    });
+final _finalizer3D = Finalizer<Pointer<raylib.Camera3D>>((ptr) {
+  ffi.malloc.free(ptr);
+  _logger.info('Camera3D pointer freed at ${ptr.address}');
+});
 
 class Camera3D {
   final Pointer<raylib.Camera3D> ptr;
@@ -68,9 +89,27 @@ class Camera3D {
     _finalizer3D.attach(this, ptr, detach: this);
   }
 
-  factory Camera3D() {
+  factory Camera3D({
+    Vector3? position,
+    Vector3? target,
+    Vector3? up,
+    double fovy = 45.0,
+    int projection = 0, // CAMERA_PERSPECTIVE
+  }) {
     final pointer = ffi.malloc<raylib.Camera3D>();
-    return Camera3D._(pointer);
+    if (pointer == nullptr) {
+      throw Exception('Failed to allocate memory for Camera3D');
+    }
+    _logger.info('Camera3D pointer allocated at ${pointer.address}');
+
+    final obj = Camera3D._(pointer);
+    obj.position = position ?? Vector3(0.0, 0.0, 0.0);
+    obj.target = target ?? Vector3(0.0, 0.0, 0.0);
+    obj.up = up ?? Vector3(0.0, 1.0, 0.0);
+    obj.fovy = fovy;
+    obj.projection = projection;
+
+    return obj;
   }
 
   Vector3 get position => ptr.ref.position.toDart();
@@ -104,7 +143,8 @@ class Camera3D {
   void dispose() {
     if (_disposed) return;
     _finalizer3D.detach(this); // 取消自动释放
-    ffi.malloc.free(ptr); // 立刻释放
+    _logger.info('Camera3D pointer freed at ${ptr.address}');
+    ffi.malloc.free(ptr);
     _disposed = true;
   }
 }

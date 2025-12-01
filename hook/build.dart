@@ -14,7 +14,7 @@ const hash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8 src/raylib (5.5)';
 const repoHash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8';
 const repoTag = '5.5';
 
-final Logger logger = Logger('raylib hook');
+final _logger = Logger('raylib hook');
 
 Future<void> main(List<String> args) async {
   Logger.root
@@ -59,9 +59,9 @@ Future<void> main(List<String> args) async {
       name: input.packageName,
       sourceDir: input.packageRoot.resolveUri(.file('src/raylib/')),
       defines: defines,
-      logger: logger,
+      logger: _logger,
     );
-    await builder.run(input: input, output: output, logger: logger);
+    await builder.run(input: input, output: output, logger: _logger);
 
     output.assets.code.add(
       CodeAsset(
@@ -89,10 +89,10 @@ Future<bool> isGitRepository(Uri root) =>
 
 Future<bool> fetch(Uri root) async {
   if (await isGitRepository(root)) {
-    logger.info('Git repository exists, fetching submodule');
+    _logger.info('Git repository exists, fetching submodule');
     return await fetchSubmodule(root);
   } else {
-    logger.info('Git repository not found, cloning raylib');
+    _logger.info('Git repository not found, cloning raylib');
     // return await clone(
     //   root.resolve("src/raylib"),
     //   'https://github.com/raysan5/raylib.git',
@@ -111,13 +111,13 @@ Future<bool> cloneByTag(Uri destDir, String url, String tag) async {
   if (!await dir.exists()) {
     await dir.create(recursive: true);
   } else if ((await dir.list().toList()).isNotEmpty) {
-    logger.info(
+    _logger.info(
       'Directory $destDir already exists with content, skipping clone',
     );
     return true;
   }
 
-  logger.info('Cloning $url to ${dir.path} with tag $tag');
+  _logger.info('Cloning $url to ${dir.path} with tag $tag');
   final result = await Process.run('git', [
     'clone',
     '--depth',
@@ -137,7 +137,7 @@ Future<bool> cloneByTag(Uri destDir, String url, String tag) async {
     );
   }
 
-  logger.info('Successfully cloned and checked out tag $tag');
+  _logger.info('Successfully cloned and checked out tag $tag');
   return true;
 }
 
@@ -146,13 +146,13 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
   if (!await dir.exists()) {
     await dir.create(recursive: true);
   } else if ((await dir.list().toList()).isNotEmpty) {
-    logger.info(
+    _logger.info(
       'Directory $destDir already exists with content, skipping clone',
     );
     return true;
   }
 
-  logger.info('Cloning $url to $destDir');
+  _logger.info('Cloning $url to $destDir');
   final result = await Process.run('git', ['clone', url, dir.path]);
 
   if (result.exitCode != 0) {
@@ -164,7 +164,7 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
     );
   }
 
-  logger.info('Checking out hash $repoHash');
+  _logger.info('Checking out hash $repoHash');
   final checkoutResult = await Process.run('git', [
     'checkout',
     repoHash,
@@ -179,21 +179,21 @@ Future<bool> clone(Uri destDir, String url, String repoHash) async {
     );
   }
 
-  logger.info('Successfully cloned and checked out hash $repoHash');
+  _logger.info('Successfully cloned and checked out hash $repoHash');
   return true;
 }
 
 Future<bool> fetchSubmodule(Uri repoUri) async {
   final path = Directory.fromUri(repoUri).path;
 
-  logger.info('Checking for submodule at $path');
+  _logger.info('Checking for submodule at $path');
 
   if (await submoduleExists(path)) {
-    logger.info('Submodule already exists at $path');
+    _logger.info('Submodule already exists at $path');
     return true;
   }
 
-  logger.info('Fetching submodule at $path');
+  _logger.info('Fetching submodule at $path');
   final result = await Process.run('git', [
     'submodule',
     'update',

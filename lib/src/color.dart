@@ -6,10 +6,9 @@ import 'package:meta/meta.dart';
 
 import 'raylib.g.dart' as raylib;
 
-final Finalizer<Pointer<raylib.Color>> _finalizer =
-    Finalizer<Pointer<raylib.Color>>((ptr) {
-      ffi.malloc.free(ptr);
-    });
+final _finalizer = Finalizer<Pointer<raylib.Color>>((ptr) {
+  ffi.malloc.free(ptr);
+});
 
 class Color {
   final Pointer<raylib.Color> ptr;
