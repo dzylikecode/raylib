@@ -65,7 +65,8 @@ IsKeyDown(KEY_RIGHT);
 ```
 
 ```dart
-IsKeyDown(.KEY_RIGHT);
+IsKeyDown(KEY_RIGHT); // Deprecated
+IsKeyDown(.right); // Recommended
 ```
 
 ### math
@@ -123,3 +124,23 @@ SetLoadFileDataCallback((filename) => File(filename).readSync());
 ### TODO
 
 - SetTraceLogCallback: 也许可以合并到 logging 中
+
+
+## 封装原则
+
+### 尽可能保持 C API
+  
+- 保持函数名不变
+- 保留原来的枚举和常量
+
+### 鼓励使用 Dart 的简洁特性
+
+例如枚举，推荐使用 dot-shorthands 来简化代码。保留原来的常量，标注上 Deprecated, 同时给出推荐使用的写法。
+
+```dart
+Color color = RED; // Deprecated
+Color color = .red; // Recommended
+
+KeyboardKey key = KEY_A; // Deprecated
+KeyboardKey key = .a; // Recommended
+```

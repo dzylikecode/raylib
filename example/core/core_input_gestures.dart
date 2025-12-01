@@ -43,8 +43,8 @@ int main() {
   int gesturesCount = 0;
   List<String> gestureStrings = .generate(MAX_GESTURE_STRINGS, (_) => "");
 
-  Gesture currentGesture = .GESTURE_NONE;
-  Gesture lastGesture = .GESTURE_NONE;
+  Gesture currentGesture = GESTURE_NONE;
+  Gesture lastGesture = GESTURE_NONE;
 
   //SetGesturesEnabled(0b0000000000001001);   // Enable only some gestures to be detected
 
@@ -61,38 +61,38 @@ int main() {
     touchPosition = GetTouchPosition(0);
 
     if (CheckCollisionPointRec(touchPosition, touchArea) &&
-        (currentGesture != .GESTURE_NONE)) {
+        (currentGesture != GESTURE_NONE)) {
       if (currentGesture != lastGesture) {
         // Store gesture string
         switch (currentGesture) {
-          case .GESTURE_TAP:
+          case GESTURE_TAP:
             gestureStrings[gesturesCount] = "GESTURE TAP";
             break;
-          case .GESTURE_DOUBLETAP:
+          case GESTURE_DOUBLETAP:
             gestureStrings[gesturesCount] = "GESTURE DOUBLETAP";
             break;
-          case .GESTURE_HOLD:
+          case GESTURE_HOLD:
             gestureStrings[gesturesCount] = "GESTURE HOLD";
             break;
-          case .GESTURE_DRAG:
+          case GESTURE_DRAG:
             gestureStrings[gesturesCount] = "GESTURE DRAG";
             break;
-          case .GESTURE_SWIPE_RIGHT:
+          case GESTURE_SWIPE_RIGHT:
             gestureStrings[gesturesCount] = "GESTURE SWIPE RIGHT";
             break;
-          case .GESTURE_SWIPE_LEFT:
+          case GESTURE_SWIPE_LEFT:
             gestureStrings[gesturesCount] = "GESTURE SWIPE LEFT";
             break;
-          case .GESTURE_SWIPE_UP:
+          case GESTURE_SWIPE_UP:
             gestureStrings[gesturesCount] = "GESTURE SWIPE UP";
             break;
-          case .GESTURE_SWIPE_DOWN:
+          case GESTURE_SWIPE_DOWN:
             gestureStrings[gesturesCount] = "GESTURE SWIPE DOWN";
             break;
-          case .GESTURE_PINCH_IN:
+          case GESTURE_PINCH_IN:
             gestureStrings[gesturesCount] = "GESTURE PINCH IN";
             break;
-          case .GESTURE_PINCH_OUT:
+          case GESTURE_PINCH_OUT:
             gestureStrings[gesturesCount] = "GESTURE PINCH OUT";
             break;
           default:
@@ -115,36 +115,35 @@ int main() {
     //----------------------------------------------------------------------------------
     BeginDrawing();
 
-    ClearBackground(.RAYWHITE);
+    ClearBackground(RAYWHITE);
 
-    DrawRectangleRec(touchArea, .GRAY);
-    DrawRectangle(225, 15, screenWidth - 240, screenHeight - 30, .RAYWHITE);
+    DrawRectangleRec(touchArea, GRAY);
+    DrawRectangle(225, 15, screenWidth - 240, screenHeight - 30, RAYWHITE);
 
     DrawText(
       "GESTURES TEST AREA",
       screenWidth - 270,
       screenHeight - 40,
       20,
-      Fade(.GRAY, 0.5),
+      Fade(GRAY, 0.5),
     );
 
     for (int i = 0; i < gesturesCount; i++) {
       if (i % 2 == 0)
-        DrawRectangle(10, 30 + 20 * i, 200, 20, Fade(.LIGHTGRAY, 0.5));
+        DrawRectangle(10, 30 + 20 * i, 200, 20, Fade(LIGHTGRAY, 0.5));
       else
-        DrawRectangle(10, 30 + 20 * i, 200, 20, Fade(.LIGHTGRAY, 0.3));
+        DrawRectangle(10, 30 + 20 * i, 200, 20, Fade(LIGHTGRAY, 0.3));
 
       if (i < gesturesCount - 1)
-        DrawText(gestureStrings[i], 35, 36 + 20 * i, 10, .DARKGRAY);
+        DrawText(gestureStrings[i], 35, 36 + 20 * i, 10, DARKGRAY);
       else
-        DrawText(gestureStrings[i], 35, 36 + 20 * i, 10, .MAROON);
+        DrawText(gestureStrings[i], 35, 36 + 20 * i, 10, MAROON);
     }
 
-    DrawRectangleLines(10, 29, 200, screenHeight - 50, .GRAY);
-    DrawText("DETECTED GESTURES", 50, 15, 10, .GRAY);
+    DrawRectangleLines(10, 29, 200, screenHeight - 50, GRAY);
+    DrawText("DETECTED GESTURES", 50, 15, 10, GRAY);
 
-    if (currentGesture != .GESTURE_NONE)
-      DrawCircleV(touchPosition, 30, .MAROON);
+    if (currentGesture != GESTURE_NONE) DrawCircleV(touchPosition, 30, MAROON);
 
     EndDrawing();
     //----------------------------------------------------------------------------------

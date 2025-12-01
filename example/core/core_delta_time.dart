@@ -68,7 +68,7 @@ int main() {
     if (frameCircle.x > screenWidth) frameCircle.x = 0;
 
     // Reset both circles positions
-    if (IsKeyPressed(.KEY_R)) {
+    if (IsKeyPressed(KEY_R)) {
       deltaCircle.x = 0;
       frameCircle.x = 0;
     }
@@ -77,36 +77,36 @@ int main() {
     // Draw
     //----------------------------------------------------------------------------------
     BeginDrawing();
-    ClearBackground(.RAYWHITE);
+    ClearBackground(RAYWHITE);
 
     // Draw both circles to the screen
-    DrawCircleV(deltaCircle, circleRadius, .RED);
-    DrawCircleV(frameCircle, circleRadius, .BLUE);
+    DrawCircleV(deltaCircle, circleRadius, RED);
+    DrawCircleV(frameCircle, circleRadius, BLUE);
 
     // Draw the help text
     // Determine what help text to show depending on the current FPS target
     String fpsText = currentFps <= 0
         ? "FPS: unlimited (${GetFPS()})"
         : "FPS: ${GetFPS()} (target: $currentFps)";
-    DrawText(fpsText, 10, 10, 20, .DARKGRAY);
+    DrawText(fpsText, 10, 10, 20, DARKGRAY);
     DrawText(
       "Frame time: ${GetFrameTime().toStringAsPrecision(2)} ms",
       10,
       30,
       20,
-      .DARKGRAY,
+      DARKGRAY,
     );
     DrawText(
       "Use the scroll wheel to change the fps limit, r to reset",
       10,
       50,
       20,
-      .DARKGRAY,
+      DARKGRAY,
     );
 
     // Draw the text above the circles
-    DrawText("FUNC: x += GetFrameTime()*speed", 10, 90, 20, .RED);
-    DrawText("FUNC: x += speed", 10, 240, 20, .BLUE);
+    DrawText("FUNC: x += GetFrameTime()*speed", 10, 90, 20, RED);
+    DrawText("FUNC: x += speed", 10, 240, 20, BLUE);
 
     EndDrawing();
     //----------------------------------------------------------------------------------

@@ -56,19 +56,19 @@ int main() {
     //----------------------------------------------------------------------------------
     BeginDrawing();
 
-    ClearBackground(.RAYWHITE);
+    ClearBackground(RAYWHITE);
 
     for (int i = 0; i < tCount; i++) {
       // Make sure point is not (0, 0) as this means there is no touch for it
       if ((touchPositions[i].x > 0) && (touchPositions[i].y > 0)) {
         // Draw circle and touch index number
-        DrawCircleV(touchPositions[i], 34, .ORANGE);
+        DrawCircleV(touchPositions[i], 34, ORANGE);
         DrawText(
           i.toString(),
           (touchPositions[i].x - 10).toInt(),
           (touchPositions[i].y - 70).toInt(),
           40,
-          .BLACK,
+          BLACK,
         );
       }
     }
@@ -78,7 +78,7 @@ int main() {
       10,
       10,
       20,
-      .DARKGRAY,
+      DARKGRAY,
     );
 
     EndDrawing();

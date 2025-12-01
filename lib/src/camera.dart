@@ -110,3 +110,6 @@ class Camera3D {
 }
 
 void BeginMode3D(Camera3D camera) => raylib.BeginMode3D(camera.ptr.ref);
+
+@Deprecated('Use Camera3D instead')
+typedef Camera = Camera3D;

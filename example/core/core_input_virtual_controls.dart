@@ -67,13 +67,13 @@ int main() {
   ];
 
   final buttonLabelColors = <Color>[
-    .YELLOW, // Up
-    .BLUE, // Left
-    .RED, // Right
-    .GREEN, // Down
+    YELLOW, // Up
+    BLUE, // Left
+    RED, // Right
+    GREEN, // Down
   ];
 
-  PadButton pressedButton = .BUTTON_NONE;
+  PadButton pressedButton = PadButton.BUTTON_NONE;
   Vector2 inputPosition = .zero();
 
   Vector2 playerPosition = Vector2(screenWidth / 2, screenHeight / 2);
@@ -93,19 +93,18 @@ int main() {
       inputPosition = GetMousePosition(); // Use mouse position
 
     // Reset pressed button to none
-    pressedButton = .BUTTON_NONE;
+    pressedButton = PadButton.BUTTON_NONE;
 
     // Make sure user is pressing left mouse button if they're from desktop
     if ((GetTouchPointCount() > 0) ||
-        ((GetTouchPointCount() == 0) &&
-            IsMouseButtonDown(.MOUSE_BUTTON_LEFT))) {
+        ((GetTouchPointCount() == 0) && IsMouseButtonDown(MOUSE_BUTTON_LEFT))) {
       // Find nearest D-Pad button to the input position
       for (int i = 0; i < BUTTON_MAX; i++) {
         double distX = (buttonPositions[i].x - inputPosition.x).abs();
         double distY = (buttonPositions[i].y - inputPosition.y).abs();
 
         if ((distX + distY < buttonRadius)) {
-          pressedButton = .fromValue(i);
+          pressedButton = PadButton.fromValue(i);
           break;
         }
       }
@@ -113,16 +112,16 @@ int main() {
 
     // Move player according to pressed button
     switch (pressedButton) {
-      case .BUTTON_UP:
+      case PadButton.BUTTON_UP:
         playerPosition.y -= playerSpeed * GetFrameTime();
         break;
-      case .BUTTON_LEFT:
+      case PadButton.BUTTON_LEFT:
         playerPosition.x -= playerSpeed * GetFrameTime();
         break;
-      case .BUTTON_RIGHT:
+      case PadButton.BUTTON_RIGHT:
         playerPosition.x += playerSpeed * GetFrameTime();
         break;
-      case .BUTTON_DOWN:
+      case PadButton.BUTTON_DOWN:
         playerPosition.y += playerSpeed * GetFrameTime();
         break;
       default:
@@ -134,17 +133,17 @@ int main() {
     //--------------------------------------------------------------------------
     BeginDrawing();
 
-    ClearBackground(.RAYWHITE);
+    ClearBackground(RAYWHITE);
 
     // Draw world
-    DrawCircleV(playerPosition, 50, .MAROON);
+    DrawCircleV(playerPosition, 50, MAROON);
 
     // Draw GUI
     for (int i = 0; i < BUTTON_MAX; i++) {
       DrawCircleV(
         buttonPositions[i],
         buttonRadius,
-        (i == pressedButton.value) ? .DARKGRAY : .BLACK,
+        (i == pressedButton.value) ? DARKGRAY : BLACK,
       );
 
       DrawText(
@@ -156,7 +155,7 @@ int main() {
       );
     }
 
-    DrawText("move the player with D-Pad buttons", 10, 10, 20, .DARKGRAY);
+    DrawText("move the player with D-Pad buttons", 10, 10, 20, DARKGRAY);
 
     EndDrawing();
     //--------------------------------------------------------------------------

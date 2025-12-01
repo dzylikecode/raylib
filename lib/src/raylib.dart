@@ -9,6 +9,7 @@ import 'color.dart';
 import 'rectangle.dart';
 import 'ffi_utils.dart';
 import 'camera.dart';
+import 'raylib_const.dart';
 
 /// Window-related functions
 final _titleStack = <Pointer<Char>>[];
@@ -23,12 +24,10 @@ void CloseWindow() {
   if (_titleStack.isNotEmpty) ffi.malloc.free(_titleStack.removeLast());
 }
 
-bool IsWindowState(raylib.ConfigFlags flags) =>
-    raylib.IsWindowState(flags.value);
-void SetWindowState(raylib.ConfigFlags flags) =>
-    raylib.SetWindowState(flags.value);
-void ClearWindowState(raylib.ConfigFlags flags) =>
-    raylib.SetWindowState(flags.value);
+bool IsWindowState(ConfigFlags flags) => raylib.IsWindowState(flags.value);
+void SetWindowState(ConfigFlags flags) => raylib.SetWindowState(flags.value);
+void ClearWindowState(ConfigFlags flags) =>
+    raylib.ClearWindowState(flags.value);
 
 void SetWindowTitle(String title) {
   if (_titleStack.isNotEmpty) {
@@ -159,8 +158,7 @@ void TakeScreenshot(String fileName) {
   }
 }
 
-void SetConfigFlags(raylib.ConfigFlags flags) =>
-    raylib.SetConfigFlags(flags.value);
+void SetConfigFlags(ConfigFlags flags) => raylib.SetConfigFlags(flags.value);
 
 void OpenURL(String url) {
   final urlPtr = url.toNativeUtf8().cast<Char>();
@@ -172,19 +170,19 @@ void OpenURL(String url) {
 }
 
 /// utils
-void SetTraceLogLevel(raylib.rlTraceLogLevel logLevel) =>
+void SetTraceLogLevel(RlTraceLogLevel logLevel) =>
     raylib.SetTraceLogLevel(logLevel.value);
 
 /// Input-related functions: keyboard
-bool IsKeyPressed(raylib.KeyboardKey key) => raylib.IsKeyPressed(key.value);
-bool IsKeyPressedRepeat(raylib.KeyboardKey key) =>
+bool IsKeyPressed(KeyboardKey key) => raylib.IsKeyPressed(key.value);
+bool IsKeyPressedRepeat(KeyboardKey key) =>
     raylib.IsKeyPressedRepeat(key.value);
-bool IsKeyDown(raylib.KeyboardKey key) => raylib.IsKeyDown(key.value);
-bool IsKeyReleased(raylib.KeyboardKey key) => raylib.IsKeyReleased(key.value);
-bool IsKeyUp(raylib.KeyboardKey key) => raylib.IsKeyUp(key.value);
-raylib.KeyboardKey GetKeyPressed() => .fromValue(raylib.GetKeyPressed());
-raylib.KeyboardKey GetCharPressed() => .fromValue(raylib.GetCharPressed());
-void SetExitKey(raylib.KeyboardKey key) => raylib.SetExitKey(key.value);
+bool IsKeyDown(KeyboardKey key) => raylib.IsKeyDown(key.value);
+bool IsKeyReleased(KeyboardKey key) => raylib.IsKeyReleased(key.value);
+bool IsKeyUp(KeyboardKey key) => raylib.IsKeyUp(key.value);
+KeyboardKey GetKeyPressed() => .fromValue(raylib.GetKeyPressed());
+KeyboardKey GetCharPressed() => .fromValue(raylib.GetCharPressed());
+void SetExitKey(KeyboardKey key) => raylib.SetExitKey(key.value);
 
 /// Input-related functions: gamepads
 String GetGamepadName(int gamepad) {
@@ -193,34 +191,33 @@ String GetGamepadName(int gamepad) {
   return name;
 }
 
-bool IsGamepadButtonPressed(int gamepad, raylib.GamepadButton button) =>
+bool IsGamepadButtonPressed(int gamepad, GamepadButton button) =>
     raylib.IsGamepadButtonPressed(gamepad, button.value);
-bool IsGamepadButtonDown(int gamepad, raylib.GamepadButton button) =>
+bool IsGamepadButtonDown(int gamepad, GamepadButton button) =>
     raylib.IsGamepadButtonDown(gamepad, button.value);
-bool IsGamepadButtonReleased(int gamepad, raylib.GamepadButton button) =>
+bool IsGamepadButtonReleased(int gamepad, GamepadButton button) =>
     raylib.IsGamepadButtonReleased(gamepad, button.value);
-bool IsGamepadButtonUp(int gamepad, raylib.GamepadButton button) =>
+bool IsGamepadButtonUp(int gamepad, GamepadButton button) =>
     raylib.IsGamepadButtonUp(gamepad, button.value);
-raylib.GamepadButton GetGamepadButtonPressed() =>
+GamepadButton GetGamepadButtonPressed() =>
     .fromValue(raylib.GetGamepadButtonPressed());
-double GetGamepadAxisMovement(int gamepad, raylib.GamepadAxis axis) =>
+double GetGamepadAxisMovement(int gamepad, GamepadAxis axis) =>
     raylib.GetGamepadAxisMovement(gamepad, axis.value);
 
 /// Input-related functions: mouse
-bool IsMouseButtonPressed(raylib.MouseButton button) =>
+bool IsMouseButtonPressed(MouseButton button) =>
     raylib.IsMouseButtonPressed(button.value);
-bool IsMouseButtonDown(raylib.MouseButton button) =>
+bool IsMouseButtonDown(MouseButton button) =>
     raylib.IsMouseButtonDown(button.value);
-bool IsMouseButtonReleased(raylib.MouseButton button) =>
+bool IsMouseButtonReleased(MouseButton button) =>
     raylib.IsMouseButtonReleased(button.value);
-bool IsMouseButtonUp(raylib.MouseButton button) =>
+bool IsMouseButtonUp(MouseButton button) =>
     raylib.IsMouseButtonUp(button.value);
 
 Vector2 GetMousePosition() => raylib.GetMousePosition().toDart();
 Vector2 GetMouseDelta() => raylib.GetMouseDelta().toDart();
 Vector2 GetMouseWheelMoveV() => raylib.GetMouseWheelMoveV().toDart();
-void SetMouseCursor(raylib.MouseCursor cursor) =>
-    raylib.SetMouseCursor(cursor.value);
+void SetMouseCursor(MouseCursor cursor) => raylib.SetMouseCursor(cursor.value);
 
 /// Input-related functions: touch
 Vector2 GetTouchPosition(int index) {
@@ -229,14 +226,14 @@ Vector2 GetTouchPosition(int index) {
 }
 
 /// Gestures and Touch Handling Functions
-bool IsGestureDetected(raylib.Gesture gesture) =>
+bool IsGestureDetected(Gesture gesture) =>
     raylib.IsGestureDetected(gesture.value);
-raylib.Gesture GetGestureDetected() => .fromValue(raylib.GetGestureDetected());
+Gesture GetGestureDetected() => .fromValue(raylib.GetGestureDetected());
 Vector2 GetGestureDragVector() => raylib.GetGestureDragVector().toDart();
 Vector2 GetGesturePinchVector() => raylib.GetGesturePinchVector().toDart();
 
 /// Camera System Functions
-void UpdateCamera(Camera3D camera, raylib.CameraMode mode) =>
+void UpdateCamera(Camera3D camera, CameraMode mode) =>
     raylib.UpdateCamera(camera.ptr, mode.value);
 void UpdateCameraPro(
   Camera3D camera,
