@@ -1,33 +1,29 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
 import 'raylib_const.g.dart' as consts;
 
-enum ConfigFlags {
-  vsyncHint(.FLAG_VSYNC_HINT),
-  fullscreenMode(.FLAG_FULLSCREEN_MODE),
-  windowResizable(.FLAG_WINDOW_RESIZABLE),
-  windowUndecorated(.FLAG_WINDOW_UNDECORATED),
-  windowHidden(.FLAG_WINDOW_HIDDEN),
-  windowMinimized(.FLAG_WINDOW_MINIMIZED),
-  windowMaximized(.FLAG_WINDOW_MAXIMIZED),
-  windowUnfocused(.FLAG_WINDOW_UNFOCUSED),
-  windowTopmost(.FLAG_WINDOW_TOPMOST),
-  windowAlwaysRun(.FLAG_WINDOW_ALWAYS_RUN),
-  windowTransparent(.FLAG_WINDOW_TRANSPARENT),
-  windowHighdpi(.FLAG_WINDOW_HIGHDPI),
-  windowMousePassthrough(.FLAG_WINDOW_MOUSE_PASSTHROUGH),
-  borderlessWindowedMode(.FLAG_BORDERLESS_WINDOWED_MODE),
-  msaa4xHint(.FLAG_MSAA_4X_HINT),
-  interlacedHint(.FLAG_INTERLACED_HINT);
+extension type const ConfigFlags(int value) {
+  ConfigFlags.fromCode(consts.ConfigFlags code) : value = code.value;
 
-  final consts.ConfigFlags code;
-  const ConfigFlags(this.code);
-  int get value => code.value;
+  static const vsyncHint = ConfigFlags(64);
+  static const fullscreenMode = ConfigFlags(2);
+  static const windowResizable = ConfigFlags(4);
+  static const windowUndecorated = ConfigFlags(8);
+  static const windowHidden = ConfigFlags(128);
+  static const windowMinimized = ConfigFlags(512);
+  static const windowMaximized = ConfigFlags(1024);
+  static const windowUnfocused = ConfigFlags(2048);
+  static const windowTopmost = ConfigFlags(4096);
+  static const windowAlwaysRun = ConfigFlags(256);
+  static const windowTransparent = ConfigFlags(16);
+  static const windowHighdpi = ConfigFlags(8192);
+  static const windowMousePassthrough = ConfigFlags(16384);
+  static const borderlessWindowedMode = ConfigFlags(32768);
+  static const msaa4xHint = ConfigFlags(32);
+  static const interlacedHint = ConfigFlags(65536);
 
-  static ConfigFlags fromValue(int value) => values.firstWhere(
-    (e) => e.value == value,
-    orElse: () => throw ArgumentError('Unknown ConfigFlags value: $value'),
-  );
+  ConfigFlags operator |(ConfigFlags other) => ConfigFlags(value | other.value);
+  ConfigFlags operator &(ConfigFlags other) => ConfigFlags(value & other.value);
 }
 
 @Deprecated('Use .vsyncHint instead')
@@ -96,6 +92,11 @@ enum TraceLogLevel {
     (e) => e.value == value,
     orElse: () => throw ArgumentError('Unknown TraceLogLevel value: $value'),
   );
+
+  bool operator <=(TraceLogLevel other) => value <= other.value;
+  bool operator >=(TraceLogLevel other) => value >= other.value;
+  bool operator <(TraceLogLevel other) => value < other.value;
+  bool operator >(TraceLogLevel other) => value > other.value;
 }
 
 @Deprecated('Use .all instead')
