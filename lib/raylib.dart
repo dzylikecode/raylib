@@ -1,4 +1,5 @@
 export 'src/raylib.dart';
+export 'src/raylib_const.dart';
 export 'src/raylib.g.dart'
     hide
         ///
