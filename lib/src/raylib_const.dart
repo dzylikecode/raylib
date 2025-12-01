@@ -3,8 +3,6 @@
 import 'raylib_const.g.dart' as consts;
 
 extension type const ConfigFlags(int value) {
-  ConfigFlags.fromCode(consts.ConfigFlags code) : value = code.value;
-
   static const vsyncHint = ConfigFlags(64);
   static const fullscreenMode = ConfigFlags(2);
   static const windowResizable = ConfigFlags(4);
