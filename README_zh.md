@@ -56,6 +56,10 @@ int main(void)
 int main()
 ```
 
+### 整除
+
+dart 用 `~/` 代替 C 的 `/` 进行整除
+
 ### 枚举
 
 用 dart 的 dot-shorthands

@@ -245,3 +245,4 @@ export 'package:vector_math/vector_math.dart';
 export 'src/rectangle.dart';
 export 'src/camera.dart';
 export 'src/callback.dart';
+export 'src/math.dart';
