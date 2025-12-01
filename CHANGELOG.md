@@ -33,3 +33,8 @@
 ## 0.0.9
 
 - fix: windows dll path
+
+## 0.0.10
+
+- fix: set dll path
+- export more api
