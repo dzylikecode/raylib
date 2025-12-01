@@ -66,3 +66,7 @@ class Rectangle {
   @override
   String toString() => 'x: $x, y: $y, width: $width, height: $height';
 }
+
+extension RectangleExt on raylib.Rectangle {
+  Rectangle toDart() => .new(x: x, y: y, width: width, height: height);
+}

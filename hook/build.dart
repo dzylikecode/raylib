@@ -30,8 +30,23 @@ Future<void> main(List<String> args) async {
       throw Exception('Failed to fetch raylib submodule.');
     }
 
-    // Prepare CMake defines based on target OS
-    final defines = {'BUILD_SHARED_LIBS': 'ON', 'BUILD_EXAMPLES': 'OFF'};
+    final dllPath = input.outputDirectory.toFilePath();
+    final defines = {
+      'BUILD_SHARED_LIBS': 'ON',
+      'BUILD_EXAMPLES': 'OFF',
+      // dll path
+      'CMAKE_RUNTIME_OUTPUT_DIRECTORY': dllPath,
+      'CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG': dllPath,
+      'CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE': dllPath,
+      'CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO': dllPath,
+      'CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL': dllPath,
+
+      'CMAKE_LIBRARY_OUTPUT_DIRECTORY': dllPath,
+      'CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG': dllPath,
+      'CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE': dllPath,
+      'CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO': dllPath,
+      'CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL': dllPath,
+    };
 
     // For Android, disable GLFW (not needed) and prevent X11 lookup
     if (input.config.code.targetOS.name == 'android') {
@@ -54,10 +69,10 @@ Future<void> main(List<String> args) async {
         name: 'src/raylib.g.dart',
         file: input.outputDirectory.resolve(
           switch (input.config.code.targetOS) {
-            .linux => 'raylib/libraylib.so',
-            .macOS => 'raylib/libraylib.dylib',
-            .windows => 'raylib/Release/raylib.dll',
-            .android => 'raylib/libraylib.so',
+            .linux => 'libraylib.so',
+            .macOS => 'libraylib.dylib',
+            .windows => 'raylib.dll',
+            .android => 'libraylib.so',
             _ => throw UnsupportedError(
               'Unsupported OS: ${input.config.code.targetOS}',
             ),

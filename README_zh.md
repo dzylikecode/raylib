@@ -68,3 +68,58 @@ IsKeyDown(KEY_RIGHT);
 IsKeyDown(.KEY_RIGHT);
 ```
 
+### math
+
+Vector2/Vector3/Matrix/Ray 等用 [vector_math](https://pub.dev/packages/vector_math)
+
+### image
+
+采用 [image](https://pub.dev/packages/image)
+
+### LoadRandomSequence/UnloadRandomSequence
+
+合并为 RandomSequence
+
+```c
+int* seq = LoadRandomSequence(count, min, max);
+UnloadRandomSequence(seq);
+```
+
+```dart
+final seq = RandomSequence(count, min, max);
+```
+
+### 全局回调
+
+- SetLoadFileDataCallback
+- SetSaveFileDataCallback
+- SetLoadFileTextCallback
+- SetSaveFileTextCallback
+
+以 SetLoadFileDataCallback 为例子
+
+```dart
+// 使用 raylib 的默认回调
+SetLoadFileDataCallback(); // SetLoadFileDataCallback(null);
+// dart 进行 hook
+SetLoadFileDataCallback((filename) => File(filename).readSync());
+```
+
+### 移除
+
+- TraceLog
+- MemAlloc
+- MemRealloc
+- MemFree
+- LoadFileData
+- UnloadFileData
+- SaveFileData
+- ExportDataAsCode
+- LoadFileText
+- UnloadFileText
+- SaveFileText
+- SetGamepadMappings
+
+### TODO
+
+- SetTraceLogCallback: 也许可以合并到 logging 中
