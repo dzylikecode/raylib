@@ -66,3 +66,59 @@ IsKeyDown(KEY_RIGHT);
 ```dart
 IsKeyDown(.KEY_RIGHT);
 ```
+
+### Math
+
+For Vector2, Vector3, Matrix, Ray, etc., use [vector_math](https://pub.dev/packages/vector_math).
+
+### Image
+
+Use the [image](https://pub.dev/packages/image) package.
+
+### LoadRandomSequence/UnloadRandomSequence
+
+Merged into a single `RandomSequence`:
+
+```c
+int* seq = LoadRandomSequence(count, min, max);
+UnloadRandomSequence(seq);
+```
+
+```dart
+final seq = RandomSequence(count, min, max);
+```
+
+### Global Callbacks
+
+- SetLoadFileDataCallback
+- SetSaveFileDataCallback
+- SetLoadFileTextCallback
+- SetSaveFileTextCallback
+
+Example using SetLoadFileDataCallback:
+
+```dart
+// Use raylib's default callback
+SetLoadFileDataCallback(); // or SetLoadFileDataCallback(null);
+// Hook with Dart
+SetLoadFileDataCallback((filename) => File(filename).readSync());
+```
+
+### Removed Functions
+
+- TraceLog
+- MemAlloc
+- MemRealloc
+- MemFree
+- LoadFileData
+- UnloadFileData
+- SaveFileData
+- ExportDataAsCode
+- LoadFileText
+- UnloadFileText
+- SaveFileText
+- SetGamepadMappings
+
+### TODO
+
+- SetTraceLogCallback: Could be merged into logging
