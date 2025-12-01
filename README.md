@@ -40,7 +40,7 @@ int main() {
 The first time you run the following command, it will compile raylib and generate dynamic libraries, which will take some time.
 
 ```bash
-dart run example/core_basic_window.dart
+dart run example/example.dart
 ```
 
 ## Migration from C
