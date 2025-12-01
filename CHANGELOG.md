@@ -47,3 +47,8 @@
 ## 0.0.12
 
 - pubignore: rm build & add example
+
+## 0.0.13
+
+- fix: Camera initialization
+- test: Camera finalizer
