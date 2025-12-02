@@ -9,10 +9,10 @@ import 'package:hooks/hooks.dart';
 import 'package:logging/logging.dart';
 import 'package:native_toolchain_cmake/native_toolchain_cmake.dart';
 
-const hash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8 src/raylib (5.5)';
+const _hash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8 src/raylib (5.5)';
 
-const repoHash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8';
-const repoTag = '5.5';
+const _repoHash = 'c1ab645ca298a2801097931d1079b10ff7eb9df8';
+const _repoTag = '5.5';
 
 final _logger = Logger('raylib hook');
 
@@ -101,7 +101,7 @@ Future<bool> fetch(Uri root) async {
     return await cloneByTag(
       root.resolve("src/raylib"),
       'https://github.com/raysan5/raylib.git',
-      repoTag,
+      _repoTag,
     );
   }
 }
@@ -231,5 +231,5 @@ Future<bool> submoduleExists(String path) async {
   final output = result.stdout.toString().trim();
   if (output.isEmpty) return false;
 
-  return output == hash;
+  return output == _hash;
 }
