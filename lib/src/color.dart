@@ -6,9 +6,7 @@ import 'package:meta/meta.dart';
 
 import 'raylib.g.dart' as raylib;
 
-final _finalizer = Finalizer<Pointer<raylib.Color>>((ptr) {
-  ffi.malloc.free(ptr);
-});
+final _finalizer = Finalizer<Pointer<raylib.Color>>(ffi.malloc.free);
 
 class Color {
   final Pointer<raylib.Color> ptr;
@@ -18,15 +16,12 @@ class Color {
     _finalizer.attach(this, ptr, detach: this);
   }
 
-  factory Color({int r = 0, int g = 0, int b = 0, int a = 255}) {
-    final ptr = ffi.malloc<raylib.Color>();
-    ptr.ref
-      ..r = r
-      ..g = g
-      ..b = b
-      ..a = a;
-    return Color._(ptr);
-  }
+  factory Color({int r = 0, int g = 0, int b = 0, int a = 255}) =>
+      Color._(ffi.malloc<raylib.Color>())
+        ..r = r
+        ..g = g
+        ..b = b
+        ..a = a;
   factory Color.fromRGBA(int r, int g, int b, int a) =>
       Color(r: r, g: g, b: b, a: a);
 
@@ -46,7 +41,7 @@ class Color {
   void dispose() {
     if (_disposed) return;
     _finalizer.detach(this); // 取消自动释放
-    ffi.malloc.free(ptr); // 立刻释放
+    ffi.malloc.free(ptr);
     _disposed = true;
   }
 

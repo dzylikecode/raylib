@@ -7,9 +7,7 @@ import 'package:meta/meta.dart';
 import 'raylib.g.dart' as raylib;
 
 final Finalizer<Pointer<raylib.Rectangle>> _finalizer =
-    Finalizer<Pointer<raylib.Rectangle>>((ptr) {
-      ffi.malloc.free(ptr);
-    });
+    Finalizer<Pointer<raylib.Rectangle>>(ffi.malloc.free);
 
 class Rectangle {
   final Pointer<raylib.Rectangle> ptr;
@@ -26,15 +24,11 @@ class Rectangle {
     double y = 0,
     double width = 0,
     double height = 0,
-  }) {
-    final pointer = ffi.malloc<raylib.Rectangle>();
-    pointer.ref
-      ..x = x
-      ..y = y
-      ..width = width
-      ..height = height;
-    return Rectangle._(pointer);
-  }
+  }) => Rectangle._(ffi.malloc<raylib.Rectangle>())
+    ..x = x
+    ..y = y
+    ..width = width
+    ..height = height;
 
   factory Rectangle.fromLTWH(
     double left,
