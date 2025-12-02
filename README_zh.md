@@ -1,39 +1,33 @@
 # raylib
 
-[raylib](https://github.com/raysan5/raylib) 对 dart 的 ffi 绑定. API 基本与 C 的一致。
+[raylib](https://github.com/raysan5/raylib) 对 dart 的 ffi 绑定. API 基本与 C 的一致。将 C 代码复制粘贴到 dart 中，稍微做一些改动即可运行。
 
 ## quick start
 
 ```dart
 import 'package:raylib_dart/raylib_dart.dart';
 
-int main() {
-  const int screenWidth = 800;
-  const int screenHeight = 450;
+int main()
+{
+    const int screenWidth = 800;
+    const int screenHeight = 450;
 
-  InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
-  SetTargetFPS(60); 
+    SetTargetFPS(60);              
+    while (!WindowShouldClose())    
+    {
+        BeginDrawing();
 
-  while (!WindowShouldClose()) {
+            ClearBackground(RAYWHITE);
 
-    BeginDrawing();
+            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
-    ClearBackground(RAYWHITE);
+        EndDrawing();
+    }
 
-    DrawText(
-      "Congrats! You created your first window!",
-      190,
-      200,
-      20,
-      LIGHTGRAY,
-    );
-
-    EndDrawing();
-  }
-
-  CloseWindow(); 
-  return 0;
+    CloseWindow();
+    return 0;
 }
 ```
 
@@ -93,6 +87,22 @@ UnloadRandomSequence(seq);
 ```dart
 final seq = RandomSequence(count, min, max);
 ```
+
+### 格式化输出
+
+```c
+TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps);
+```
+
+将变量用数组传入
+
+```dart
+TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps]);
+```
+
+### 字符串
+
+使用 String 类型而不是 char*
 
 ### 全局回调
 

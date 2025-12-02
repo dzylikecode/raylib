@@ -1,3 +1,4 @@
+// dart format off
 /*******************************************************************************************
 *
 *   raylib [core] example - input keys
@@ -18,48 +19,49 @@ import 'package:raylib_dart/raylib_dart.dart';
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main() {
-  // Initialization
-  //--------------------------------------------------------------------------------------
-  const int screenWidth = 800;
-  const int screenHeight = 450;
+int main()
+{
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 800;
+    const int screenHeight = 450;
 
-  InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
 
-  Vector2 ballPosition = Vector2(screenWidth / 2.0, screenHeight / 2.0);
+    Vector2 ballPosition = .new(screenWidth/2, screenHeight/2);
 
-  SetTargetFPS(60); // Set our game to run at 60 frames-per-second
-  //--------------------------------------------------------------------------------------
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
 
-  // Main game loop
-  while (!WindowShouldClose()) // Detect window close button or ESC key
-  {
-    // Update
-    //----------------------------------------------------------------------------------
-    if (IsKeyDown(KEY_RIGHT)) ballPosition.x += 2.0;
-    if (IsKeyDown(KEY_LEFT)) ballPosition.x -= 2.0;
-    if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0;
-    if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0;
-    //----------------------------------------------------------------------------------
+    // Main game loop
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+        // Update
+        //----------------------------------------------------------------------------------
+        if (IsKeyDown(KEY_RIGHT)) ballPosition.x += 2.0;
+        if (IsKeyDown(KEY_LEFT)) ballPosition.x -= 2.0;
+        if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0;
+        if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0;
+        //----------------------------------------------------------------------------------
 
-    // Draw
-    //----------------------------------------------------------------------------------
-    BeginDrawing();
+        // Draw
+        //----------------------------------------------------------------------------------
+        BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+            ClearBackground(RAYWHITE);
 
-    DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
+            DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
 
-    DrawCircleV(ballPosition, 50, MAROON);
+            DrawCircleV(ballPosition, 50, MAROON);
 
-    EndDrawing();
-    //----------------------------------------------------------------------------------
-  }
+        EndDrawing();
+        //----------------------------------------------------------------------------------
+    }
 
-  // De-Initialization
-  //--------------------------------------------------------------------------------------
-  CloseWindow(); // Close window and OpenGL context
-  //--------------------------------------------------------------------------------------
+    // De-Initialization
+    //--------------------------------------------------------------------------------------
+    CloseWindow();        // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
 
-  return 0;
+    return 0;
 }

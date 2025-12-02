@@ -929,10 +929,6 @@ raylib.Texture2D LoadTexture(String fileName) {
 void DrawTexture(raylib.Texture2D texture, int posX, int posY, Color tint) =>
     raylib.DrawTexture(texture, posX, posY, tint.ptr.ref);
 
-/// Text strings management functions
-String TextToLower(String text) => text.toLowerCase();
-int TextFindIndex(String text, String find) => text.indexOf(find);
-
 /// Text drawing functions
 void DrawText(String text, int posX, int posY, int fontSize, Color color) {
   final textPtr = text.toNativeUtf8().cast<Char>();

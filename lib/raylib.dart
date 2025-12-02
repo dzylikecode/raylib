@@ -235,6 +235,7 @@ export 'src/raylib.g.dart'
         /// Text strings management functions
         TextToLower,
         TextFindIndex,
+        TextFormat,
         /// Color/pixel related functions
         Fade,
         /// Text drawing functions
@@ -246,3 +247,5 @@ export 'src/rectangle.dart';
 export 'src/camera.dart';
 export 'src/callback.dart';
 export 'src/math.dart';
+export 'src/text.dart';
+export 'src/c.dart';
