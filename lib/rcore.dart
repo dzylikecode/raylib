@@ -224,7 +224,7 @@ final _titleStack = <Pointer<Char>>[];
 
 void InitWindow(int width, int height, String title) {
   _titleStack.add(title.toNativeUtf8().cast());
-  raylib.InitWindow(width, height, _titleStack.last);
+  return raylib.InitWindow(width, height, _titleStack.last);
 }
 
 void CloseWindow() {
@@ -232,90 +232,20 @@ void CloseWindow() {
   if (_titleStack.isNotEmpty) ffi.malloc.free(_titleStack.removeLast());
 }
 
-extension type const ConfigFlags(int value) {
-  static const vsyncHint = ConfigFlags(64);
-  static const fullscreenMode = ConfigFlags(2);
-  static const windowResizable = ConfigFlags(4);
-  static const windowUndecorated = ConfigFlags(8);
-  static const windowHidden = ConfigFlags(128);
-  static const windowMinimized = ConfigFlags(512);
-  static const windowMaximized = ConfigFlags(1024);
-  static const windowUnfocused = ConfigFlags(2048);
-  static const windowTopmost = ConfigFlags(4096);
-  static const windowAlwaysRun = ConfigFlags(256);
-  static const windowTransparent = ConfigFlags(16);
-  static const windowHighdpi = ConfigFlags(8192);
-  static const windowMousePassthrough = ConfigFlags(16384);
-  static const borderlessWindowedMode = ConfigFlags(32768);
-  static const msaa4xHint = ConfigFlags(32);
-  static const interlacedHint = ConfigFlags(65536);
-
-  ConfigFlags operator |(ConfigFlags other) => ConfigFlags(value | other.value);
-  ConfigFlags operator &(ConfigFlags other) => ConfigFlags(value & other.value);
-}
-
-@Deprecated('Use .vsyncHint instead')
-const ConfigFlags FLAG_VSYNC_HINT = .vsyncHint;
-
-@Deprecated('Use .fullscreenMode instead')
-const ConfigFlags FLAG_FULLSCREEN_MODE = .fullscreenMode;
-
-@Deprecated('Use .windowResizable instead')
-const ConfigFlags FLAG_WINDOW_RESIZABLE = .windowResizable;
-
-@Deprecated('Use .windowUndecorated instead')
-const ConfigFlags FLAG_WINDOW_UNDECORATED = .windowUndecorated;
-
-@Deprecated('Use .windowHidden instead')
-const ConfigFlags FLAG_WINDOW_HIDDEN = .windowHidden;
-
-@Deprecated('Use .windowMinimized instead')
-const ConfigFlags FLAG_WINDOW_MINIMIZED = .windowMinimized;
-
-@Deprecated('Use .windowMaximized instead')
-const ConfigFlags FLAG_WINDOW_MAXIMIZED = .windowMaximized;
-
-@Deprecated('Use .windowUnfocused instead')
-const ConfigFlags FLAG_WINDOW_UNFOCUSED = .windowUnfocused;
-
-@Deprecated('Use .windowTopmost instead')
-const ConfigFlags FLAG_WINDOW_TOPMOST = .windowTopmost;
-
-@Deprecated('Use .windowAlwaysRun instead')
-const ConfigFlags FLAG_WINDOW_ALWAYS_RUN = .windowAlwaysRun;
-
-@Deprecated('Use .windowTransparent instead')
-const ConfigFlags FLAG_WINDOW_TRANSPARENT = .windowTransparent;
-
-@Deprecated('Use .windowHighdpi instead')
-const ConfigFlags FLAG_WINDOW_HIGHDPI = .windowHighdpi;
-
-@Deprecated('Use .windowMousePassthrough instead')
-const ConfigFlags FLAG_WINDOW_MOUSE_PASSTHROUGH = .windowMousePassthrough;
-
-@Deprecated('Use .borderlessWindowedMode instead')
-const ConfigFlags FLAG_BORDERLESS_WINDOWED_MODE = .borderlessWindowedMode;
-
-@Deprecated('Use .msaa4xHint instead')
-const ConfigFlags FLAG_MSAA_4X_HINT = .msaa4xHint;
-
-@Deprecated('Use .interlacedHint instead')
-const ConfigFlags FLAG_INTERLACED_HINT = .interlacedHint;
-
-bool IsWindowState(ConfigFlags flags) => raylib.IsWindowState(flags.value);
-void SetWindowState(ConfigFlags flags) => raylib.SetWindowState(flags.value);
-void ClearWindowState(ConfigFlags flags) =>
+bool IsWindowState(consts.ConfigFlags flags) =>
+    raylib.IsWindowState(flags.value);
+void SetWindowState(consts.ConfigFlags flags) =>
+    raylib.SetWindowState(flags.value);
+void ClearWindowState(consts.ConfigFlags flags) =>
     raylib.ClearWindowState(flags.value);
 
-void SetWindowIcon(img.Image image) {
-  ffi.using((arena) {
-    raylib.SetWindowIcon(arena.image(image).ref);
-  });
-}
+void SetWindowIcon(img.Image image) => ffi.using((arena) {
+  return raylib.SetWindowIcon(arena.image(image).ref);
+});
 
 void SetWindowIcons(List<img.Image> images, [int? count]) {
   count ??= images.length;
-  ffi.using((arena) {
+  return ffi.using((arena) {
     final imageArray = arena<raylib.Image>(count!);
     for (var i = 0; i < count; i++) {
       final imgPtr = arena.image(images[i]);
@@ -326,7 +256,7 @@ void SetWindowIcons(List<img.Image> images, [int? count]) {
         ..mipmaps = imgPtr.ref.mipmaps
         ..format = imgPtr.ref.format;
     }
-    raylib.SetWindowIcons(imageArray, count);
+    return raylib.SetWindowIcons(imageArray, count);
   });
 }
 
@@ -335,7 +265,7 @@ void SetWindowTitle(String title) {
     ffi.malloc.free(_titleStack.removeLast());
   }
   _titleStack.add(title.toNativeUtf8().cast());
-  raylib.SetWindowTitle(_titleStack.last);
+  return raylib.SetWindowTitle(_titleStack.last);
 }
 
 Vector2 GetMonitorPosition(int monitor) =>
@@ -347,7 +277,7 @@ String GetMonitorName(int monitor) =>
 void SetClipboardText(String text) {
   final textPtr = text.toNativeUtf8().cast<Char>();
   try {
-    raylib.SetClipboardText(textPtr);
+    return raylib.SetClipboardText(textPtr);
   } finally {
     ffi.malloc.free(textPtr);
   }
