@@ -300,14 +300,17 @@ extension RaylibRenderTextureToDart on raylib.RenderTexture {
 /// Holds a stable native pointer so the raylib-managed [locs] array can be
 /// read/written without copying.
 ///
-/// The [dispose] method frees only the wrapper struct allocated by this class.
-/// Call [UnloadShader] first to release the GPU program and the [locs] array.
+/// Call [UnloadShader] (or [dispose]) to release GPU resources.
+/// Must be called before the OpenGL context is destroyed.
 class Shader {
   final Pointer<raylib.Shader> ptr;
   bool _disposed = false;
 
   static final _finalizer = Finalizer<Pointer<raylib.Shader>>(_free);
-  static void _free(Pointer<raylib.Shader> ptr) => ffi.malloc.free(ptr);
+  static void _free(Pointer<raylib.Shader> ptr) {
+    raylib.UnloadShader(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
 
   Shader._(this.ptr) {
     _finalizer.attach(this, ptr, detach: this);
