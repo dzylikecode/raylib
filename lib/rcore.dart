@@ -1,13 +1,13 @@
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
-import 'package:raylib_dart/src/ffi_utils.dart';
+import 'structs.dart';
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'src/raylib_const.g.dart' as consts;
-import 'package:image/image.dart';
+import 'package:image/image.dart' as img;
 import 'package:vector_math/vector_math.dart';
 
 // export 'src/raylib.g.dart' show InitWindow;
@@ -307,14 +307,27 @@ void SetWindowState(ConfigFlags flags) => raylib.SetWindowState(flags.value);
 void ClearWindowState(ConfigFlags flags) =>
     raylib.ClearWindowState(flags.value);
 
-void SetWindowIcon(Image image) {
-  raylib.SetWindowIcon(image.toRaylib());
+void SetWindowIcon(img.Image image) {
+  ffi.using((arena) {
+    raylib.SetWindowIcon(arena.image(image).ref);
+  });
 }
 
-void SetWindowIcons(List<Image> images, [int? count]) {
+void SetWindowIcons(List<img.Image> images, [int? count]) {
   count ??= images.length;
-  final raylibImages = images.map((e) => e.toRaylib()).toList();
-  raylib.SetWindowIcons(raylibImages.first, count);
+  ffi.using((arena) {
+    final imageArray = arena<raylib.Image>(count!);
+    for (var i = 0; i < count; i++) {
+      final imgPtr = arena.image(images[i]);
+      (imageArray + i).ref
+        ..data = imgPtr.ref.data
+        ..width = imgPtr.ref.width
+        ..height = imgPtr.ref.height
+        ..mipmaps = imgPtr.ref.mipmaps
+        ..format = imgPtr.ref.format;
+    }
+    raylib.SetWindowIcons(imageArray, count);
+  });
 }
 
 void SetWindowTitle(String title) {

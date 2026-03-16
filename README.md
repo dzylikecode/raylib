@@ -43,6 +43,8 @@ dart run example/example.dart
 
 按照 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 告诉 AI 依次导出相应的文件，然后我不过是对一些函数进行代理，使得 API 更加 Dart 风格。
 
+可以的，然后你阅读一下 raymath.dart, 对应的接口在 md 中。我想要的是提供一个raylib的接口，但是用的是dart实现的。范式是这样的，以 clamp 为例子，先注释掉 export 'src/raylib.g.dart' show Clamp;，然后提供一个新的实现，double Clamp(double value, double min, double max) => value.clamp(min, max);，并且添加上 @Deprecated('Use value.clamp(min, max) instead') 注解，提示用户使用 Dart 的内置方法来替代 raylib 的函数。你来完成剩下的工作
+
 
 ```dart
 void SetWindowIcons(List<Image> images, [int? count])
