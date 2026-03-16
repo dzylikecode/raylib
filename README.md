@@ -41,8 +41,13 @@ dart run example/example.dart
 
 ## 架构
 
-按照 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 告诉 AI 依次导出相应的文件，然后我不过是对一些函数进行代理。
+按照 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 告诉 AI 依次导出相应的文件，然后我不过是对一些函数进行代理，使得 API 更加 Dart 风格。
 
+
+```dart
+void SetWindowIcons(List<Image> images, [int? count])
+```
+> 兼容 C 的 API，同时提供更 Dart 风格的 API， 可以不传递 count 参数
 
 ## 从 C 迁移
 

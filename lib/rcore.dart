@@ -1,8 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
+
+import 'package:raylib_dart/src/ffi_utils.dart';
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
+import 'src/raylib_const.g.dart' as consts;
+import 'package:image/image.dart';
+import 'package:vector_math/vector_math.dart';
 
 // export 'src/raylib.g.dart' show InitWindow;
 // export 'src/raylib.g.dart' show CloseWindow;
@@ -14,17 +20,17 @@ export 'src/raylib.g.dart' show IsWindowMinimized;
 export 'src/raylib.g.dart' show IsWindowMaximized;
 export 'src/raylib.g.dart' show IsWindowFocused;
 export 'src/raylib.g.dart' show IsWindowResized;
-export 'src/raylib.g.dart' show IsWindowState;
-export 'src/raylib.g.dart' show SetWindowState;
-export 'src/raylib.g.dart' show ClearWindowState;
+// export 'src/raylib.g.dart' show IsWindowState;
+// export 'src/raylib.g.dart' show SetWindowState;
+// export 'src/raylib.g.dart' show ClearWindowState;
 export 'src/raylib.g.dart' show ToggleFullscreen;
 export 'src/raylib.g.dart' show ToggleBorderlessWindowed;
 export 'src/raylib.g.dart' show MaximizeWindow;
 export 'src/raylib.g.dart' show MinimizeWindow;
 export 'src/raylib.g.dart' show RestoreWindow;
-export 'src/raylib.g.dart' show SetWindowIcon;
-export 'src/raylib.g.dart' show SetWindowIcons;
-export 'src/raylib.g.dart' show SetWindowTitle;
+// export 'src/raylib.g.dart' show SetWindowIcon;
+// export 'src/raylib.g.dart' show SetWindowIcons;
+// export 'src/raylib.g.dart' show SetWindowTitle;
 export 'src/raylib.g.dart' show SetWindowPosition;
 export 'src/raylib.g.dart' show SetWindowMonitor;
 export 'src/raylib.g.dart' show SetWindowMinSize;
@@ -39,7 +45,7 @@ export 'src/raylib.g.dart' show GetRenderWidth;
 export 'src/raylib.g.dart' show GetRenderHeight;
 export 'src/raylib.g.dart' show GetMonitorCount;
 export 'src/raylib.g.dart' show GetCurrentMonitor;
-export 'src/raylib.g.dart' show GetMonitorPosition;
+// export 'src/raylib.g.dart' show GetMonitorPosition;
 export 'src/raylib.g.dart' show GetMonitorWidth;
 export 'src/raylib.g.dart' show GetMonitorHeight;
 export 'src/raylib.g.dart' show GetMonitorPhysicalWidth;
@@ -47,9 +53,9 @@ export 'src/raylib.g.dart' show GetMonitorPhysicalHeight;
 export 'src/raylib.g.dart' show GetMonitorRefreshRate;
 export 'src/raylib.g.dart' show GetWindowPosition;
 export 'src/raylib.g.dart' show GetWindowScaleDPI;
-export 'src/raylib.g.dart' show GetMonitorName;
-export 'src/raylib.g.dart' show SetClipboardText;
-export 'src/raylib.g.dart' show GetClipboardText;
+// export 'src/raylib.g.dart' show GetMonitorName;
+// export 'src/raylib.g.dart' show SetClipboardText;
+// export 'src/raylib.g.dart' show GetClipboardText;
 export 'src/raylib.g.dart' show GetClipboardImage;
 export 'src/raylib.g.dart' show EnableEventWaiting;
 export 'src/raylib.g.dart' show DisableEventWaiting;
@@ -225,3 +231,114 @@ void CloseWindow() {
   raylib.CloseWindow();
   if (_titleStack.isNotEmpty) ffi.malloc.free(_titleStack.removeLast());
 }
+
+extension type const ConfigFlags(int value) {
+  static const vsyncHint = ConfigFlags(64);
+  static const fullscreenMode = ConfigFlags(2);
+  static const windowResizable = ConfigFlags(4);
+  static const windowUndecorated = ConfigFlags(8);
+  static const windowHidden = ConfigFlags(128);
+  static const windowMinimized = ConfigFlags(512);
+  static const windowMaximized = ConfigFlags(1024);
+  static const windowUnfocused = ConfigFlags(2048);
+  static const windowTopmost = ConfigFlags(4096);
+  static const windowAlwaysRun = ConfigFlags(256);
+  static const windowTransparent = ConfigFlags(16);
+  static const windowHighdpi = ConfigFlags(8192);
+  static const windowMousePassthrough = ConfigFlags(16384);
+  static const borderlessWindowedMode = ConfigFlags(32768);
+  static const msaa4xHint = ConfigFlags(32);
+  static const interlacedHint = ConfigFlags(65536);
+
+  ConfigFlags operator |(ConfigFlags other) => ConfigFlags(value | other.value);
+  ConfigFlags operator &(ConfigFlags other) => ConfigFlags(value & other.value);
+}
+
+@Deprecated('Use .vsyncHint instead')
+const ConfigFlags FLAG_VSYNC_HINT = .vsyncHint;
+
+@Deprecated('Use .fullscreenMode instead')
+const ConfigFlags FLAG_FULLSCREEN_MODE = .fullscreenMode;
+
+@Deprecated('Use .windowResizable instead')
+const ConfigFlags FLAG_WINDOW_RESIZABLE = .windowResizable;
+
+@Deprecated('Use .windowUndecorated instead')
+const ConfigFlags FLAG_WINDOW_UNDECORATED = .windowUndecorated;
+
+@Deprecated('Use .windowHidden instead')
+const ConfigFlags FLAG_WINDOW_HIDDEN = .windowHidden;
+
+@Deprecated('Use .windowMinimized instead')
+const ConfigFlags FLAG_WINDOW_MINIMIZED = .windowMinimized;
+
+@Deprecated('Use .windowMaximized instead')
+const ConfigFlags FLAG_WINDOW_MAXIMIZED = .windowMaximized;
+
+@Deprecated('Use .windowUnfocused instead')
+const ConfigFlags FLAG_WINDOW_UNFOCUSED = .windowUnfocused;
+
+@Deprecated('Use .windowTopmost instead')
+const ConfigFlags FLAG_WINDOW_TOPMOST = .windowTopmost;
+
+@Deprecated('Use .windowAlwaysRun instead')
+const ConfigFlags FLAG_WINDOW_ALWAYS_RUN = .windowAlwaysRun;
+
+@Deprecated('Use .windowTransparent instead')
+const ConfigFlags FLAG_WINDOW_TRANSPARENT = .windowTransparent;
+
+@Deprecated('Use .windowHighdpi instead')
+const ConfigFlags FLAG_WINDOW_HIGHDPI = .windowHighdpi;
+
+@Deprecated('Use .windowMousePassthrough instead')
+const ConfigFlags FLAG_WINDOW_MOUSE_PASSTHROUGH = .windowMousePassthrough;
+
+@Deprecated('Use .borderlessWindowedMode instead')
+const ConfigFlags FLAG_BORDERLESS_WINDOWED_MODE = .borderlessWindowedMode;
+
+@Deprecated('Use .msaa4xHint instead')
+const ConfigFlags FLAG_MSAA_4X_HINT = .msaa4xHint;
+
+@Deprecated('Use .interlacedHint instead')
+const ConfigFlags FLAG_INTERLACED_HINT = .interlacedHint;
+
+bool IsWindowState(ConfigFlags flags) => raylib.IsWindowState(flags.value);
+void SetWindowState(ConfigFlags flags) => raylib.SetWindowState(flags.value);
+void ClearWindowState(ConfigFlags flags) =>
+    raylib.ClearWindowState(flags.value);
+
+void SetWindowIcon(Image image) {
+  raylib.SetWindowIcon(image.toRaylib());
+}
+
+void SetWindowIcons(List<Image> images, [int? count]) {
+  count ??= images.length;
+  final raylibImages = images.map((e) => e.toRaylib()).toList();
+  raylib.SetWindowIcons(raylibImages.first, count);
+}
+
+void SetWindowTitle(String title) {
+  if (_titleStack.isNotEmpty) {
+    ffi.malloc.free(_titleStack.removeLast());
+  }
+  _titleStack.add(title.toNativeUtf8().cast());
+  raylib.SetWindowTitle(_titleStack.last);
+}
+
+Vector2 GetMonitorPosition(int monitor) =>
+    raylib.GetMonitorPosition(monitor).toDart();
+
+String GetMonitorName(int monitor) =>
+    raylib.GetMonitorName(monitor).cast<ffi.Utf8>().toDartString();
+
+void SetClipboardText(String text) {
+  final textPtr = text.toNativeUtf8().cast<Char>();
+  try {
+    raylib.SetClipboardText(textPtr);
+  } finally {
+    ffi.malloc.free(textPtr);
+  }
+}
+
+String GetClipboardText() =>
+    raylib.GetClipboardText().cast<ffi.Utf8>().toDartString();
