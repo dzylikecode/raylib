@@ -39,11 +39,45 @@ int main()
 dart run example/example.dart
 ```
 
-## 架构
+## 渔法
 
-按照 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 告诉 AI 依次导出相应的文件，然后我不过是对一些函数进行代理，使得 API 更加 Dart 风格。
+> "授人以渔". 不仅是人，还包括 AI.
 
+根据 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 导出 C API 到 docs/ 目录下， 分别为 rcore
 
+定义响应的文件 rcore.dart ... 以 rcore 为例子
+
+先 export 所有的 api. eg
+
+```dart
+export 'src/raylib.g.dart' show InitWindow;
+export 'src/raylib.g.dart' show CloseWindow;
+// ...
+export 'src/raylib.g.dart' show UpdateCameraPro;
+```
+
+然后依次找一些不太 Dart 风格的 API，进行改造。
+
+首先注释掉原来的 API，然后在后面实现一个更 Dart 风格的 API
+
+```dart
+// export 'src/raylib.g.dart' show InitWindow;
+export 'src/raylib.g.dart' show CloseWindow;
+// ...
+export 'src/raylib.g.dart' show UpdateCameraPro;
+
+void InitWindow(int width, int height, String title) {
+  // ...
+}
+```
+
+### char 类型
+
+用 dart 的 String
+
+### list
+
+用 List 来代替 C 的数组，同时这样可以避免传递 count 参数
 
 ```dart
 void SetWindowIcons(List<Image> images, [int? count])
@@ -51,10 +85,38 @@ void SetWindowIcons(List<Image> images, [int? count])
 > 兼容 C 的 API，同时提供更 Dart 风格的 API， 可以不传递 count 参数
 
 
-RenderTexture2D 这个是存在 GPU 里面的，所以是一个 id，因此就是 dart —> C 的 id 描述，并不需要拷贝数据
+### enum 或者 宏
 
+用 enum 来代替 C 的宏或者 enum，这样有更好的语义化，可以简短的写法（dot shorthands）
 
-用 enum 更好的语义化，而不是用 int 来表示一些状态
+```dart
+enum KeyboardKey {
+  a(.KEY_A),
+}
+
+@Deprecated('Use .a instead')
+const KeyboardKey KEY_A = .a;
+```
+
+1. 定义新的 enum，值为原来 C API 的值
+2. 定义一个 Deprecated 的常量，值为新的 enum 的值，兼容原来的 C API，同时推荐使用新的 enum
+
+### 纯数据对象
+
+比如 Vector2/Vector3 这些。函数只是读一下数据，并不修改数据，因此直接采用 dart 与 c 互相复制数据的方式来实现
+
+RenderTexture2D 这个是存在 GPU 里面的，它是一个透明指针，所以也是 dart 与 c 互相复制数据的方式来实现
+
+LoadRandomSequence 它返回的也是纯的数据，因此也是 dart 与 c 互相复制数据的方式来实现。并且提供一个什么也不做的 UnloadRandomSequence 来兼容 C API
+
+### 副作用数据
+
+比如 Camera2D 它会被 BeginMode2D 所依赖，因此它采用 wrapper 的方式来实现，里面持有一个指向 C 结构体的指针，自动释放的时候，调用 Unload 之类的函数。然后在给用户的 Unload API 调用的是 dispose 函数
+
+Unload(用户) -> dispose -> Unload(底层 C API)
+
+提供自动释放的功能，用户可以不调用 Unload 就能正确释放资源
+
 
 ## 从 C 迁移
 

@@ -1,66 +1,84 @@
+// ignore_for_file: non_constant_identifier_names
+//
+// 本文件封装 raylib 音频模块。
+//
+// 尚未代理（需要先实现对应的 struct 包装）：
+//   Wave, Sound, Music, AudioStream — 音频数据/句柄结构体
+//   SetAudioStreamCallback, Attach/DetachAudioStreamProcessor,
+//   Attach/DetachAudioMixedProcessor — AudioCallback 需要 NativeCallable 桥接
+
+// ── Device ─────────────────────────────────────────────────────────────
 export 'src/raylib.g.dart' show InitAudioDevice;
 export 'src/raylib.g.dart' show CloseAudioDevice;
 export 'src/raylib.g.dart' show IsAudioDeviceReady;
 export 'src/raylib.g.dart' show SetMasterVolume;
 export 'src/raylib.g.dart' show GetMasterVolume;
-export 'src/raylib.g.dart' show LoadWave;
-export 'src/raylib.g.dart' show LoadWaveFromMemory;
-export 'src/raylib.g.dart' show IsWaveValid;
-export 'src/raylib.g.dart' show LoadSound;
-export 'src/raylib.g.dart' show LoadSoundFromWave;
-export 'src/raylib.g.dart' show LoadSoundAlias;
-export 'src/raylib.g.dart' show IsSoundValid;
-export 'src/raylib.g.dart' show UpdateSound;
-export 'src/raylib.g.dart' show UnloadWave;
-export 'src/raylib.g.dart' show UnloadSound;
-export 'src/raylib.g.dart' show UnloadSoundAlias;
-export 'src/raylib.g.dart' show ExportWave;
-export 'src/raylib.g.dart' show ExportWaveAsCode;
-export 'src/raylib.g.dart' show PlaySound;
-export 'src/raylib.g.dart' show StopSound;
-export 'src/raylib.g.dart' show PauseSound;
-export 'src/raylib.g.dart' show ResumeSound;
-export 'src/raylib.g.dart' show IsSoundPlaying;
-export 'src/raylib.g.dart' show SetSoundVolume;
-export 'src/raylib.g.dart' show SetSoundPitch;
-export 'src/raylib.g.dart' show SetSoundPan;
-export 'src/raylib.g.dart' show WaveCopy;
-export 'src/raylib.g.dart' show WaveCrop;
-export 'src/raylib.g.dart' show WaveFormat;
-export 'src/raylib.g.dart' show LoadWaveSamples;
-export 'src/raylib.g.dart' show UnloadWaveSamples;
-export 'src/raylib.g.dart' show LoadMusicStream;
-export 'src/raylib.g.dart' show LoadMusicStreamFromMemory;
-export 'src/raylib.g.dart' show IsMusicValid;
-export 'src/raylib.g.dart' show UnloadMusicStream;
-export 'src/raylib.g.dart' show PlayMusicStream;
-export 'src/raylib.g.dart' show IsMusicStreamPlaying;
-export 'src/raylib.g.dart' show UpdateMusicStream;
-export 'src/raylib.g.dart' show StopMusicStream;
-export 'src/raylib.g.dart' show PauseMusicStream;
-export 'src/raylib.g.dart' show ResumeMusicStream;
-export 'src/raylib.g.dart' show SeekMusicStream;
-export 'src/raylib.g.dart' show SetMusicVolume;
-export 'src/raylib.g.dart' show SetMusicPitch;
-export 'src/raylib.g.dart' show SetMusicPan;
-export 'src/raylib.g.dart' show GetMusicTimeLength;
-export 'src/raylib.g.dart' show GetMusicTimePlayed;
-export 'src/raylib.g.dart' show LoadAudioStream;
-export 'src/raylib.g.dart' show IsAudioStreamValid;
-export 'src/raylib.g.dart' show UnloadAudioStream;
-export 'src/raylib.g.dart' show UpdateAudioStream;
-export 'src/raylib.g.dart' show IsAudioStreamProcessed;
-export 'src/raylib.g.dart' show PlayAudioStream;
-export 'src/raylib.g.dart' show PauseAudioStream;
-export 'src/raylib.g.dart' show ResumeAudioStream;
-export 'src/raylib.g.dart' show IsAudioStreamPlaying;
-export 'src/raylib.g.dart' show StopAudioStream;
-export 'src/raylib.g.dart' show SetAudioStreamVolume;
-export 'src/raylib.g.dart' show SetAudioStreamPitch;
-export 'src/raylib.g.dart' show SetAudioStreamPan;
+
+// ── Wave ───────────────────────────────────────────────────────────────
+// export 'src/raylib.g.dart' show LoadWave;
+// export 'src/raylib.g.dart' show LoadWaveFromMemory;
+// export 'src/raylib.g.dart' show IsWaveValid;
+// export 'src/raylib.g.dart' show WaveCopy;
+// export 'src/raylib.g.dart' show WaveCrop;
+// export 'src/raylib.g.dart' show WaveFormat;
+// export 'src/raylib.g.dart' show LoadWaveSamples;
+// export 'src/raylib.g.dart' show UnloadWaveSamples;
+// export 'src/raylib.g.dart' show UnloadWave;
+// export 'src/raylib.g.dart' show ExportWave;
+// export 'src/raylib.g.dart' show ExportWaveAsCode;
+
+// ── Sound ──────────────────────────────────────────────────────────────
+// export 'src/raylib.g.dart' show LoadSound;
+// export 'src/raylib.g.dart' show LoadSoundFromWave;
+// export 'src/raylib.g.dart' show LoadSoundAlias;
+// export 'src/raylib.g.dart' show IsSoundValid;
+// export 'src/raylib.g.dart' show UpdateSound;
+// export 'src/raylib.g.dart' show UnloadSound;
+// export 'src/raylib.g.dart' show UnloadSoundAlias;
+// export 'src/raylib.g.dart' show PlaySound;
+// export 'src/raylib.g.dart' show StopSound;
+// export 'src/raylib.g.dart' show PauseSound;
+// export 'src/raylib.g.dart' show ResumeSound;
+// export 'src/raylib.g.dart' show IsSoundPlaying;
+// export 'src/raylib.g.dart' show SetSoundVolume;
+// export 'src/raylib.g.dart' show SetSoundPitch;
+// export 'src/raylib.g.dart' show SetSoundPan;
+
+// ── Music ──────────────────────────────────────────────────────────────
+// export 'src/raylib.g.dart' show LoadMusicStream;
+// export 'src/raylib.g.dart' show LoadMusicStreamFromMemory;
+// export 'src/raylib.g.dart' show IsMusicValid;
+// export 'src/raylib.g.dart' show UnloadMusicStream;
+// export 'src/raylib.g.dart' show PlayMusicStream;
+// export 'src/raylib.g.dart' show IsMusicStreamPlaying;
+// export 'src/raylib.g.dart' show UpdateMusicStream;
+// export 'src/raylib.g.dart' show StopMusicStream;
+// export 'src/raylib.g.dart' show PauseMusicStream;
+// export 'src/raylib.g.dart' show ResumeMusicStream;
+// export 'src/raylib.g.dart' show SeekMusicStream;
+// export 'src/raylib.g.dart' show SetMusicVolume;
+// export 'src/raylib.g.dart' show SetMusicPitch;
+// export 'src/raylib.g.dart' show SetMusicPan;
+// export 'src/raylib.g.dart' show GetMusicTimeLength;
+// export 'src/raylib.g.dart' show GetMusicTimePlayed;
+
+// ── AudioStream ────────────────────────────────────────────────────────
+// export 'src/raylib.g.dart' show LoadAudioStream;
+// export 'src/raylib.g.dart' show IsAudioStreamValid;
+// export 'src/raylib.g.dart' show UnloadAudioStream;
+// export 'src/raylib.g.dart' show UpdateAudioStream;
+// export 'src/raylib.g.dart' show IsAudioStreamProcessed;
+// export 'src/raylib.g.dart' show PlayAudioStream;
+// export 'src/raylib.g.dart' show PauseAudioStream;
+// export 'src/raylib.g.dart' show ResumeAudioStream;
+// export 'src/raylib.g.dart' show IsAudioStreamPlaying;
+// export 'src/raylib.g.dart' show StopAudioStream;
+// export 'src/raylib.g.dart' show SetAudioStreamVolume;
+// export 'src/raylib.g.dart' show SetAudioStreamPitch;
+// export 'src/raylib.g.dart' show SetAudioStreamPan;
 export 'src/raylib.g.dart' show SetAudioStreamBufferSizeDefault;
-export 'src/raylib.g.dart' show SetAudioStreamCallback;
-export 'src/raylib.g.dart' show AttachAudioStreamProcessor;
-export 'src/raylib.g.dart' show DetachAudioStreamProcessor;
-export 'src/raylib.g.dart' show AttachAudioMixedProcessor;
-export 'src/raylib.g.dart' show DetachAudioMixedProcessor;
+// export 'src/raylib.g.dart' show SetAudioStreamCallback;
+// export 'src/raylib.g.dart' show AttachAudioStreamProcessor;
+// export 'src/raylib.g.dart' show DetachAudioStreamProcessor;
+// export 'src/raylib.g.dart' show AttachAudioMixedProcessor;
+// export 'src/raylib.g.dart' show DetachAudioMixedProcessor;
