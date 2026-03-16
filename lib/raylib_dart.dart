@@ -8,6 +8,8 @@ export 'raudio.dart';
 export 'structs.dart';
 export 'colors.dart';
 
+export 'raymath.dart';
+
 import 'structs.dart';
 
 @Deprecated('Use Camera3D instead')

@@ -15,7 +15,6 @@ import 'package:vector_math/vector_math.dart';
 import 'package:image/image.dart' as img;
 import 'colors.dart';
 import 'structs.dart';
-import 'src/rectangle.dart';
 import 'src/raylib_const.dart' as consts;
 
 // ── Image loading ────────────────────────────────────────────────────────

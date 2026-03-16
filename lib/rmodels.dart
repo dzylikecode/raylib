@@ -13,7 +13,6 @@ import 'dart:ffi';
 import 'package:vector_math/vector_math.dart';
 import 'colors.dart';
 import 'structs.dart';
-import 'src/rectangle.dart';
 
 // ── 3D primitives ────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show DrawLine3D;

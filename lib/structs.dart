@@ -8,6 +8,66 @@ import 'dart:typed_data';
 import 'package:ffi/ffi.dart' as ffi;
 import 'src/raylib_const.dart' as consts;
 
+// ── Rectangle ───────────────────────────────────────────────────────────
+
+class Rectangle {
+  final Pointer<raylib.Rectangle> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Rectangle>>(ffi.malloc.free);
+
+  Rectangle._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  factory Rectangle.zero() => Rectangle();
+
+  factory Rectangle({
+    double x = 0,
+    double y = 0,
+    double width = 0,
+    double height = 0,
+  }) => Rectangle._(ffi.malloc<raylib.Rectangle>())
+    ..x = x
+    ..y = y
+    ..width = width
+    ..height = height;
+
+  factory Rectangle.fromLTWH(
+    double left,
+    double top,
+    double width,
+    double height,
+  ) => Rectangle(x: left, y: top, width: width, height: height);
+
+  double get x => ptr.ref.x;
+  set x(double value) => ptr.ref.x = value;
+
+  double get y => ptr.ref.y;
+  set y(double value) => ptr.ref.y = value;
+
+  double get width => ptr.ref.width;
+  set width(double value) => ptr.ref.width = value;
+
+  double get height => ptr.ref.height;
+  set height(double value) => ptr.ref.height = value;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    ffi.malloc.free(ptr);
+    _disposed = true;
+  }
+
+  @override
+  String toString() => 'x: $x, y: $y, width: $width, height: $height';
+}
+
+extension RectangleExt on raylib.Rectangle {
+  Rectangle toDart() => .new(x: x, y: y, width: width, height: height);
+}
+
 extension Vector2Extension on raylib.Vector2 {
   Vector2 toDart() => .new(x, y);
 }
