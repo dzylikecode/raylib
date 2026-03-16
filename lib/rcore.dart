@@ -1,15 +1,26 @@
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 //
-// TODO: 以下接口尚未代理，需要先实现对应的 struct 包装：
-//   AutomationEvent / AutomationEventList:
-//     LoadAutomationEventList, UnloadAutomationEventList,
-//     ExportAutomationEventList, SetAutomationEventList, PlayAutomationEvent
-//
 // 故意不代理（无合理的 Dart 等价）：
 //   MemAlloc, MemRealloc, MemFree  — 底层内存管理，用 ffi.malloc 替代
 //   SetTraceLogCallback (native)   — 已由 src/logging.dart 的 Dart 版替代
 //   SetLoad/SaveFile*Callback (native) — 已由 src/callback.dart 的 Dart 版替代
+//
+// 以下接口已用 enum 替代原生 int 参数：
+//   SetConfigFlags       → consts.ConfigFlags
+//   SetTraceLogLevel     → consts.TraceLogLevel
+//   SetGesturesEnabled   → consts.Gesture
+//   IsGestureDetected    → consts.Gesture
+//   GetGestureDetected   → returns consts.Gesture
+//   IsKey*               → consts.KeyboardKey
+//   GetKeyPressed        → returns consts.KeyboardKey
+//   SetExitKey           → consts.KeyboardKey
+//   IsGamepadButton*     → consts.GamepadButton
+//   GetGamepadButtonPressed → returns consts.GamepadButton
+//   GetGamepadAxisMovement  → consts.GamepadAxis
+//   IsMouseButton*       → consts.MouseButton
+//   SetMouseCursor       → consts.MouseCursor
+//   UpdateCamera         → consts.CameraMode
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
@@ -140,7 +151,7 @@ export 'src/raylib.g.dart' show GetRandomValue;
 // export 'src/raylib.g.dart' show OpenURL;
 // export 'src/raylib.g.dart' show TraceLog;
 export 'src/logging.dart' show TraceLog;
-export 'src/raylib.g.dart' show SetTraceLogLevel;
+// export 'src/raylib.g.dart' show SetTraceLogLevel;
 // export 'src/raylib.g.dart' show MemAlloc;
 // export 'src/raylib.g.dart' show MemRealloc;
 // export 'src/raylib.g.dart' show MemFree;
@@ -192,40 +203,40 @@ export 'src/raylib.g.dart' show IsFileDropped;
 // export 'src/raylib.g.dart' show ComputeMD5;
 // export 'src/raylib.g.dart' show ComputeSHA1;
 // ── Automation ─────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show LoadAutomationEventList;
-// export 'src/raylib.g.dart' show UnloadAutomationEventList;
-// export 'src/raylib.g.dart' show ExportAutomationEventList;
-// export 'src/raylib.g.dart' show SetAutomationEventList;
+// export 'src/raylib.g.dart' show LoadAutomationEventList;    // → Dart wrapper
+// export 'src/raylib.g.dart' show UnloadAutomationEventList;  // → Dart wrapper
+// export 'src/raylib.g.dart' show ExportAutomationEventList;  // → Dart wrapper
+// export 'src/raylib.g.dart' show SetAutomationEventList;     // → Dart wrapper
 export 'src/raylib.g.dart' show SetAutomationEventBaseFrame;
 export 'src/raylib.g.dart' show StartAutomationEventRecording;
 export 'src/raylib.g.dart' show StopAutomationEventRecording;
-// export 'src/raylib.g.dart' show PlayAutomationEvent;
+// export 'src/raylib.g.dart' show PlayAutomationEvent;        // → Dart wrapper
 // ── Keyboard ───────────────────────────────────────────────────────────
-export 'src/raylib.g.dart' show IsKeyPressed;
-export 'src/raylib.g.dart' show IsKeyPressedRepeat;
-export 'src/raylib.g.dart' show IsKeyDown;
-export 'src/raylib.g.dart' show IsKeyReleased;
-export 'src/raylib.g.dart' show IsKeyUp;
-export 'src/raylib.g.dart' show GetKeyPressed;
+// export 'src/raylib.g.dart' show IsKeyPressed;
+// export 'src/raylib.g.dart' show IsKeyPressedRepeat;
+// export 'src/raylib.g.dart' show IsKeyDown;
+// export 'src/raylib.g.dart' show IsKeyReleased;
+// export 'src/raylib.g.dart' show IsKeyUp;
+// export 'src/raylib.g.dart' show GetKeyPressed;
 export 'src/raylib.g.dart' show GetCharPressed;
-export 'src/raylib.g.dart' show SetExitKey;
+// export 'src/raylib.g.dart' show SetExitKey;
 // ── Gamepad ────────────────────────────────────────────────────────────
 export 'src/raylib.g.dart' show IsGamepadAvailable;
 // export 'src/raylib.g.dart' show GetGamepadName;
-export 'src/raylib.g.dart' show IsGamepadButtonPressed;
-export 'src/raylib.g.dart' show IsGamepadButtonDown;
-export 'src/raylib.g.dart' show IsGamepadButtonReleased;
-export 'src/raylib.g.dart' show IsGamepadButtonUp;
-export 'src/raylib.g.dart' show GetGamepadButtonPressed;
+// export 'src/raylib.g.dart' show IsGamepadButtonPressed;
+// export 'src/raylib.g.dart' show IsGamepadButtonDown;
+// export 'src/raylib.g.dart' show IsGamepadButtonReleased;
+// export 'src/raylib.g.dart' show IsGamepadButtonUp;
+// export 'src/raylib.g.dart' show GetGamepadButtonPressed;
 export 'src/raylib.g.dart' show GetGamepadAxisCount;
-export 'src/raylib.g.dart' show GetGamepadAxisMovement;
+// export 'src/raylib.g.dart' show GetGamepadAxisMovement;
 // export 'src/raylib.g.dart' show SetGamepadMappings;
 export 'src/raylib.g.dart' show SetGamepadVibration;
 // ── Mouse ──────────────────────────────────────────────────────────────
-export 'src/raylib.g.dart' show IsMouseButtonPressed;
-export 'src/raylib.g.dart' show IsMouseButtonDown;
-export 'src/raylib.g.dart' show IsMouseButtonReleased;
-export 'src/raylib.g.dart' show IsMouseButtonUp;
+// export 'src/raylib.g.dart' show IsMouseButtonPressed;
+// export 'src/raylib.g.dart' show IsMouseButtonDown;
+// export 'src/raylib.g.dart' show IsMouseButtonReleased;
+// export 'src/raylib.g.dart' show IsMouseButtonUp;
 export 'src/raylib.g.dart' show GetMouseX;
 export 'src/raylib.g.dart' show GetMouseY;
 // export 'src/raylib.g.dart' show GetMousePosition;
@@ -235,7 +246,7 @@ export 'src/raylib.g.dart' show SetMouseOffset;
 export 'src/raylib.g.dart' show SetMouseScale;
 export 'src/raylib.g.dart' show GetMouseWheelMove;
 // export 'src/raylib.g.dart' show GetMouseWheelMoveV;
-export 'src/raylib.g.dart' show SetMouseCursor;
+// export 'src/raylib.g.dart' show SetMouseCursor;
 // ── Touch ──────────────────────────────────────────────────────────────
 export 'src/raylib.g.dart' show GetTouchX;
 export 'src/raylib.g.dart' show GetTouchY;
@@ -245,7 +256,7 @@ export 'src/raylib.g.dart' show GetTouchPointCount;
 // ── Gestures ───────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show SetGesturesEnabled;
 // export 'src/raylib.g.dart' show IsGestureDetected;
-export 'src/raylib.g.dart' show GetGestureDetected;
+// export 'src/raylib.g.dart' show GetGestureDetected;
 export 'src/raylib.g.dart' show GetGestureHoldDuration;
 // export 'src/raylib.g.dart' show GetGestureDragVector;
 export 'src/raylib.g.dart' show GetGestureDragAngle;
@@ -499,7 +510,8 @@ void UnloadRandomSequence(List<int> sequence) {}
 
 // ── Misc ───────────────────────────────────────────────────────────────
 
-
+void SetConfigFlags(consts.ConfigFlags flags) =>
+    raylib.SetConfigFlags(flags.value);
 
 void TakeScreenshot(String fileName) => ffi.using((arena) {
   raylib.TakeScreenshot(fileName.toNativeUtf8(allocator: arena).cast());
@@ -509,6 +521,8 @@ void OpenURL(String url) => ffi.using((arena) {
   raylib.OpenURL(url.toNativeUtf8(allocator: arena).cast());
 });
 
+void SetTraceLogLevel(consts.TraceLogLevel level) =>
+    raylib.SetTraceLogLevel(level.value);
 
 // ── File I/O ───────────────────────────────────────────────────────────
 
@@ -749,6 +763,44 @@ Uint8List ComputeSHA1(Uint8List data) {
   });
 }
 
+// ── Automation ─────────────────────────────────────────────────────────
+
+/// Pass [null] to create an empty in-memory list.
+AutomationEventList LoadAutomationEventList(String? fileName) =>
+    ffi.using((arena) {
+      final namePtr = fileName != null
+          ? fileName.toNativeUtf8(allocator: arena).cast<Char>()
+          : nullptr;
+      return raylib.LoadAutomationEventList(namePtr).toDart();
+    });
+
+void UnloadAutomationEventList(AutomationEventList list) => list.dispose();
+
+bool ExportAutomationEventList(AutomationEventList list, String fileName) =>
+    ffi.using((arena) {
+      return raylib.ExportAutomationEventList(
+        list.ptr.ref,
+        fileName.toNativeUtf8(allocator: arena).cast(),
+      );
+    });
+
+void SetAutomationEventList(AutomationEventList list) =>
+    raylib.SetAutomationEventList(list.ptr);
+
+void PlayAutomationEvent(AutomationEvent event) => ffi.using((arena) {
+  raylib.PlayAutomationEvent(arena.automationEvent(event).ref);
+});
+
+// ── Keyboard ───────────────────────────────────────────────────────────
+
+bool IsKeyPressed(consts.KeyboardKey key) => raylib.IsKeyPressed(key.value);
+bool IsKeyPressedRepeat(consts.KeyboardKey key) => raylib.IsKeyPressedRepeat(key.value);
+bool IsKeyDown(consts.KeyboardKey key) => raylib.IsKeyDown(key.value);
+bool IsKeyReleased(consts.KeyboardKey key) => raylib.IsKeyReleased(key.value);
+bool IsKeyUp(consts.KeyboardKey key) => raylib.IsKeyUp(key.value);
+consts.KeyboardKey GetKeyPressed() => consts.KeyboardKey.fromValue(raylib.GetKeyPressed());
+void SetExitKey(consts.KeyboardKey key) => raylib.SetExitKey(key.value);
+
 // ── Gamepad ─────────────────────────────────────────────────────────────
 
 String GetGamepadName(int gamepad) =>
@@ -758,11 +810,35 @@ int SetGamepadMappings(String mappings) => ffi.using((arena) {
   return raylib.SetGamepadMappings(mappings.toNativeUtf8(allocator: arena).cast());
 });
 
+bool IsGamepadButtonPressed(int gamepad, consts.GamepadButton button) =>
+    raylib.IsGamepadButtonPressed(gamepad, button.value);
+bool IsGamepadButtonDown(int gamepad, consts.GamepadButton button) =>
+    raylib.IsGamepadButtonDown(gamepad, button.value);
+bool IsGamepadButtonReleased(int gamepad, consts.GamepadButton button) =>
+    raylib.IsGamepadButtonReleased(gamepad, button.value);
+bool IsGamepadButtonUp(int gamepad, consts.GamepadButton button) =>
+    raylib.IsGamepadButtonUp(gamepad, button.value);
+consts.GamepadButton GetGamepadButtonPressed() =>
+    consts.GamepadButton.fromValue(raylib.GetGamepadButtonPressed());
+double GetGamepadAxisMovement(int gamepad, consts.GamepadAxis axis) =>
+    raylib.GetGamepadAxisMovement(gamepad, axis.value);
+
 // ── Mouse ──────────────────────────────────────────────────────────────
 
 Vector2 GetMousePosition() => raylib.GetMousePosition().toDart();
 Vector2 GetMouseDelta() => raylib.GetMouseDelta().toDart();
 Vector2 GetMouseWheelMoveV() => raylib.GetMouseWheelMoveV().toDart();
+
+bool IsMouseButtonPressed(consts.MouseButton button) =>
+    raylib.IsMouseButtonPressed(button.value);
+bool IsMouseButtonDown(consts.MouseButton button) =>
+    raylib.IsMouseButtonDown(button.value);
+bool IsMouseButtonReleased(consts.MouseButton button) =>
+    raylib.IsMouseButtonReleased(button.value);
+bool IsMouseButtonUp(consts.MouseButton button) =>
+    raylib.IsMouseButtonUp(button.value);
+void SetMouseCursor(consts.MouseCursor cursor) =>
+    raylib.SetMouseCursor(cursor.value);
 
 // ── Touch ──────────────────────────────────────────────────────────────
 
@@ -770,23 +846,22 @@ Vector2 GetTouchPosition(int index) => raylib.GetTouchPosition(index).toDart();
 
 // ── Gestures ───────────────────────────────────────────────────────────
 
-Vector2 GetGestureDragVector() => raylib.GetGestureDragVector().toDart();
-Vector2 GetGesturePinchVector() => raylib.GetGesturePinchVector().toDart();
-
-// ── Config / Gestures ──────────────────────────────────────────────────
-
-void SetConfigFlags(consts.ConfigFlags flags) =>
-    raylib.SetConfigFlags(flags.value);
-
 void SetGesturesEnabled(consts.Gesture gesture) =>
     raylib.SetGesturesEnabled(gesture.value);
 
 bool IsGestureDetected(consts.Gesture gesture) =>
     raylib.IsGestureDetected(gesture.value);
 
+consts.Gesture GetGestureDetected() =>
+    consts.Gesture.fromValue(raylib.GetGestureDetected());
+
+Vector2 GetGestureDragVector() => raylib.GetGestureDragVector().toDart();
+Vector2 GetGesturePinchVector() => raylib.GetGesturePinchVector().toDart();
+
 // ── Camera update ──────────────────────────────────────────────────────
 
-void UpdateCamera(Camera3D camera, int mode) => raylib.UpdateCamera(camera.ptr, mode);
+void UpdateCamera(Camera3D camera, consts.CameraMode mode) =>
+    raylib.UpdateCamera(camera.ptr, mode.value);
 
 void UpdateCameraPro(
   Camera3D camera,

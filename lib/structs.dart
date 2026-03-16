@@ -164,6 +164,16 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
+  Pointer<raylib.AutomationEvent> automationEvent(AutomationEvent value) {
+    final ptr = this<raylib.AutomationEvent>();
+    ptr.ref.frame = value.frame;
+    ptr.ref.type = value.type;
+    for (var i = 0; i < 4; i++) {
+      ptr.ref.params[i] = value.params[i];
+    }
+    return ptr;
+  }
+
   Pointer<raylib.VrDeviceInfo> vrDeviceInfo(VrDeviceInfo value) {
     final ptr = this<raylib.VrDeviceInfo>();
     ptr.ref
@@ -559,5 +569,81 @@ class Camera3D {
     _finalizer.detach(this); // 取消自动释放
     _free(ptr);
     _disposed = true;
+  }
+}
+
+// ── AutomationEvent ──────────────────────────────────────────────────────
+
+/// A single recorded input event.
+///
+/// [frame] is the frame the event occurred on.
+/// [type] is the event type (see raylib automation event type constants).
+/// [params] is a fixed 4-element list of event parameters.
+@immutable
+class AutomationEvent {
+  final int frame;
+  final int type;
+
+  /// Always exactly 4 elements.
+  final List<int> params;
+
+  const AutomationEvent({
+    required this.frame,
+    required this.type,
+    required this.params,
+  }) : assert(params.length == 4);
+}
+
+// ── AutomationEventList ──────────────────────────────────────────────────
+
+/// Handle to a recorded automation event list.
+///
+/// Created by [LoadAutomationEventList]; released by [UnloadAutomationEventList]
+/// or [dispose]. The Finalizer ensures the native list is freed even if
+/// [dispose] is never called explicitly.
+class AutomationEventList {
+  final Pointer<raylib.AutomationEventList> ptr;
+  bool _disposed = false;
+
+  static final _finalizer =
+      Finalizer<Pointer<raylib.AutomationEventList>>(_free);
+  static void _free(Pointer<raylib.AutomationEventList> ptr) {
+    raylib.UnloadAutomationEventList(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  AutomationEventList._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get count => ptr.ref.count;
+  int get capacity => ptr.ref.capacity;
+
+  AutomationEvent operator [](int index) {
+    final e = (ptr.ref.events + index).ref;
+    return AutomationEvent(
+      frame: e.frame,
+      type: e.type,
+      params: List<int>.generate(4, (i) => e.params[i], growable: false),
+    );
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibAutomationEventListToDart on raylib.AutomationEventList {
+  AutomationEventList toDart() {
+    final p = ffi.malloc<raylib.AutomationEventList>();
+    p.ref
+      ..capacity = capacity
+      ..count = count
+      ..events = events;
+    return AutomationEventList._(p);
   }
 }

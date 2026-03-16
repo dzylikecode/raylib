@@ -53,6 +53,9 @@ void SetWindowIcons(List<Image> images, [int? count])
 
 RenderTexture2D 这个是存在 GPU 里面的，所以是一个 id，因此就是 dart —> C 的 id 描述，并不需要拷贝数据
 
+
+用 enum 更好的语义化，而不是用 int 来表示一些状态
+
 ## 从 C 迁移
 
 ### main 函数改造
@@ -100,7 +103,8 @@ UnloadRandomSequence(seq);
 ```
 
 ```dart
-final seq = RandomSequence(count, min, max);
+final seq = LoadRandomSequence(count, min, max);
+UnloadRandomSequence(seq); // 什么也不做
 ```
 
 ### 格式化输出
