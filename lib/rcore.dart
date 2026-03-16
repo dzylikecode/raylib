@@ -52,7 +52,7 @@ import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'dart:typed_data';
-import 'src/raylib_const.g.dart' as consts;
+import 'src/raylib_const.dart' as consts;
 import 'package:image/image.dart' as img;
 import 'package:vector_math/vector_math.dart';
 import 'colors.dart';

@@ -10,6 +10,7 @@ export 'colors.dart';
 
 export 'raymath.dart';
 
+export 'modern.dart';
 import 'structs.dart';
 
 @Deprecated('Use Camera3D instead')

@@ -139,27 +139,6 @@ import 'src/raylib_const.dart' as consts;
 // export 'src/raylib.g.dart' show SetPixelColor;          // needs void* pointer
 // export 'src/raylib.g.dart' show GetPixelDataSize;       // → Dart wrapper below
 
-// ── NPatchInfo ───────────────────────────────────────────────────────────
-
-/// Nine-patch image slice configuration.
-class NPatchInfo {
-  final Rectangle source;
-  final int left;
-  final int top;
-  final int right;
-  final int bottom;
-  final consts.NPatchLayout layout;
-
-  NPatchInfo({
-    required this.source,
-    required this.left,
-    required this.top,
-    required this.right,
-    required this.bottom,
-    required this.layout,
-  });
-}
-
 // ── Texture loading/management ───────────────────────────────────────────
 
 Texture LoadTexture(String fileName) => ffi.using((arena) {
@@ -302,20 +281,9 @@ void DrawTextureNPatch(
   double rotation,
   Color tint,
 ) => ffi.using((arena) {
-  final npi = arena<raylib.NPatchInfo>();
-  npi.ref
-    ..source.x = nPatchInfo.source.x
-    ..source.y = nPatchInfo.source.y
-    ..source.width = nPatchInfo.source.width
-    ..source.height = nPatchInfo.source.height
-    ..left = nPatchInfo.left
-    ..top = nPatchInfo.top
-    ..right = nPatchInfo.right
-    ..bottom = nPatchInfo.bottom
-    ..layout = nPatchInfo.layout.value;
   raylib.DrawTextureNPatch(
     arena.texture(texture).ref,
-    npi.ref,
+    arena.nPatchInfo(nPatchInfo).ref,
     dest.ptr.ref,
     arena.vector2(origin).ref,
     rotation,
