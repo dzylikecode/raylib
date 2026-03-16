@@ -13,39 +13,43 @@
 *
 ********************************************************************************************/
 
-#include "raylib.h"
-#include "raymath.h"
+import "package:raylib_dart/raylib_dart.dart";
 
-#define G 400
-#define PLAYER_JUMP_SPD 350.0f
-#define PLAYER_HOR_SPD 200.0f
+import "package:raylib_dart/raymath.dart";
 
-typedef struct Player {
+const G = 400;
+const PLAYER_JUMP_SPD = 350.0;
+const PLAYER_HOR_SPD = 200.0;
+
+class Player {
     Vector2 position;
     float speed;
     bool canJump;
-} Player;
+    Player(this.position, this.speed, this.canJump);
+}
 
-typedef struct EnvItem {
+class EnvItem {
     Rectangle rect;
     int blocking;
     Color color;
-} EnvItem;
+
+    EnvItem(this.rect, this.blocking, this.color);
+}
 
 //----------------------------------------------------------------------------------
 // Module functions declaration
 //----------------------------------------------------------------------------------
-void UpdatePlayer(Player *player, EnvItem *envItems, int envItemsLength, float delta);
-void UpdateCameraCenter(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
-void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
-void UpdateCameraCenterSmoothFollow(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
-void UpdateCameraEvenOutOnLanding(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
-void UpdateCameraPlayerBoundsPush(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+// void UpdatePlayer(Player *player, EnvItem *envItems, int envItemsLength, float delta);
+// void UpdateCameraCenter(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+// void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+// void UpdateCameraCenterSmoothFollow(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+// void UpdateCameraEvenOutOnLanding(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+// void UpdateCameraPlayerBoundsPush(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -54,45 +58,45 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera");
 
-    Player player = { 0 };
-    player.position = (Vector2){ 400, 280 };
+    Player player = Player(.zero(), 0, false);
+    player.position = Vector2(400, 280);
     player.speed = 0;
     player.canJump = false;
-    EnvItem envItems[] = {
-        {{ 0, 0, 1000, 400 }, 0, LIGHTGRAY },
-        {{ 0, 400, 1000, 200 }, 1, GRAY },
-        {{ 300, 200, 400, 10 }, 1, GRAY },
-        {{ 250, 300, 100, 10 }, 1, GRAY },
-        {{ 650, 300, 100, 10 }, 1, GRAY }
-    };
+    List<EnvItem> envItems = [
+        EnvItem(.fromLTWH(0, 0, 1000, 400), 0, LIGHTGRAY),
+        EnvItem(.fromLTWH(0, 400, 1000, 200), 1, GRAY),
+        EnvItem(.fromLTWH(300, 200, 400, 10), 1, GRAY),
+        EnvItem(.fromLTWH(250, 300, 100, 10), 1, GRAY),
+        EnvItem(.fromLTWH(650, 300, 100, 10), 1, GRAY)
+    ];
 
-    int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
+    int envItemsLength = envItems.length;
 
-    Camera2D camera = { 0 };
+    Camera2D camera = Camera2D();
     camera.target = player.position;
-    camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
-    camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
+    camera.offset = Vector2(screenWidth/2.0.f, screenHeight/2.0.f);
+    camera.rotation = 0.0.f;
+    camera.zoom = 1.0.f;
 
     // Store pointers to the multiple update camera functions
-    void (*cameraUpdaters[])(Camera2D*, Player*, EnvItem*, int, float, int, int) = {
+    List<void Function(Camera2D, Player, EnvItem, int, float, int, int)> cameraUpdaters = [
         UpdateCameraCenter,
         UpdateCameraCenterInsideMap,
         UpdateCameraCenterSmoothFollow,
         UpdateCameraEvenOutOnLanding,
         UpdateCameraPlayerBoundsPush
-    };
+    ];
 
     int cameraOption = 0;
-    int cameraUpdatersLength = sizeof(cameraUpdaters)/sizeof(cameraUpdaters[0]);
+    int cameraUpdatersLength = cameraUpdaters.length;
 
-    char *cameraDescriptions[] = {
+    List<String> cameraDescriptions = [
         "Follow player center",
         "Follow player center, but clamp to map edges",
         "Follow player center; smoothed",
         "Follow player center horizontally; update player center vertically after landing",
         "Player push camera on getting too close to screen edge"
-    };
+    ];
 
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
@@ -104,7 +108,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         float deltaTime = GetFrameTime();
 
-        UpdatePlayer(&player, envItems, envItemsLength, deltaTime);
+        UpdatePlayer(player, envItems, envItemsLength, deltaTime);
 
         camera.zoom += ((float)GetMouseWheelMove()*0.05f);
 
@@ -160,14 +164,14 @@ int main(void)
     return 0;
 }
 
-void UpdatePlayer(Player *player, EnvItem *envItems, int envItemsLength, float delta)
+void UpdatePlayer(Player player, EnvItem envItems, int envItemsLength, float delta)
 {
-    if (IsKeyDown(KEY_LEFT)) player->position.x -= PLAYER_HOR_SPD*delta;
-    if (IsKeyDown(KEY_RIGHT)) player->position.x += PLAYER_HOR_SPD*delta;
-    if (IsKeyDown(KEY_SPACE) && player->canJump)
+    if (IsKeyDown(KEY_LEFT)) player.position.x -= PLAYER_HOR_SPD*delta;
+    if (IsKeyDown(KEY_RIGHT)) player.position.x += PLAYER_HOR_SPD*delta;
+    if (IsKeyDown(KEY_SPACE) && player.canJump)
     {
-        player->speed = -PLAYER_JUMP_SPD;
-        player->canJump = false;
+        player.speed = -PLAYER_JUMP_SPD;
+        player.canJump = false;
     }
 
     bool hitObstacle = false;

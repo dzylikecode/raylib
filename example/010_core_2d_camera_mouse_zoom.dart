@@ -11,10 +11,11 @@
 *
 ********************************************************************************************/
 
-#include "raylib.h"
+import "package:raylib_dart/raylib_dart.dart";
 
-#include "rlgl.h"
-#include "raymath.h"
+import "package:raylib_dart/rlgl.dart";
+import "package:raylib_dart/raymath.dart";
+import "package:cdart/math.dart";
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -28,8 +29,8 @@ int main ()
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera mouse zoom");
 
-    Camera2D camera = { 0 };
-    camera.zoom = 1.0f;
+    Camera2D camera = Camera2D();
+    camera.zoom = 1.0.f;
 
     int zoomMode = 0;   // 0-Mouse Wheel, 1-Mouse Move
 
@@ -48,7 +49,7 @@ int main ()
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
         {
             Vector2 delta = GetMouseDelta();
-            delta = Vector2Scale(delta, -1.0f/camera.zoom);
+            delta = Vector2Scale(delta, -1.0.f/camera.zoom);
             camera.target = Vector2Add(camera.target, delta);
         }
 
@@ -69,9 +70,9 @@ int main ()
                 camera.target = mouseWorldPos;
 
                 // Zoom increment
-                float scaleFactor = 1.0f + (0.25f*fabsf(wheel));
-                if (wheel < 0) scaleFactor = 1.0f/scaleFactor;
-                camera.zoom = Clamp(camera.zoom*scaleFactor, 0.125f, 64.0f);
+                float scaleFactor = 1.0.f + (0.25.f*fabsf(wheel));
+                if (wheel < 0) scaleFactor = 1.0.f/scaleFactor;
+                camera.zoom = Clamp(camera.zoom*scaleFactor, 0.125.f, 64.0.f);
             }
         }
         else
@@ -93,9 +94,9 @@ int main ()
             {
                 // Zoom increment
                 float deltaX = GetMouseDelta().x;
-                float scaleFactor = 1.0f + (0.01f*fabsf(deltaX));
-                if (deltaX < 0) scaleFactor = 1.0f/scaleFactor;
-                camera.zoom = Clamp(camera.zoom*scaleFactor, 0.125f, 64.0f);
+                float scaleFactor = 1.0.f + (0.01.f*fabsf(deltaX));
+                if (deltaX < 0) scaleFactor = 1.0.f/scaleFactor;
+                camera.zoom = Clamp(camera.zoom*scaleFactor, 0.125.f, 64.0.f);
             }
         }
         //----------------------------------------------------------------------------------
@@ -116,15 +117,15 @@ int main ()
                 rlPopMatrix();
 
                 // Draw a reference circle
-                DrawCircle(GetScreenWidth()/2, GetScreenHeight()/2, 50, MAROON);
+                DrawCircle(GetScreenWidth()~/2, GetScreenHeight()~/2, 50, MAROON);
                 
             EndMode2D();
             
             // Draw mouse reference
             //Vector2 mousePos = GetWorldToScreen2D(GetMousePosition(), camera)
             DrawCircleV(GetMousePosition(), 4, DARKGRAY);
-            DrawTextEx(GetFontDefault(), TextFormat("[%i, %i]", GetMouseX(), GetMouseY()), 
-                Vector2Add(GetMousePosition(), (Vector2){ -44, -24 }), 20, 2, BLACK);
+            DrawTextEx(GetFontDefault(), TextFormat("[%i, %i]", [GetMouseX(), GetMouseY()]), 
+                Vector2Add(GetMousePosition(), Vector2(-44, -24)), 20, 2, BLACK);
 
             DrawText("[1][2] Select mouse zoom mode (Wheel or Move)", 20, 20, 20, DARKGRAY);
             if (zoomMode == 0) DrawText("Mouse left button drag to move, mouse wheel to zoom", 20, 50, 20, DARKGRAY);
