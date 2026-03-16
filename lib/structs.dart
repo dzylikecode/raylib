@@ -134,6 +134,36 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
+  Pointer<raylib.Shader> shader(Shader value) => value.ptr;
+
+  Pointer<raylib.Texture> texture(Texture value) {
+    final ptr = this<raylib.Texture>();
+    ptr.ref
+      ..id = value.id
+      ..width = value.width
+      ..height = value.height
+      ..mipmaps = value.mipmaps
+      ..format = value.format.value;
+    return ptr;
+  }
+
+  Pointer<raylib.RenderTexture> renderTexture(RenderTexture2D value) {
+    final ptr = this<raylib.RenderTexture>();
+    ptr.ref
+      ..id = value.id
+      ..texture.id = value.texture.id
+      ..texture.width = value.texture.width
+      ..texture.height = value.texture.height
+      ..texture.mipmaps = value.texture.mipmaps
+      ..texture.format = value.texture.format.value
+      ..depth.id = value.depth.id
+      ..depth.width = value.depth.width
+      ..depth.height = value.depth.height
+      ..depth.mipmaps = value.depth.mipmaps
+      ..depth.format = value.depth.format.value;
+    return ptr;
+  }
+
   /// dart Image → native raylib.Image (PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
   ///
   /// Both the pixel data and the Image struct are arena-managed —
@@ -165,6 +195,137 @@ extension ArenaExt on ffi.Arena {
   }
 }
 
+
+// ── Texture ────────────────────────────────────────────────────────────
+
+/// Immutable handle to a GPU texture.
+///
+/// Use [UnloadTexture] to release GPU memory when done.
+/// No automatic cleanup — GPU resources must not be freed after the
+/// OpenGL context is destroyed.
+class Texture {
+  final int id;
+  final int width;
+  final int height;
+  final int mipmaps;
+  final consts.PixelFormat format;
+
+  const Texture({
+    required this.id,
+    required this.width,
+    required this.height,
+    this.mipmaps = 1,
+    required this.format,
+  });
+
+  @override
+  bool operator ==(Object other) => other is Texture && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
+typedef Texture2D = Texture;
+typedef TextureCubemap = Texture;
+
+extension RaylibTextureToDart on raylib.Texture {
+  Texture toDart() => Texture(
+    id: id,
+    width: width,
+    height: height,
+    mipmaps: mipmaps,
+    format: consts.PixelFormat.fromValue(format),
+  );
+}
+
+// ── RenderTexture ───────────────────────────────────────────────────────
+
+/// Immutable handle to a GPU framebuffer (FBO).
+///
+/// Use [UnloadRenderTexture] to release GPU memory when done.
+class RenderTexture2D {
+  final int id;
+
+  /// Color buffer (texture attachment).
+  final Texture texture;
+
+  /// Depth buffer (texture attachment).
+  final Texture depth;
+
+  const RenderTexture2D({
+    required this.id,
+    required this.texture,
+    required this.depth,
+  });
+
+  @override
+  bool operator ==(Object other) => other is RenderTexture2D && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
+
+
+extension RaylibRenderTextureToDart on raylib.RenderTexture {
+
+  RenderTexture2D toDart() => RenderTexture2D(
+    id: id,
+    texture: texture.toDart(),
+    depth: depth.toDart(),
+  );
+}
+
+// ── Shader ─────────────────────────────────────────────────────────────
+
+/// Handle to a GPU shader program.
+///
+/// Holds a stable native pointer so the raylib-managed [locs] array can be
+/// read/written without copying.
+///
+/// The [dispose] method frees only the wrapper struct allocated by this class.
+/// Call [UnloadShader] first to release the GPU program and the [locs] array.
+class Shader {
+  final Pointer<raylib.Shader> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Shader>>(_free);
+  static void _free(Pointer<raylib.Shader> ptr) => ffi.malloc.free(ptr);
+
+  Shader._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get id => ptr.ref.id;
+
+  /// Raylib-managed locations array.
+  /// Use [GetShaderLocation] rather than indexing this directly.
+  Pointer<Int> get locs => ptr.ref.locs;
+
+  @override
+  bool operator ==(Object other) => other is Shader && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibShaderToDart on raylib.Shader {
+  Shader toDart() {
+    final p = ffi.malloc<raylib.Shader>();
+    p.ref
+      ..id = id
+      ..locs = locs;
+    return Shader._(p);
+  }
+}
 
 class Camera2D {
   final Pointer<raylib.Camera2D> ptr;

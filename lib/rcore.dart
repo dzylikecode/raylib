@@ -72,11 +72,11 @@ export 'src/raylib.g.dart' show EndDrawing;
 export 'src/raylib.g.dart' show EndMode2D;
 // export 'src/raylib.g.dart' show BeginMode3D;
 export 'src/raylib.g.dart' show EndMode3D;
-export 'src/raylib.g.dart' show BeginTextureMode;
+// export 'src/raylib.g.dart' show BeginTextureMode;
 export 'src/raylib.g.dart' show EndTextureMode;
-export 'src/raylib.g.dart' show BeginShaderMode;
+// export 'src/raylib.g.dart' show BeginShaderMode;
 export 'src/raylib.g.dart' show EndShaderMode;
-export 'src/raylib.g.dart' show BeginBlendMode;
+// export 'src/raylib.g.dart' show BeginBlendMode;
 export 'src/raylib.g.dart' show EndBlendMode;
 export 'src/raylib.g.dart' show BeginScissorMode;
 export 'src/raylib.g.dart' show EndScissorMode;
@@ -295,3 +295,9 @@ void ClearBackground(Color color) => raylib.ClearBackground(color.ptr.ref);
 
 void BeginMode2D(Camera2D camera) => raylib.BeginMode2D(camera.ptr.ref);
 void BeginMode3D(Camera3D camera) => raylib.BeginMode3D(camera.ptr.ref);
+void BeginTextureMode(RenderTexture2D target) => ffi.using((arena) {
+  return raylib.BeginTextureMode(arena.renderTexture(target).ref);
+});
+void BeginShaderMode(Shader shader) => raylib.BeginShaderMode(shader.ptr.ref);
+void BeginBlendMode(consts.BlendMode mode) =>
+    raylib.BeginBlendMode(mode.value);
