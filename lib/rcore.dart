@@ -3,24 +3,7 @@
 //
 // 故意不代理（无合理的 Dart 等价）：
 //   MemAlloc, MemRealloc, MemFree  — 底层内存管理，用 ffi.malloc 替代
-//   SetTraceLogCallback (native)   — 已由 src/logging.dart 的 Dart 版替代
-//   SetLoad/SaveFile*Callback (native) — 已由 src/callback.dart 的 Dart 版替代
-//
-// 以下接口已用 enum 替代原生 int 参数：
-//   SetConfigFlags       → consts.ConfigFlags
-//   SetTraceLogLevel     → consts.TraceLogLevel
-//   SetGesturesEnabled   → consts.Gesture
-//   IsGestureDetected    → consts.Gesture
-//   GetGestureDetected   → returns consts.Gesture
-//   IsKey*               → consts.KeyboardKey
-//   GetKeyPressed        → returns consts.KeyboardKey
-//   SetExitKey           → consts.KeyboardKey
-//   IsGamepadButton*     → consts.GamepadButton
-//   GetGamepadButtonPressed → returns consts.GamepadButton
-//   GetGamepadAxisMovement  → consts.GamepadAxis
-//   IsMouseButton*       → consts.MouseButton
-//   SetMouseCursor       → consts.MouseCursor
-//   UpdateCamera         → consts.CameraMode
+
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
