@@ -1,4 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 //
 // 本文件对 raylib C API 进行 Dart 封装，封装策略分以下几类：

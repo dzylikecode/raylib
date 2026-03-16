@@ -15,7 +15,7 @@ import 'package:vector_math/vector_math.dart';
 import 'colors.dart';
 import 'structs.dart';
 
-// ── Font ───────────────────────────────────────────────────────────────
+// ── Font loading/unloading ───────────────────────────────────────────────
 // export 'src/raylib.g.dart' show GetFontDefault;      // → Dart wrapper below
 // export 'src/raylib.g.dart' show LoadFont;            // → Dart wrapper below
 // export 'src/raylib.g.dart' show LoadFontEx;          // → Dart wrapper below
@@ -30,22 +30,21 @@ import 'structs.dart';
 
 // ── Text drawing ────────────────────────────────────────────────────────
 export 'src/raylib.g.dart' show DrawFPS;
-export 'src/raylib.g.dart' show SetTextLineSpacing;
-export 'src/text.dart' show TextFormat;
 // export 'src/raylib.g.dart' show DrawText;            // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawTextEx;          // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawTextPro;         // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawTextCodepoint;   // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawTextCodepoints;  // → Dart wrapper below
 
-// ── Text measurement ────────────────────────────────────────────────────
+// ── Text font info ──────────────────────────────────────────────────────
+export 'src/raylib.g.dart' show SetTextLineSpacing;
 // export 'src/raylib.g.dart' show MeasureText;         // → Dart wrapper below
 // export 'src/raylib.g.dart' show MeasureTextEx;       // → Dart wrapper below
 // export 'src/raylib.g.dart' show GetGlyphIndex;       // → Dart wrapper below
 // export 'src/raylib.g.dart' show GetGlyphInfo;        // → Dart wrapper below
 // export 'src/raylib.g.dart' show GetGlyphAtlasRec;    // → Dart wrapper below
 
-// ── Codepoints ──────────────────────────────────────────────────────────
+// ── Text codepoints management ──────────────────────────────────────────
 // export 'src/raylib.g.dart' show LoadUTF8;            // C memory management — use Dart strings
 // export 'src/raylib.g.dart' show UnloadUTF8;          // C memory management — use Dart strings
 // export 'src/raylib.g.dart' show LoadCodepoints;      // C memory management — use Dart strings
@@ -56,10 +55,11 @@ export 'src/text.dart' show TextFormat;
 // export 'src/raylib.g.dart' show GetCodepointPrevious; // → Dart wrapper below
 // export 'src/raylib.g.dart' show CodepointToUTF8;     // C memory management — use Dart strings
 
-// ── Text utilities ───────────────────────────────────────────────────────
+// ── Text strings management ─────────────────────────────────────────────
 // export 'src/raylib.g.dart' show TextCopy;            // C string utilities — use Dart string methods instead
 // export 'src/raylib.g.dart' show TextIsEqual;         // C string utilities — use == instead
 // export 'src/raylib.g.dart' show TextLength;          // C string utilities — use .length instead
+export 'src/text.dart' show TextFormat;
 // export 'src/raylib.g.dart' show TextSubtext;         // C string utilities — use .substring()
 // export 'src/raylib.g.dart' show TextReplace;         // C string utilities — use .replaceAll()
 // export 'src/raylib.g.dart' show TextInsert;          // C string utilities — use string interpolation
@@ -75,7 +75,7 @@ export 'src/text.dart' show TextFormat;
 // export 'src/raylib.g.dart' show TextToInteger;       // → Dart wrapper below
 // export 'src/raylib.g.dart' show TextToFloat;         // → Dart wrapper below
 
-// ── Font loading ────────────────────────────────────────────────────────
+// ── Font loading/unloading ───────────────────────────────────────────────
 
 Font GetFontDefault() => raylib.GetFontDefault().toDart();
 
@@ -245,7 +245,7 @@ void DrawTextCodepoints(
   );
 });
 
-// ── Text measurement ────────────────────────────────────────────────────
+// ── Text font info ──────────────────────────────────────────────────────
 
 int MeasureText(String text, int fontSize) => ffi.using((arena) {
   return raylib.MeasureText(
@@ -284,7 +284,7 @@ GlyphInfo GetGlyphInfo(Font font, int codepoint) {
 Rectangle GetGlyphAtlasRec(Font font, int codepoint) =>
     raylib.GetGlyphAtlasRec(font.ptr.ref, codepoint).toDart();
 
-// ── Codepoints ──────────────────────────────────────────────────────────
+// ── Text codepoints management ──────────────────────────────────────────
 
 int GetCodepointCount(String text) => ffi.using((arena) {
   return raylib.GetCodepointCount(text.toNativeUtf8(allocator: arena).cast());
@@ -325,7 +325,7 @@ int GetCodepointCount(String text) => ffi.using((arena) {
       return (cp, sizePtr.value);
     });
 
-// ── Text utilities ───────────────────────────────────────────────────────
+// ── Text strings management ─────────────────────────────────────────────
 
 int TextToInteger(String text) => ffi.using((arena) {
   return raylib.TextToInteger(text.toNativeUtf8(allocator: arena).cast());

@@ -11,13 +11,12 @@ import 'package:image/image.dart' as img;
 import 'colors.dart';
 import 'structs.dart';
 
-// ── 3D primitives ────────────────────────────────────────────────────────
+// ── Basic geometric 3D shapes ────────────────────────────────────────────
 // export 'src/raylib.g.dart' show DrawLine3D;              // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawPoint3D;             // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawCircle3D;            // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawTriangle3D;          // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawTriangleStrip3D;     // → Dart wrapper below
-// ── 3D solids ────────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show DrawCube;                // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawCubeV;               // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawCubeWires;           // → Dart wrapper below
@@ -34,16 +33,15 @@ import 'structs.dart';
 // export 'src/raylib.g.dart' show DrawPlane;               // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawRay;                 // → Dart wrapper below
 export 'src/raylib.g.dart' show DrawGrid;
-// ── Billboards ───────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show DrawBillboard;           // → Dart wrapper below
-// export 'src/raylib.g.dart' show DrawBillboardRec;        // → Dart wrapper below
-// export 'src/raylib.g.dart' show DrawBillboardPro;        // → Dart wrapper below
-// ── Model ────────────────────────────────────────────────────────────────
+
+// ── Model management ─────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show LoadModel;               // → Dart wrapper below
 // export 'src/raylib.g.dart' show LoadModelFromMesh;       // → Dart wrapper below
 // export 'src/raylib.g.dart' show IsModelValid;            // → Dart wrapper below
 // export 'src/raylib.g.dart' show UnloadModel;             // → model.dispose()
 // export 'src/raylib.g.dart' show GetModelBoundingBox;     // → Dart wrapper below
+
+// ── Model drawing ────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show DrawModel;               // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawModelEx;             // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawModelWires;          // → Dart wrapper below
@@ -51,7 +49,11 @@ export 'src/raylib.g.dart' show DrawGrid;
 // export 'src/raylib.g.dart' show DrawModelPoints;         // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawModelPointsEx;       // → Dart wrapper below
 // export 'src/raylib.g.dart' show DrawBoundingBox;         // → Dart wrapper below
-// ── Mesh ─────────────────────────────────────────────────────────────────
+// export 'src/raylib.g.dart' show DrawBillboard;           // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawBillboardRec;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawBillboardPro;        // → Dart wrapper below
+
+// ── Mesh management ──────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show UploadMesh;              // → Dart wrapper below
 // export 'src/raylib.g.dart' show UpdateMeshBuffer;        // → Dart wrapper below
 // export 'src/raylib.g.dart' show UnloadMesh;              // → mesh.dispose()
@@ -61,6 +63,8 @@ export 'src/raylib.g.dart' show DrawGrid;
 // export 'src/raylib.g.dart' show GenMeshTangents;         // → Dart wrapper below
 // export 'src/raylib.g.dart' show ExportMesh;              // → Dart wrapper below
 // export 'src/raylib.g.dart' show ExportMeshAsCode;        // → Dart wrapper below
+
+// ── Mesh generation ──────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show GenMeshPoly;             // → Dart wrapper below
 // export 'src/raylib.g.dart' show GenMeshPlane;            // → Dart wrapper below
 // export 'src/raylib.g.dart' show GenMeshCube;             // → Dart wrapper below
@@ -72,21 +76,24 @@ export 'src/raylib.g.dart' show DrawGrid;
 // export 'src/raylib.g.dart' show GenMeshKnot;             // → Dart wrapper below
 // export 'src/raylib.g.dart' show GenMeshHeightmap;        // → Dart wrapper below
 // export 'src/raylib.g.dart' show GenMeshCubicmap;         // → Dart wrapper below
-// ── Material ─────────────────────────────────────────────────────────────
+
+// ── Material loading/unloading ───────────────────────────────────────────
 // export 'src/raylib.g.dart' show LoadMaterials;           // → Dart wrapper below
 // export 'src/raylib.g.dart' show LoadMaterialDefault;     // → Dart wrapper below
 // export 'src/raylib.g.dart' show IsMaterialValid;         // → Dart wrapper below
 // export 'src/raylib.g.dart' show UnloadMaterial;          // → material.dispose()
 // export 'src/raylib.g.dart' show SetMaterialTexture;      // → Dart wrapper below
 // export 'src/raylib.g.dart' show SetModelMeshMaterial;    // → Dart wrapper below
-// ── Animation ────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show LoadModelAnimations;     // → Dart wrapper below
-// export 'src/raylib.g.dart' show UpdateModelAnimation;    // → Dart wrapper below
+
+// ── Model animations ─────────────────────────────────────────────────────
+// export 'src/raylib.g.dart' show LoadModelAnimations;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show UpdateModelAnimation;      // → Dart wrapper below
 // export 'src/raylib.g.dart' show UpdateModelAnimationBones; // → Dart wrapper below
-// export 'src/raylib.g.dart' show UnloadModelAnimation;    // → anim.dispose()
-// export 'src/raylib.g.dart' show UnloadModelAnimations;   // → Dart wrapper below
-// export 'src/raylib.g.dart' show IsModelAnimationValid;   // → Dart wrapper below
-// ── Collision ────────────────────────────────────────────────────────────
+// export 'src/raylib.g.dart' show UnloadModelAnimation;      // → anim.dispose()
+// export 'src/raylib.g.dart' show UnloadModelAnimations;     // → Dart wrapper below
+// export 'src/raylib.g.dart' show IsModelAnimationValid;     // → Dart wrapper below
+
+// ── Collision detection ──────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show CheckCollisionSpheres;   // → Dart wrapper below
 // export 'src/raylib.g.dart' show CheckCollisionBoxes;     // → Dart wrapper below
 // export 'src/raylib.g.dart' show CheckCollisionBoxSphere; // → Dart wrapper below
@@ -96,7 +103,7 @@ export 'src/raylib.g.dart' show DrawGrid;
 // export 'src/raylib.g.dart' show GetRayCollisionTriangle; // → Dart wrapper below
 // export 'src/raylib.g.dart' show GetRayCollisionQuad;     // → Dart wrapper below
 
-// ── 3D primitives ────────────────────────────────────────────────────────
+// ── Basic geometric 3D shapes ────────────────────────────────────────────
 
 void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color) =>
     ffi.using((arena) {
@@ -145,8 +152,6 @@ void DrawTriangleStrip3D(List<Vector3> points, Color color) =>
         color.ptr.ref,
       );
     });
-
-// ── 3D solids ────────────────────────────────────────────────────────────
 
 void DrawCube(
   Vector3 position,
@@ -356,67 +361,7 @@ void DrawRay(Ray ray, Color color) => ffi.using((arena) {
   raylib.DrawRay(arena.ray(ray).ref, color.ptr.ref);
 });
 
-// ── Billboards ───────────────────────────────────────────────────────────
-
-void DrawBillboard(
-  Camera3D camera,
-  Texture2D texture,
-  Vector3 position,
-  double scale,
-  Color tint,
-) => ffi.using((arena) {
-  raylib.DrawBillboard(
-    camera.ptr.ref,
-    arena.texture(texture).ref,
-    arena.vector3(position).ref,
-    scale,
-    tint.ptr.ref,
-  );
-});
-
-void DrawBillboardRec(
-  Camera3D camera,
-  Texture2D texture,
-  Rectangle source,
-  Vector3 position,
-  Vector2 size,
-  Color tint,
-) => ffi.using((arena) {
-  raylib.DrawBillboardRec(
-    camera.ptr.ref,
-    arena.texture(texture).ref,
-    source.ptr.ref,
-    arena.vector3(position).ref,
-    arena.vector2(size).ref,
-    tint.ptr.ref,
-  );
-});
-
-void DrawBillboardPro(
-  Camera3D camera,
-  Texture2D texture,
-  Rectangle source,
-  Vector3 position,
-  Vector3 up,
-  Vector2 size,
-  Vector2 origin,
-  double rotation,
-  Color tint,
-) => ffi.using((arena) {
-  raylib.DrawBillboardPro(
-    camera.ptr.ref,
-    arena.texture(texture).ref,
-    source.ptr.ref,
-    arena.vector3(position).ref,
-    arena.vector3(up).ref,
-    arena.vector2(size).ref,
-    arena.vector2(origin).ref,
-    rotation,
-    tint.ptr.ref,
-  );
-});
-
-// ── Model ─────────────────────────────────────────────────────────────────
+// ── Model management ─────────────────────────────────────────────────────
 
 Model LoadModel(String fileName) => ffi.using((arena) {
   return raylib.LoadModel(
@@ -433,6 +378,8 @@ void UnloadModel(Model model) => model.dispose();
 
 BoundingBox GetModelBoundingBox(Model model) =>
     raylib.GetModelBoundingBox(model.ptr.ref).toDart();
+
+// ── Model drawing ────────────────────────────────────────────────────────
 
 void DrawModel(Model model, Vector3 position, double scale, Color tint) =>
     ffi.using((arena) {
@@ -530,7 +477,65 @@ void DrawBoundingBox(BoundingBox box, Color color) => ffi.using((arena) {
   raylib.DrawBoundingBox(arena.boundingBox(box).ref, color.ptr.ref);
 });
 
-// ── Mesh ─────────────────────────────────────────────────────────────────
+void DrawBillboard(
+  Camera3D camera,
+  Texture2D texture,
+  Vector3 position,
+  double scale,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawBillboard(
+    camera.ptr.ref,
+    arena.texture(texture).ref,
+    arena.vector3(position).ref,
+    scale,
+    tint.ptr.ref,
+  );
+});
+
+void DrawBillboardRec(
+  Camera3D camera,
+  Texture2D texture,
+  Rectangle source,
+  Vector3 position,
+  Vector2 size,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawBillboardRec(
+    camera.ptr.ref,
+    arena.texture(texture).ref,
+    source.ptr.ref,
+    arena.vector3(position).ref,
+    arena.vector2(size).ref,
+    tint.ptr.ref,
+  );
+});
+
+void DrawBillboardPro(
+  Camera3D camera,
+  Texture2D texture,
+  Rectangle source,
+  Vector3 position,
+  Vector3 up,
+  Vector2 size,
+  Vector2 origin,
+  double rotation,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawBillboardPro(
+    camera.ptr.ref,
+    arena.texture(texture).ref,
+    source.ptr.ref,
+    arena.vector3(position).ref,
+    arena.vector3(up).ref,
+    arena.vector2(size).ref,
+    arena.vector2(origin).ref,
+    rotation,
+    tint.ptr.ref,
+  );
+});
+
+// ── Mesh management ──────────────────────────────────────────────────────
 
 /// Uploads [mesh] vertex data to the GPU (sets vaoId/vboId in-place).
 void UploadMesh(Mesh mesh, bool dynamic) =>
@@ -541,7 +546,9 @@ void UpdateMeshBuffer(Mesh mesh, int index, Uint8List data, int offset) =>
     ffi.using((arena) {
       final ptr = arena<Uint8>(data.length);
       ptr.asTypedList(data.length).setAll(0, data);
-      raylib.UpdateMeshBuffer(mesh.ptr.ref, index, ptr.cast(), data.length, offset);
+      raylib.UpdateMeshBuffer(
+        mesh.ptr.ref, index, ptr.cast(), data.length, offset,
+      );
     });
 
 void UnloadMesh(Mesh mesh) => mesh.dispose();
@@ -589,6 +596,8 @@ bool ExportMeshAsCode(Mesh mesh, String fileName) => ffi.using((arena) {
   );
 });
 
+// ── Mesh generation ──────────────────────────────────────────────────────
+
 Mesh GenMeshPoly(int sides, double radius) =>
     raylib.GenMeshPoly(sides, radius).toDart();
 
@@ -632,7 +641,7 @@ Mesh GenMeshCubicmap(img.Image cubicmap, Vector3 cubeSize) =>
       ).toDart();
     });
 
-// ── Material ─────────────────────────────────────────────────────────────
+// ── Material loading/unloading ───────────────────────────────────────────
 
 /// Returns all materials loaded from [fileName].
 /// Each material is independently managed by its own [Finalizer].
@@ -671,7 +680,7 @@ void SetMaterialTexture(Material material, int mapType, Texture texture) =>
 void SetModelMeshMaterial(Model model, int meshId, int materialId) =>
     raylib.SetModelMeshMaterial(model.ptr, meshId, materialId);
 
-// ── Animation ────────────────────────────────────────────────────────────
+// ── Model animations ─────────────────────────────────────────────────────
 
 /// Returns all animations loaded from [fileName].
 /// Each animation is independently managed by its own [Finalizer].
@@ -709,7 +718,7 @@ void UnloadModelAnimations(List<ModelAnimation> animations) {
 bool IsModelAnimationValid(Model model, ModelAnimation anim) =>
     raylib.IsModelAnimationValid(model.ptr.ref, anim.ptr.ref);
 
-// ── Collision ────────────────────────────────────────────────────────────
+// ── Collision detection ──────────────────────────────────────────────────
 
 bool CheckCollisionSpheres(
   Vector3 center1,

@@ -19,27 +19,22 @@ export 'src/raylib.g.dart' show IsAudioDeviceReady;
 export 'src/raylib.g.dart' show SetMasterVolume;
 export 'src/raylib.g.dart' show GetMasterVolume;
 
-// ── Wave ───────────────────────────────────────────────────────────────
+// ── Wave/Sound loading/unloading ───────────────────────────────────────
 // export 'src/raylib.g.dart' show LoadWave;              // → Dart wrapper below
 // export 'src/raylib.g.dart' show LoadWaveFromMemory;    // → Dart wrapper below
 // export 'src/raylib.g.dart' show IsWaveValid;           // → Dart wrapper below
-// export 'src/raylib.g.dart' show WaveCopy;              // → Dart wrapper below
-// export 'src/raylib.g.dart' show WaveCrop;              // → Dart wrapper below
-// export 'src/raylib.g.dart' show WaveFormat;            // → Dart wrapper below
-// export 'src/raylib.g.dart' show LoadWaveSamples;       // → Dart wrapper below
-// export 'src/raylib.g.dart' show UnloadWaveSamples;     // consumed by LoadWaveSamples
-// export 'src/raylib.g.dart' show UnloadWave;            // → wave.dispose()
-// export 'src/raylib.g.dart' show ExportWave;            // → Dart wrapper below
-// export 'src/raylib.g.dart' show ExportWaveAsCode;      // → Dart wrapper below
-
-// ── Sound ──────────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show LoadSound;             // → Dart wrapper below
 // export 'src/raylib.g.dart' show LoadSoundFromWave;     // → Dart wrapper below
 // export 'src/raylib.g.dart' show LoadSoundAlias;        // alias 语义不兼容 Finalizer
 // export 'src/raylib.g.dart' show IsSoundValid;          // → Dart wrapper below
 // export 'src/raylib.g.dart' show UpdateSound;           // → Dart wrapper below
+// export 'src/raylib.g.dart' show UnloadWave;            // → wave.dispose()
 // export 'src/raylib.g.dart' show UnloadSound;           // → sound.dispose()
 // export 'src/raylib.g.dart' show UnloadSoundAlias;      // alias 语义不兼容 Finalizer
+// export 'src/raylib.g.dart' show ExportWave;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show ExportWaveAsCode;      // → Dart wrapper below
+
+// ── Wave/Sound management ──────────────────────────────────────────────
 // export 'src/raylib.g.dart' show PlaySound;             // → Dart wrapper below
 // export 'src/raylib.g.dart' show StopSound;             // → Dart wrapper below
 // export 'src/raylib.g.dart' show PauseSound;            // → Dart wrapper below
@@ -48,6 +43,11 @@ export 'src/raylib.g.dart' show GetMasterVolume;
 // export 'src/raylib.g.dart' show SetSoundVolume;        // → Dart wrapper below
 // export 'src/raylib.g.dart' show SetSoundPitch;         // → Dart wrapper below
 // export 'src/raylib.g.dart' show SetSoundPan;           // → Dart wrapper below
+// export 'src/raylib.g.dart' show WaveCopy;              // → Dart wrapper below
+// export 'src/raylib.g.dart' show WaveCrop;              // → Dart wrapper below
+// export 'src/raylib.g.dart' show WaveFormat;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show LoadWaveSamples;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show UnloadWaveSamples;     // consumed by LoadWaveSamples
 
 // ── Music ──────────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show LoadMusicStream;           // → Dart wrapper below
@@ -88,7 +88,7 @@ export 'src/raylib.g.dart' show SetAudioStreamBufferSizeDefault;
 // export 'src/raylib.g.dart' show AttachAudioMixedProcessor;    // 需要 NativeCallable
 // export 'src/raylib.g.dart' show DetachAudioMixedProcessor;    // 需要 NativeCallable
 
-// ── Wave ───────────────────────────────────────────────────────────────
+// ── Wave/Sound loading/unloading ───────────────────────────────────────
 
 Wave LoadWave(String fileName) => ffi.using((arena) {
   return raylib.LoadWave(
@@ -109,44 +109,6 @@ Wave LoadWaveFromMemory(String fileType, Uint8List fileData) =>
 
 bool IsWaveValid(Wave wave) => raylib.IsWaveValid(wave.ptr.ref);
 
-Wave WaveCopy(Wave wave) => raylib.WaveCopy(wave.ptr.ref).toDart();
-
-/// Crops [wave] in-place to frames [initFrame]..[finalFrame].
-void WaveCrop(Wave wave, int initFrame, int finalFrame) =>
-    raylib.WaveCrop(wave.ptr, initFrame, finalFrame);
-
-/// Reformats [wave] in-place to the given sample rate, size, and channels.
-void WaveFormat(Wave wave, int sampleRate, int sampleSize, int channels) =>
-    raylib.WaveFormat(wave.ptr, sampleRate, sampleSize, channels);
-
-/// Returns a normalized Float32 PCM sample list and immediately releases
-/// the C-allocated buffer.
-Float32List LoadWaveSamples(Wave wave) {
-  final ptr = raylib.LoadWaveSamples(wave.ptr.ref);
-  final count = wave.frameCount * wave.channels;
-  final result = Float32List.fromList(ptr.asTypedList(count));
-  raylib.UnloadWaveSamples(ptr);
-  return result;
-}
-
-void UnloadWave(Wave wave) => wave.dispose();
-
-bool ExportWave(Wave wave, String fileName) => ffi.using((arena) {
-  return raylib.ExportWave(
-    wave.ptr.ref,
-    fileName.toNativeUtf8(allocator: arena).cast(),
-  );
-});
-
-bool ExportWaveAsCode(Wave wave, String fileName) => ffi.using((arena) {
-  return raylib.ExportWaveAsCode(
-    wave.ptr.ref,
-    fileName.toNativeUtf8(allocator: arena).cast(),
-  );
-});
-
-// ── Sound ──────────────────────────────────────────────────────────────
-
 Sound LoadSound(String fileName) => ffi.using((arena) {
   return raylib.LoadSound(
     fileName.toNativeUtf8(allocator: arena).cast(),
@@ -166,7 +128,25 @@ void UpdateSound(Sound sound, Uint8List data, int sampleCount) =>
       raylib.UpdateSound(sound.ptr.ref, ptr.cast(), sampleCount);
     });
 
+void UnloadWave(Wave wave) => wave.dispose();
+
 void UnloadSound(Sound sound) => sound.dispose();
+
+bool ExportWave(Wave wave, String fileName) => ffi.using((arena) {
+  return raylib.ExportWave(
+    wave.ptr.ref,
+    fileName.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+bool ExportWaveAsCode(Wave wave, String fileName) => ffi.using((arena) {
+  return raylib.ExportWaveAsCode(
+    wave.ptr.ref,
+    fileName.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+// ── Wave/Sound management ──────────────────────────────────────────────
 
 void PlaySound(Sound sound) => raylib.PlaySound(sound.ptr.ref);
 
@@ -186,6 +166,26 @@ void SetSoundPitch(Sound sound, double pitch) =>
 
 void SetSoundPan(Sound sound, double pan) =>
     raylib.SetSoundPan(sound.ptr.ref, pan);
+
+Wave WaveCopy(Wave wave) => raylib.WaveCopy(wave.ptr.ref).toDart();
+
+/// Crops [wave] in-place to frames [initFrame]..[finalFrame].
+void WaveCrop(Wave wave, int initFrame, int finalFrame) =>
+    raylib.WaveCrop(wave.ptr, initFrame, finalFrame);
+
+/// Reformats [wave] in-place to the given sample rate, size, and channels.
+void WaveFormat(Wave wave, int sampleRate, int sampleSize, int channels) =>
+    raylib.WaveFormat(wave.ptr, sampleRate, sampleSize, channels);
+
+/// Returns a normalized Float32 PCM sample list and immediately releases
+/// the C-allocated buffer.
+Float32List LoadWaveSamples(Wave wave) {
+  final ptr = raylib.LoadWaveSamples(wave.ptr.ref);
+  final count = wave.frameCount * wave.channels;
+  final result = Float32List.fromList(ptr.asTypedList(count));
+  raylib.UnloadWaveSamples(ptr);
+  return result;
+}
 
 // ── Music ──────────────────────────────────────────────────────────────
 
