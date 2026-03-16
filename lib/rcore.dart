@@ -1,14 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
-import 'structs.dart';
-
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'src/raylib_const.g.dart' as consts;
 import 'package:image/image.dart' as img;
 import 'package:vector_math/vector_math.dart';
+import 'colors.dart';
+import 'structs.dart';
 
 // export 'src/raylib.g.dart' show InitWindow;
 // export 'src/raylib.g.dart' show CloseWindow;
@@ -51,12 +51,12 @@ export 'src/raylib.g.dart' show GetMonitorHeight;
 export 'src/raylib.g.dart' show GetMonitorPhysicalWidth;
 export 'src/raylib.g.dart' show GetMonitorPhysicalHeight;
 export 'src/raylib.g.dart' show GetMonitorRefreshRate;
-export 'src/raylib.g.dart' show GetWindowPosition;
-export 'src/raylib.g.dart' show GetWindowScaleDPI;
+// export 'src/raylib.g.dart' show GetWindowPosition;
+// export 'src/raylib.g.dart' show GetWindowScaleDPI;
 // export 'src/raylib.g.dart' show GetMonitorName;
 // export 'src/raylib.g.dart' show SetClipboardText;
 // export 'src/raylib.g.dart' show GetClipboardText;
-export 'src/raylib.g.dart' show GetClipboardImage;
+// export 'src/raylib.g.dart' show GetClipboardImage;
 export 'src/raylib.g.dart' show EnableEventWaiting;
 export 'src/raylib.g.dart' show DisableEventWaiting;
 export 'src/raylib.g.dart' show ShowCursor;
@@ -65,12 +65,12 @@ export 'src/raylib.g.dart' show IsCursorHidden;
 export 'src/raylib.g.dart' show EnableCursor;
 export 'src/raylib.g.dart' show DisableCursor;
 export 'src/raylib.g.dart' show IsCursorOnScreen;
-export 'src/raylib.g.dart' show ClearBackground;
+// export 'src/raylib.g.dart' show ClearBackground;
 export 'src/raylib.g.dart' show BeginDrawing;
 export 'src/raylib.g.dart' show EndDrawing;
-export 'src/raylib.g.dart' show BeginMode2D;
+// export 'src/raylib.g.dart' show BeginMode2D;
 export 'src/raylib.g.dart' show EndMode2D;
-export 'src/raylib.g.dart' show BeginMode3D;
+// export 'src/raylib.g.dart' show BeginMode3D;
 export 'src/raylib.g.dart' show EndMode3D;
 export 'src/raylib.g.dart' show BeginTextureMode;
 export 'src/raylib.g.dart' show EndTextureMode;
@@ -271,6 +271,9 @@ void SetWindowTitle(String title) {
 Vector2 GetMonitorPosition(int monitor) =>
     raylib.GetMonitorPosition(monitor).toDart();
 
+Vector2 GetWindowPosition() => raylib.GetWindowPosition().toDart();
+Vector2 GetWindowScaleDPI() => raylib.GetWindowScaleDPI().toDart();
+
 String GetMonitorName(int monitor) =>
     raylib.GetMonitorName(monitor).cast<ffi.Utf8>().toDartString();
 
@@ -285,3 +288,10 @@ void SetClipboardText(String text) {
 
 String GetClipboardText() =>
     raylib.GetClipboardText().cast<ffi.Utf8>().toDartString();
+
+img.Image GetClipboardImage() => raylib.GetClipboardImage().toDart();
+
+void ClearBackground(Color color) => raylib.ClearBackground(color.ptr.ref);
+
+void BeginMode2D(Camera2D camera) => raylib.BeginMode2D(camera.ptr.ref);
+void BeginMode3D(Camera3D camera) => raylib.BeginMode3D(camera.ptr.ref);

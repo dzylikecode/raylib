@@ -1,9 +1,12 @@
+import 'package:meta/meta.dart';
+
 import 'src/raylib.g.dart' as raylib;
 import 'package:vector_math/vector_math.dart';
 import 'package:image/image.dart' as img;
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart' as ffi;
+import 'src/raylib_const.dart' as consts;
 
 extension Vector2Extension on raylib.Vector2 {
   Vector2 toDart() => .new(x, y);
@@ -46,31 +49,32 @@ extension MatrixExtension on raylib.Matrix {
 extension RaylibImageToDart on raylib.Image {
   img.Image toDart() {
     final n = width * height;
-    return switch (format) {
-      1 => img.Image.fromBytes( // GRAYSCALE
+    final fmt = consts.PixelFormat.fromValue(format);
+    return switch (fmt) {
+      .uncompressedGrayscale => .fromBytes(
         width: width,
         height: height,
         bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n)).buffer,
         numChannels: 1,
       ),
-      2 => img.Image.fromBytes( // GRAY_ALPHA
+      .uncompressedGrayAlpha => .fromBytes(
         width: width,
         height: height,
         bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n * 2)).buffer,
         numChannels: 2,
       ),
-      4 => img.Image.fromBytes( // R8G8B8
+      .uncompressedR8g8b8 => .fromBytes(
         width: width,
         height: height,
         bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n * 3)).buffer,
         numChannels: 3,
       ),
-      7 => img.Image.fromBytes( // R8G8B8A8
+      .uncompressedR8g8b8a8 => .fromBytes(
         width: width,
         height: height,
         bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n * 4)).buffer,
         numChannels: 4,
-        order: img.ChannelOrder.rgba,
+        order: .rgba,
       ),
       _ => throw UnsupportedError('PixelFormat $format is not supported for conversion to dart Image'),
     };
@@ -156,7 +160,133 @@ extension ArenaExt on ffi.Arena {
       ..width = value.width
       ..height = value.height
       ..mipmaps = 1
-      ..format = 7; // PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+      ..format = consts.PixelFormat.uncompressedR8g8b8a8.value;
     return ptr;
+  }
+}
+
+
+class Camera2D {
+  final Pointer<raylib.Camera2D> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Camera2D>>(_free);
+  static void _free(Pointer<raylib.Camera2D> ptr) {
+    ffi.malloc.free(ptr);
+  }
+
+  Camera2D._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  factory Camera2D({
+    Vector2? offset,
+    Vector2? target,
+    double rotation = 0.0,
+    double zoom = 1.0,
+  }) {
+    final pointer = ffi.malloc<raylib.Camera2D>();
+
+    // 初始化，否则值是随机的，视野都不知道去哪里了
+    return Camera2D._(pointer)
+      ..offset = offset ?? .zero()
+      ..target = target ?? .zero()
+      ..rotation = rotation
+      ..zoom = zoom;
+  }
+
+  Vector2 get offset => ptr.ref.offset.toDart();
+  set offset(Vector2 value) {
+    ptr.ref.offset.x = value.x;
+    ptr.ref.offset.y = value.y;
+  }
+
+  Vector2 get target => ptr.ref.target.toDart();
+  set target(Vector2 value) {
+    ptr.ref.target.x = value.x;
+    ptr.ref.target.y = value.y;
+  }
+
+  double get rotation => ptr.ref.rotation;
+  set rotation(double value) => ptr.ref.rotation = value;
+
+  double get zoom => ptr.ref.zoom;
+  set zoom(double value) => ptr.ref.zoom = value;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this); // 取消自动释放
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+class Camera3D {
+  final Pointer<raylib.Camera3D> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Camera3D>>(_free);
+
+  static void _free(Pointer<raylib.Camera3D> ptr) {
+    ffi.malloc.free(ptr);
+  }
+
+  Camera3D._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  factory Camera3D({
+    Vector3? position,
+    Vector3? target,
+    Vector3? up,
+    double fovy = 45.0,
+    int projection = 0, // CAMERA_PERSPECTIVE
+  }) {
+    final pointer = ffi.malloc<raylib.Camera3D>();
+
+    return Camera3D._(pointer)
+      ..position = position ?? .zero()
+      ..target = target ?? .zero()
+      ..up =
+          up ??
+          .zero() // TODO: (0,1,0) 应该是这个
+      ..fovy = fovy
+      ..projection = projection;
+  }
+
+  Vector3 get position => ptr.ref.position.toDart();
+  set position(Vector3 value) {
+    ptr.ref.position.x = value.x;
+    ptr.ref.position.y = value.y;
+    ptr.ref.position.z = value.z;
+  }
+
+  Vector3 get target => ptr.ref.target.toDart();
+  set target(Vector3 value) {
+    ptr.ref.target.x = value.x;
+    ptr.ref.target.y = value.y;
+    ptr.ref.target.z = value.z;
+  }
+
+  Vector3 get up => ptr.ref.up.toDart();
+  set up(Vector3 value) {
+    ptr.ref.up.x = value.x;
+    ptr.ref.up.y = value.y;
+    ptr.ref.up.z = value.z;
+  }
+
+  double get fovy => ptr.ref.fovy;
+  set fovy(double value) => ptr.ref.fovy = value;
+
+  int get projection => ptr.ref.projection;
+  set projection(int value) => ptr.ref.projection = value;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this); // 取消自动释放
+    _free(ptr);
+    _disposed = true;
   }
 }
