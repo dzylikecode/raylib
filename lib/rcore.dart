@@ -1,8 +1,51 @@
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 //
-// 故意不代理（无合理的 Dart 等价）：
-//   MemAlloc, MemRealloc, MemFree  — 底层内存管理，用 ffi.malloc 替代
+// 本文件对 raylib C API 进行 Dart 封装，封装策略分以下几类：
+//
+// ## 故意不代理（无合理的 Dart 等价）
+//   MemAlloc, MemRealloc, MemFree        — 底层内存管理，用 ffi.malloc 替代
+//   SetTraceLogCallback (native)         — 已由 src/logging.dart 的 Dart 版替代
+//   SetLoad/SaveFile*Callback (native)   — 已由 src/callback.dart 的 Dart 版替代
+//
+// ## String 转换
+//   所有 Pointer<Char> 参数/返回值统一换成 String，
+//   入参通过 Arena 分配 UTF-8 缓冲区，函数返回后自动释放。
+//   例：LoadShader, FileExists, TakeScreenshot
+//
+// ## TypedData 转换
+//   Pointer<Void> / Pointer<UnsignedChar> 的二进制数据换成 Uint8List。
+//   例：SetShaderValue, LoadFileData, CompressData
+//
+// ## 更好的语义（enum 替换裸 int）
+//   用 consts.* enum 替换语义不明的 int 参数/返回值。
+//   例：IsWindowState(ConfigFlags), IsKeyPressed(KeyboardKey),
+//       IsMouseButtonDown(MouseButton), UpdateCamera(CameraMode)
+//
+// ## 自动 Unload（内部消费 C 资源）
+//   C 侧需要手动 Unload 的资源，Dart 侧在内部完成释放，
+//   用户拿到的直接是普通 Dart 对象，无需关心生命周期。
+//   例：LoadDirectoryFiles → List<String>，LoadFileData → Uint8List
+//
+// ## 代理 handle 对象（GPU 资源，纯 id）
+//   存在 GPU 的资源本质上只是一个整数 id，
+//   用不可变 Dart class 持有这些字段即可，无需绑定 C 指针。
+//   例：Texture, RenderTexture2D
+//
+// ## 代理数据对象（Finalizer + C 内存）
+//   C 侧分配并持续持有的结构体，用 Dart class 包装其指针，
+//   通过 Finalizer 在 GC 时自动释放，也可手动 dispose()。
+//   例：Camera2D, Camera3D, Shader, VrStereoConfig, AutomationEventList
+//
+// ## Dart 回调替换
+//   用 NativeCallable.isolateLocal 将 Dart 闭包桥接为 C 函数指针，
+//   或直接用 Dart 机制完全替代 C 回调体系。
+//   例：src/callback.dart（文件 IO 回调），src/logging.dart（日志回调）
+//
+// ## C 兼容存根（@Deprecated）
+//   保留 C 侧的函数名但实现为空操作，方便直接移植 C 代码，
+//   同时通过 @Deprecated 提示用户该调用是多余的。
+//   例：UnloadRandomSequence
 
 
 import 'src/raylib.g.dart' as raylib;
