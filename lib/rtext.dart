@@ -330,7 +330,7 @@ bool TextIsEqual(String text1, String text2) => text1 == text2;
 int TextLength(String text) => text.length;
 
 @Deprecated('Use string interpolation instead')
-String? TextFormat(String format, List<Object> args) => sprintf(format, args);
+String TextFormat(String format, List<Object> args) => sprintf(format, args) ?? "";
 
 @Deprecated('Use .substring() instead')
 String TextSubtext(String text, int position, int length) =>

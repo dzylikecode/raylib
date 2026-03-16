@@ -1,31 +1,42 @@
 /*******************************************************************************************
 *
-*   raylib [core] example - Keyboard input
+*   raylib [core] example - Basic window
+*
+*   Welcome to raylib!
+*
+*   To test examples, just press F6 and execute 'raylib_compile_execute' script
+*   Note that compiled executable is placed in the same folder as .c file
+*
+*   To test the examples on Web, press F6 and execute 'raylib_compile_execute_web' script
+*   Web version of the program is generated in the same folder as .c file
+*
+*   You can find all basic examples on C:\raylib\raylib\examples folder or
+*   raylib official webpage: www.raylib.com
+*
+*   Enjoy using raylib. :)
 *
 *   Example originally created with raylib 1.0, last time updated with raylib 1.0
 *
 *   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
 *   BSD-like license that allows static linking with closed source software
 *
-*   Copyright (c) 2014-2024 Ramon Santamaria (@raysan5)
+*   Copyright (c) 2013-2024 Ramon Santamaria (@raysan5)
 *
 ********************************************************************************************/
 
-#include "raylib.h"
+import 'package:raylib_dart/raylib_dart.dart';
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - keyboard input");
-
-    Vector2 ballPosition = { (float)screenWidth/2, (float)screenHeight/2 };
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -35,10 +46,7 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_RIGHT)) ballPosition.x += 2.0f;
-        if (IsKeyDown(KEY_LEFT)) ballPosition.x -= 2.0f;
-        if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0f;
-        if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0f;
+        // TODO: Update your variables here
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -47,9 +55,7 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
-            DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
-
-            DrawCircleV(ballPosition, 50, MAROON);
+            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
         EndDrawing();
         //----------------------------------------------------------------------------------

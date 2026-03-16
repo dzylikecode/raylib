@@ -1,32 +1,35 @@
 /*******************************************************************************************
 *
-*   raylib [core] example - Mouse input
+*   raylib [core] example - Input multitouch
 *
-*   Example originally created with raylib 1.0, last time updated with raylib 4.0
+*   Example originally created with raylib 2.1, last time updated with raylib 2.5
+*
+*   Example contributed by Berni (@Berni8k) and reviewed by Ramon Santamaria (@raysan5)
 *
 *   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
 *   BSD-like license that allows static linking with closed source software
 *
-*   Copyright (c) 2014-2024 Ramon Santamaria (@raysan5)
+*   Copyright (c) 2019-2024 Berni (@Berni8k) and Ramon Santamaria (@raysan5)
 *
 ********************************************************************************************/
 
-#include "raylib.h"
+import 'package:raylib_dart/raylib_dart.dart';
+
+const MAX_TOUCH_POINTS = 10;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - mouse input");
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - input multitouch");
 
-    Vector2 ballPosition = { -100.0f, -100.0f };
-    Color ballColor = DARKBLUE;
+    List<Vector2> touchPositions = List.generate(MAX_TOUCH_POINTS, (i) => Vector2.zero());
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //---------------------------------------------------------------------------------------
@@ -36,15 +39,12 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        ballPosition = GetMousePosition();
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) ballColor = MAROON;
-        else if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) ballColor = LIME;
-        else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) ballColor = DARKBLUE;
-        else if (IsMouseButtonPressed(MOUSE_BUTTON_SIDE)) ballColor = PURPLE;
-        else if (IsMouseButtonPressed(MOUSE_BUTTON_EXTRA)) ballColor = YELLOW;
-        else if (IsMouseButtonPressed(MOUSE_BUTTON_FORWARD)) ballColor = ORANGE;
-        else if (IsMouseButtonPressed(MOUSE_BUTTON_BACK)) ballColor = BEIGE;
+        // Get the touch point count ( how many fingers are touching the screen )
+        int tCount = GetTouchPointCount();
+        // Clamp touch points available ( set the maximum touch points allowed )
+        if(tCount > MAX_TOUCH_POINTS) tCount = MAX_TOUCH_POINTS;
+        // Get touch points positions
+        for (int i = 0; i < tCount; ++i) touchPositions[i] = GetTouchPosition(i);
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -52,10 +52,19 @@ int main(void)
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
+            
+            for (int i = 0; i < tCount; ++i)
+            {
+                // Make sure point is not (0, 0) as this means there is no touch for it
+                if ((touchPositions[i].x > 0) && (touchPositions[i].y > 0))
+                {
+                    // Draw circle and touch index number
+                    DrawCircleV(touchPositions[i], 34, ORANGE);
+                    DrawText(TextFormat("%d", [i]), touchPositions[i].x.toInt() - 10, touchPositions[i].y.toInt() - 70, 40, BLACK);
+                }
+            }
 
-            DrawCircleV(ballPosition, 40, ballColor);
-
-            DrawText("move ball with mouse and click mouse button to change color", 10, 10, 20, DARKGRAY);
+            DrawText("touch the screen at multiple locations to get multiple balls", 10, 10, 20, DARKGRAY);
 
         EndDrawing();
         //----------------------------------------------------------------------------------

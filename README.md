@@ -279,7 +279,27 @@ int main()
 dart 用 `~/` 代替 C 的 `/` 进行整除
 
 
+### float 类型
 
+这个定义在 cdart 里面
+
+```c
+float a = 1.0f;
+```
+
+```dart
+float a = 1.0.f;
+```
+
+### 类型转化
+
+```c
+(int)(leftStickX*20)
+```
+
+```dart
+(leftStickX*20).toInt()
+```
 
 
 ## 封装原则

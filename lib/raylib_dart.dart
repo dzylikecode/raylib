@@ -8,9 +8,13 @@ export 'raudio.dart';
 export 'structs.dart';
 export 'colors.dart';
 
-export 'raymath.dart';
-
 export 'modern.dart';
+
+export 'package:vector_math/vector_math.dart';
+export 'package:cdart/cdart.dart' show float;
+export 'package:cdart/cdart.dart' show FloatExt;
+
+
 import 'structs.dart';
 
 @Deprecated('Use Camera3D instead')

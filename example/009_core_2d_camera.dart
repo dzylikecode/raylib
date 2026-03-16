@@ -11,14 +11,14 @@
 *
 ********************************************************************************************/
 
-#include "raylib.h"
+import 'package:raylib_dart/raylib_dart.dart';
 
-#define MAX_BUILDINGS   100
+const MAX_BUILDINGS = 100;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -27,29 +27,29 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera");
 
-    Rectangle player = { 400, 280, 40, 40 };
-    Rectangle buildings[MAX_BUILDINGS] = { 0 };
-    Color buildColors[MAX_BUILDINGS] = { 0 };
+    Rectangle player = .fromLTWH(400, 280, 40, 40 );
+    List<Rectangle> buildings = List.generate(MAX_BUILDINGS, (i) => Rectangle.zero());
+    List<Color> buildColors = List.generate(MAX_BUILDINGS, (i) => Color());
 
     int spacing = 0;
 
     for (int i = 0; i < MAX_BUILDINGS; i++)
     {
-        buildings[i].width = (float)GetRandomValue(50, 200);
-        buildings[i].height = (float)GetRandomValue(100, 800);
-        buildings[i].y = screenHeight - 130.0f - buildings[i].height;
-        buildings[i].x = -6000.0f + spacing;
+        buildings[i].width = GetRandomValue(50, 200).toDouble();
+        buildings[i].height = GetRandomValue(100, 800).toDouble();
+        buildings[i].y = screenHeight - 130.0 - buildings[i].height;
+        buildings[i].x = -6000.0 + spacing;
 
-        spacing += (int)buildings[i].width;
+        spacing += buildings[i].width.toInt();
 
-        buildColors[i] = (Color){ GetRandomValue(200, 240), GetRandomValue(200, 240), GetRandomValue(200, 250), 255 };
+        buildColors[i] = .fromRGBA(GetRandomValue(200, 240), GetRandomValue(200, 240), GetRandomValue(200, 250), 255 );
     }
 
-    Camera2D camera = { 0 };
-    camera.target = (Vector2){ player.x + 20.0f, player.y + 20.0f };
-    camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
-    camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
+    Camera2D camera = Camera2D();
+    camera.target = Vector2(player.x + 20.0.f, player.y + 20.0.f);
+    camera.offset = Vector2(screenWidth/2.0.f, screenHeight/2.0.f);
+    camera.rotation = 0.0.f;
+    camera.zoom = 1.0.f;
 
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ int main(void)
         else if (IsKeyDown(KEY_LEFT)) player.x -= 2;
 
         // Camera target follows player
-        camera.target = (Vector2){ player.x + 20, player.y + 20 };
+        camera.target = Vector2(player.x + 20, player.y + 20);
 
         // Camera rotation controls
         if (IsKeyDown(KEY_A)) camera.rotation--;
@@ -75,16 +75,16 @@ int main(void)
         else if (camera.rotation < -40) camera.rotation = -40;
 
         // Camera zoom controls
-        camera.zoom += ((float)GetMouseWheelMove()*0.05f);
+        camera.zoom += (GetMouseWheelMove()*0.05.f);
 
-        if (camera.zoom > 3.0f) camera.zoom = 3.0f;
-        else if (camera.zoom < 0.1f) camera.zoom = 0.1f;
+        if (camera.zoom > 3.0.f) camera.zoom = 3.0.f;
+        else if (camera.zoom < 0.1.f) camera.zoom = 0.1.f;
 
         // Camera reset (zoom and rotation)
         if (IsKeyPressed(KEY_R))
         {
-            camera.zoom = 1.0f;
-            camera.rotation = 0.0f;
+            camera.zoom = 1.0.f;
+            camera.rotation = 0.0.f;
         }
         //----------------------------------------------------------------------------------
 
@@ -102,8 +102,8 @@ int main(void)
 
                 DrawRectangleRec(player, RED);
 
-                DrawLine((int)camera.target.x, -screenHeight*10, (int)camera.target.x, screenHeight*10, GREEN);
-                DrawLine(-screenWidth*10, (int)camera.target.y, screenWidth*10, (int)camera.target.y, GREEN);
+                DrawLine(camera.target.x.toInt(), -screenHeight*10, camera.target.x.toInt(), screenHeight*10, GREEN);
+                DrawLine(-screenWidth*10, camera.target.y.toInt(), screenWidth*10, camera.target.y.toInt(), GREEN);
 
             EndMode2D();
 
@@ -114,7 +114,7 @@ int main(void)
             DrawRectangle(screenWidth - 5, 5, 5, screenHeight - 10, RED);
             DrawRectangle(0, screenHeight - 5, screenWidth, 5, RED);
 
-            DrawRectangle( 10, 10, 250, 113, Fade(SKYBLUE, 0.5f));
+            DrawRectangle( 10, 10, 250, 113, Fade(SKYBLUE, 0.5.f));
             DrawRectangleLines( 10, 10, 250, 113, BLUE);
 
             DrawText("Free 2d camera controls:", 20, 20, 10, BLACK);
