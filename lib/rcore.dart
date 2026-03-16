@@ -52,7 +52,6 @@ import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'src/raylib_const.dart' as consts;
-import 'package:image/image.dart' as img;
 import 'package:vector_math/vector_math.dart';
 import 'colors.dart';
 import 'structs.dart';
@@ -312,11 +311,11 @@ void SetWindowState(consts.ConfigFlags flags) =>
 void ClearWindowState(consts.ConfigFlags flags) =>
     raylib.ClearWindowState(flags.value);
 
-void SetWindowIcon(img.Image image) => ffi.using((arena) {
+void SetWindowIcon(Image image) => ffi.using((arena) {
   return raylib.SetWindowIcon(arena.image(image).ref);
 });
 
-void SetWindowIcons(List<img.Image> images, [int? count]) {
+void SetWindowIcons(List<Image> images, [int? count]) {
   count ??= images.length;
   return ffi.using((arena) {
     final imageArray = arena<raylib.Image>(count!);
@@ -366,7 +365,7 @@ void SetClipboardText(String text) {
 String GetClipboardText() =>
     raylib.GetClipboardText().cast<ffi.Utf8>().toDartString();
 
-img.Image GetClipboardImage() => raylib.GetClipboardImage().toDart();
+Image GetClipboardImage() => raylib.GetClipboardImage().toDart();
 
 // ── Drawing ────────────────────────────────────────────────────────────
 

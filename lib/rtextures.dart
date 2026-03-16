@@ -11,7 +11,6 @@ import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'dart:typed_data';
-import 'package:vector_math/vector_math.dart';
 import 'package:image/image.dart' as img;
 import 'colors.dart';
 import 'structs.dart';

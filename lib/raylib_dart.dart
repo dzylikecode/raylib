@@ -10,7 +10,6 @@ export 'colors.dart';
 
 export 'modern.dart';
 
-export 'package:vector_math/vector_math.dart';
 export 'package:cdart/cdart.dart' show float;
 export 'package:cdart/cdart.dart' show FloatExt;
 

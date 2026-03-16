@@ -53,23 +53,23 @@ export 'src/raylib.g.dart' show SetTextLineSpacing;
 
 // ── Text strings management ─────────────────────────────────────────────
 // export 'src/raylib.g.dart' show TextCopy;            // writes to char* dst — skip (use string assignment)
-// export 'src/raylib.g.dart' show TextIsEqual;         // → Dart wrapper below (deprecated, use ==)
-// export 'src/raylib.g.dart' show TextLength;          // → Dart wrapper below (deprecated, use .length)
-// export 'src/raylib.g.dart' show TextFormat;          // → Dart wrapper below (deprecated, use string interpolation)
-// export 'src/raylib.g.dart' show TextSubtext;         // → Dart wrapper below (deprecated, use .substring())
-// export 'src/raylib.g.dart' show TextReplace;         // → Dart wrapper below (deprecated, use .replaceAll())
-// export 'src/raylib.g.dart' show TextInsert;          // → Dart wrapper below (deprecated, use + / interpolation)
-// export 'src/raylib.g.dart' show TextJoin;            // → Dart wrapper below (deprecated, use .join())
-// export 'src/raylib.g.dart' show TextSplit;           // → Dart wrapper below (deprecated, use .split())
-// export 'src/raylib.g.dart' show TextAppend;          // → Dart wrapper below (deprecated, use +=)
-// export 'src/raylib.g.dart' show TextFindIndex;       // → Dart wrapper below (deprecated, use .indexOf())
-// export 'src/raylib.g.dart' show TextToUpper;         // → Dart wrapper below (deprecated, use .toUpperCase())
-// export 'src/raylib.g.dart' show TextToLower;         // → Dart wrapper below (deprecated, use .toLowerCase())
-// export 'src/raylib.g.dart' show TextToPascal;        // → Dart wrapper below
-// export 'src/raylib.g.dart' show TextToSnake;         // → Dart wrapper below
-// export 'src/raylib.g.dart' show TextToCamel;         // → Dart wrapper below
-// export 'src/raylib.g.dart' show TextToInteger;       // → Dart wrapper below (deprecated, use int.parse())
-// export 'src/raylib.g.dart' show TextToFloat;         // → Dart wrapper below (deprecated, use double.parse())
+// export 'src/raylib.g.dart' show TextIsEqual;
+// export 'src/raylib.g.dart' show TextLength;
+// export 'src/raylib.g.dart' show TextFormat;
+// export 'src/raylib.g.dart' show TextSubtext;
+// export 'src/raylib.g.dart' show TextReplace;
+// export 'src/raylib.g.dart' show TextInsert;
+// export 'src/raylib.g.dart' show TextJoin;
+// export 'src/raylib.g.dart' show TextSplit;
+// export 'src/raylib.g.dart' show TextAppend;
+// export 'src/raylib.g.dart' show TextFindIndex;
+// export 'src/raylib.g.dart' show TextToUpper;
+// export 'src/raylib.g.dart' show TextToLower;
+// export 'src/raylib.g.dart' show TextToPascal;
+// export 'src/raylib.g.dart' show TextToSnake;
+// export 'src/raylib.g.dart' show TextToCamel;
+// export 'src/raylib.g.dart' show TextToInteger;
+// export 'src/raylib.g.dart' show TextToFloat;
 
 // ── Font loading/unloading ───────────────────────────────────────────────
 

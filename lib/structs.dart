@@ -8,6 +8,13 @@ import 'dart:typed_data';
 import 'package:ffi/ffi.dart' as ffi;
 import 'src/raylib_const.dart' as consts;
 
+export 'package:image/image.dart' show Image; // for img.Image
+export 'package:vector_math/vector_math.dart' show Vector2;
+export 'package:vector_math/vector_math.dart' show Vector3;
+export 'package:vector_math/vector_math.dart' show Vector4;
+export 'package:vector_math/vector_math.dart' show Matrix4;
+export 'package:vector_math/vector_math.dart' show Quaternion;
+
 // ── Vector2 ──────────────────────────────────────────────────────────────
 // via package:vector_math — Vector2
 
