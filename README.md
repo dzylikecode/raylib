@@ -43,79 +43,191 @@ dart run example/example.dart
 
 > "授人以渔". 不仅是人，还包括 AI.
 
-根据 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 导出 C API 到 docs/ 目录下， 分别为 rcore
+根据 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 导出 C API 到 docs/ 目录下，分别对应 rcore.dart、rshapes.dart、rtextures.dart、rtext.dart、rmodels.dart、raudio.dart。
 
-定义响应的文件 rcore.dart ... 以 rcore 为例子
-
-先 export 所有的 api. eg
+以 rcore.dart 为例，先把所有 API 以注释形式列出，然后逐个判断封装策略：
 
 ```dart
-export 'src/raylib.g.dart' show InitWindow;
+// 直接导出（无需封装）
 export 'src/raylib.g.dart' show CloseWindow;
-// ...
-export 'src/raylib.g.dart' show UpdateCameraPro;
-```
 
-然后依次找一些不太 Dart 风格的 API，进行改造。
-
-首先注释掉原来的 API，然后在后面实现一个更 Dart 风格的 API
-
-```dart
+// 需要封装（注释原始导出，在后面写 Dart 版本）
 // export 'src/raylib.g.dart' show InitWindow;
-export 'src/raylib.g.dart' show CloseWindow;
-// ...
-export 'src/raylib.g.dart' show UpdateCameraPro;
 
 void InitWindow(int width, int height, String title) {
   // ...
 }
 ```
 
+每个函数的封装策略见下方各小节。
+
+### 不代理
+
+有些 API 在 Dart 中有更好的替代，直接省略：
+
+- `MemAlloc / MemRealloc / MemFree` — 用 `ffi.malloc` 替代
+- `TraceLog` — 用 Dart 的 `dart:developer` 替代
+- `TextCopy / TextIsEqual / TextLength / TextSplit` 等 C 字符串工具 — 用 Dart `String` 的方法替代
+- `SetTraceLogCallback`（native 版）— 已由 `src/logging.dart` 的 Dart 版替代
+
 ### char 类型
 
-用 dart 的 String
-
-### list
-
-用 List 来代替 C 的数组，同时这样可以避免传递 count 参数
+C 的 `const char *` 参数换成 Dart `String`，在函数体内用 Arena 临时分配 native 内存：
 
 ```dart
-void SetWindowIcons(List<Image> images, [int? count])
+void InitWindow(int width, int height, String title) => ffi.using((arena) {
+  raylib.InitWindow(width, height, title.toNativeUtf8(allocator: arena).cast());
+});
 ```
-> 兼容 C 的 API，同时提供更 Dart 风格的 API， 可以不传递 count 参数
 
+### List（数组 + count）
 
-### enum 或者 宏
+C 的 `T* array, int count` 换成 Dart `List<T>`，消除 count 参数：
 
-用 enum 来代替 C 的宏或者 enum，这样有更好的语义化，可以简短的写法（dot shorthands）
+```dart
+void DrawTriangleStrip(List<Vector2> points, Color color) => ffi.using((arena) {
+  raylib.DrawTriangleStrip(arena.vector2s(points), points.length, color.ptr.ref);
+});
+```
+
+### enum 或宏
+
+C 的裸 `int` 参数（枚举/宏）换成 Dart enum，具备更好的语义和 dot-shorthands。同时保留原 C 常量名并标注 `@Deprecated`，让从 C 迁移过来的代码无需立即修改也能编译，逐步过渡到 Dart 风格：
 
 ```dart
 enum KeyboardKey {
   a(.KEY_A),
+  // ...
 }
 
+// 保留原 C 常量名，兼容旧写法，但引导用户迁移到 enum
 @Deprecated('Use .a instead')
 const KeyboardKey KEY_A = .a;
 ```
 
-1. 定义新的 enum，值为原来 C API 的值
-2. 定义一个 Deprecated 的常量，值为新的 enum 的值，兼容原来的 C API，同时推荐使用新的 enum
+函数签名同步替换：
 
-### 纯数据对象
+```dart
+// C 风格
+bool IsKeyDown(int key) => ...
 
-比如 Vector2/Vector3 这些。函数只是读一下数据，并不修改数据，因此直接采用 dart 与 c 互相复制数据的方式来实现
+// Dart 风格
+bool IsKeyDown(KeyboardKey key) => raylib.IsKeyDown(key.value);
+```
 
-RenderTexture2D 这个是存在 GPU 里面的，它是一个透明指针，所以也是 dart 与 c 互相复制数据的方式来实现
+### Uint8List（原始字节）
 
-LoadRandomSequence 它返回的也是纯的数据，因此也是 dart 与 c 互相复制数据的方式来实现。并且提供一个什么也不做的 UnloadRandomSequence 来兼容 C API
+`void*` / `unsigned char*` 像素或文件数据参数换成 `Uint8List`，函数内部用 Arena 复制到 native 内存：
 
-### 副作用数据
+```dart
+void UpdateTexture(Texture texture, Uint8List pixels) => ffi.using((arena) {
+  final ptr = arena<Uint8>(pixels.length);
+  ptr.asTypedList(pixels.length).setAll(0, pixels);
+  raylib.UpdateTexture(arena.texture(texture).ref, ptr.cast());
+});
+```
 
-比如 Camera2D 它会被 BeginMode2D 所依赖，因此它采用 wrapper 的方式来实现，里面持有一个指向 C 结构体的指针，自动释放的时候，调用 Unload 之类的函数。然后在给用户的 Unload API 调用的是 dispose 函数
+### Record（out 参数）
 
-Unload(用户) -> dispose -> Unload(底层 C API)
+C 的 out 参数（`int* bytesRead`、`bool* collided`）换成 Dart record：
 
-提供自动释放的功能，用户可以不调用 Unload 就能正确释放资源
+```dart
+// C: int GetCodepoint(const char *text, int *codepointSize)
+(int codepoint, int bytesRead) GetCodepoint(String text) => ffi.using((arena) {
+  final sizePtr = arena<Int>();
+  final cp = raylib.GetCodepoint(text.toNativeUtf8(allocator: arena).cast(), sizePtr);
+  return (cp, sizePtr.value);
+});
+
+// C: bool CheckCollisionLines(..., Vector2 *collisionPoint)
+(bool collided, Vector2? point) CheckCollisionLines(...) => ffi.using((arena) {
+  final out = arena<raylib.Vector2>();
+  final hit = raylib.CheckCollisionLines(..., out);
+  return (hit, hit ? out.ref.toDart() : null);
+});
+```
+
+### 纯数据对象（copy）
+
+函数只读取数据、不保留引用，用 Arena 做临时 native 内存，调用完自动释放：
+
+- `Vector2 / Vector3 / Ray` — 传参时拷贝到 Arena，返回时拷贝回 Dart
+- `Texture / RenderTexture2D` — 不透明 GPU 句柄，只存 `id` 等整数字段，值类型传参
+- `LoadRandomSequence` — 返回纯数据，拷贝成 `List<int>` 后立即 `UnloadRandomSequence`；对外提供空壳 `UnloadRandomSequence` 保持 API 兼容
+
+### 副作用数据（pointer + Finalizer）
+
+C 结构体需要在多次调用之间保持稳定地址（如 `Camera2D` 被 `BeginMode2D` 读取），用 Dart 类持有原生指针，并注册 `Finalizer` 自动释放：
+
+```dart
+class Camera2D {
+  final Pointer<raylib.Camera2D> ptr;
+  static final _finalizer = Finalizer<Pointer<raylib.Camera2D>>(ffi.malloc.free);
+  Camera2D._(this.ptr) { _finalizer.attach(this, ptr, detach: this); }
+  // ...
+  void dispose() { _finalizer.detach(this); ffi.malloc.free(ptr); }
+}
+```
+
+对外 Unload API 转发到 dispose：
+
+```
+UnloadXxx(用户) → dispose() → C UnloadXxx / ffi.malloc.free
+```
+
+需要 Finalizer 的类型：`Camera2D`、`Camera3D`、`Shader`、`VrStereoConfig`、`AutomationEventList`。
+
+GPU 资源（`Texture`、`RenderTexture2D`）不注册 Finalizer：OpenGL context 销毁后无法安全调用 GPU 释放函数，必须由用户显式 Unload。
+
+### 自动 Unload（Load → Dart 类型）
+
+Load 函数返回需要手动 Unload 的 C 资源，但 Dart 侧只需要数据时，在函数内部完成 Load → 转换 → Unload 三步，对外直接返回 Dart 类型：
+
+```dart
+// C: FilePathList LoadDirectoryFiles(const char *dirPath)
+List<String> LoadDirectoryFiles(String path) => ffi.using((arena) {
+  final list = raylib.LoadDirectoryFiles(...);
+  final result = [for (var i = 0; i < list.count; i++) list.paths[i].cast<Utf8>().toDartString()];
+  raylib.UnloadDirectoryFiles(list);
+  return result;
+});
+```
+
+### Dart 回调
+
+C 的函数指针回调（`SetLoadFileDataCallback` 等）换成 Dart 函数，内部用 `NativeCallable` 桥接：
+
+```dart
+// 使用默认回调
+SetLoadFileDataCallback(null);
+// 注入 Dart 实现
+SetLoadFileDataCallback((filename) => File(filename).readAsBytesSync());
+```
+
+### 尚未代理
+
+以下模块因对应 C struct 尚未封装成 Dart 类，暂时注释掉，留作后续实现：
+
+- `Image` — `LoadImage*`、`GenImage*`、`Image*` 操作（rtextures.dart）
+- `Font` — `LoadFont*`、`DrawTextEx`、`MeasureTextEx` 等（rtext.dart）
+- `Wave / Sound / Music / AudioStream` — 全部音频播放 API（raudio.dart）
+- `Model / Mesh / Material / ModelAnimation / BoundingBox / RayCollision` — 3D 模型 API（rmodels.dart）
+
+### Dart 生态替代
+
+C 的某些数据类型，在 Dart 生态中已有成熟的对应库，直接用它们替代，而不是自己造轮子：
+
+- `Vector2 / Vector3 / Matrix / Ray` — 用 [vector_math](https://pub.dev/packages/vector_math)，同名类型，直接对应
+- `Image`（像素数据）— 用 [image](https://pub.dev/packages/image) 的 `img.Image`，具备完整的编解码和像素操作能力
+
+封装层负责在 Dart 类型和 C struct 之间做转换桥接（通过 Arena 临时复制），对调用者完全透明：
+
+```dart
+// 调用者传入 img.Image，封装层负责转成 raylib.Image 传给 C
+Texture LoadTextureFromImage(img.Image image) => ffi.using((arena) {
+  return raylib.LoadTextureFromImage(arena.image(image).ref).toDart();
+});
+```
 
 
 ## 从 C 迁移
@@ -134,40 +246,6 @@ int main()
 
 dart 用 `~/` 代替 C 的 `/` 进行整除
 
-### 枚举
-
-用 dart 的 dot-shorthands
-
-```c
-IsKeyDown(KEY_RIGHT);
-```
-
-```dart
-IsKeyDown(KEY_RIGHT); // Deprecated
-IsKeyDown(.right); // Recommended
-```
-
-### math
-
-Vector2/Vector3/Matrix/Ray 等用 [vector_math](https://pub.dev/packages/vector_math)
-
-### image
-
-采用 [image](https://pub.dev/packages/image)
-
-### LoadRandomSequence/UnloadRandomSequence
-
-合并为 RandomSequence
-
-```c
-int* seq = LoadRandomSequence(count, min, max);
-UnloadRandomSequence(seq);
-```
-
-```dart
-final seq = LoadRandomSequence(count, min, max);
-UnloadRandomSequence(seq); // 什么也不做
-```
 
 ### 格式化输出
 
@@ -180,45 +258,6 @@ TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps);
 ```dart
 TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps]);
 ```
-
-### 字符串
-
-使用 String 类型而不是 char*
-
-### 全局回调
-
-- SetLoadFileDataCallback
-- SetSaveFileDataCallback
-- SetLoadFileTextCallback
-- SetSaveFileTextCallback
-
-以 SetLoadFileDataCallback 为例子
-
-```dart
-// 使用 raylib 的默认回调
-SetLoadFileDataCallback(); // SetLoadFileDataCallback(null);
-// dart 进行 hook
-SetLoadFileDataCallback((filename) => File(filename).readSync());
-```
-
-### 移除
-
-- TraceLog
-- MemAlloc
-- MemRealloc
-- MemFree
-- LoadFileData
-- UnloadFileData
-- SaveFileData
-- ExportDataAsCode
-- LoadFileText
-- UnloadFileText
-- SaveFileText
-- SetGamepadMappings
-
-### TODO
-
-- SetTraceLogCallback: 也许可以合并到 logging 中
 
 
 ## 封装原则

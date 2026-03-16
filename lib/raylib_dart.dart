@@ -1,6 +1,10 @@
 export 'src/raylib_const.dart';
 export 'rcore.dart';
-
+export 'rshapes.dart';
+export 'rtextures.dart';
+export 'rtext.dart';
+export 'rmodels.dart';
+export 'raudio.dart';
 export 'structs.dart';
 export 'colors.dart';
 
