@@ -1,14 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 //
-// Wrapping strategy for rtext:
-//   - Functions taking only primitive C types (int, no pointers) → direct export
-//   - Functions taking Pointer<Char> → Dart wrapper (String conversion via Arena)
-//   - Functions returning codepoint + size-out param → record (int, int)
-//   - C string utilities with Dart equivalents → commented out
-//   - C memory-managed string/codepoint helpers → commented out
+// TextCopy 无法实现，因为传递 dst 拿到的是"引用的副本"，不是底层内存地址让你随便写
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
+import 'package:cdart/stdio.dart';
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:vector_math/vector_math.dart';
@@ -56,24 +52,24 @@ export 'src/raylib.g.dart' show SetTextLineSpacing;
 // export 'src/raylib.g.dart' show CodepointToUTF8;     // C memory management — use Dart strings
 
 // ── Text strings management ─────────────────────────────────────────────
-// export 'src/raylib.g.dart' show TextCopy;            // C string utilities — use Dart string methods instead
-// export 'src/raylib.g.dart' show TextIsEqual;         // C string utilities — use == instead
-// export 'src/raylib.g.dart' show TextLength;          // C string utilities — use .length instead
-export 'src/text.dart' show TextFormat;
-// export 'src/raylib.g.dart' show TextSubtext;         // C string utilities — use .substring()
-// export 'src/raylib.g.dart' show TextReplace;         // C string utilities — use .replaceAll()
-// export 'src/raylib.g.dart' show TextInsert;          // C string utilities — use string interpolation
-// export 'src/raylib.g.dart' show TextJoin;            // C string utilities — use .join()
-// export 'src/raylib.g.dart' show TextSplit;           // C string utilities — use .split()
-// export 'src/raylib.g.dart' show TextAppend;          // C string utilities — use +=
-// export 'src/raylib.g.dart' show TextFindIndex;       // C string utilities — use .indexOf()
-// export 'src/raylib.g.dart' show TextToUpper;         // C string utilities — use .toUpperCase()
-// export 'src/raylib.g.dart' show TextToLower;         // C string utilities — use .toLowerCase()
-// export 'src/raylib.g.dart' show TextToPascal;        // no Dart equivalent
-// export 'src/raylib.g.dart' show TextToSnake;         // no Dart equivalent
-// export 'src/raylib.g.dart' show TextToCamel;         // no Dart equivalent
-// export 'src/raylib.g.dart' show TextToInteger;       // → Dart wrapper below
-// export 'src/raylib.g.dart' show TextToFloat;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show TextCopy;            // writes to char* dst — skip (use string assignment)
+// export 'src/raylib.g.dart' show TextIsEqual;         // → Dart wrapper below (deprecated, use ==)
+// export 'src/raylib.g.dart' show TextLength;          // → Dart wrapper below (deprecated, use .length)
+// export 'src/raylib.g.dart' show TextFormat;          // → Dart wrapper below (deprecated, use string interpolation)
+// export 'src/raylib.g.dart' show TextSubtext;         // → Dart wrapper below (deprecated, use .substring())
+// export 'src/raylib.g.dart' show TextReplace;         // → Dart wrapper below (deprecated, use .replaceAll())
+// export 'src/raylib.g.dart' show TextInsert;          // → Dart wrapper below (deprecated, use + / interpolation)
+// export 'src/raylib.g.dart' show TextJoin;            // → Dart wrapper below (deprecated, use .join())
+// export 'src/raylib.g.dart' show TextSplit;           // → Dart wrapper below (deprecated, use .split())
+// export 'src/raylib.g.dart' show TextAppend;          // → Dart wrapper below (deprecated, use +=)
+// export 'src/raylib.g.dart' show TextFindIndex;       // → Dart wrapper below (deprecated, use .indexOf())
+// export 'src/raylib.g.dart' show TextToUpper;         // → Dart wrapper below (deprecated, use .toUpperCase())
+// export 'src/raylib.g.dart' show TextToLower;         // → Dart wrapper below (deprecated, use .toLowerCase())
+// export 'src/raylib.g.dart' show TextToPascal;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show TextToSnake;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show TextToCamel;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show TextToInteger;       // → Dart wrapper below (deprecated, use int.parse())
+// export 'src/raylib.g.dart' show TextToFloat;         // → Dart wrapper below (deprecated, use double.parse())
 
 // ── Font loading/unloading ───────────────────────────────────────────────
 
@@ -327,10 +323,102 @@ int GetCodepointCount(String text) => ffi.using((arena) {
 
 // ── Text strings management ─────────────────────────────────────────────
 
-int TextToInteger(String text) => ffi.using((arena) {
-  return raylib.TextToInteger(text.toNativeUtf8(allocator: arena).cast());
-});
+@Deprecated('Use == instead')
+bool TextIsEqual(String text1, String text2) => text1 == text2;
 
-double TextToFloat(String text) => ffi.using((arena) {
-  return raylib.TextToFloat(text.toNativeUtf8(allocator: arena).cast());
-});
+@Deprecated('Use .length instead')
+int TextLength(String text) => text.length;
+
+@Deprecated('Use string interpolation instead')
+String? TextFormat(String format, List<Object> args) => sprintf(format, args);
+
+@Deprecated('Use .substring() instead')
+String TextSubtext(String text, int position, int length) =>
+    text.substring(position, position + length);
+
+@Deprecated('Use .replaceAll() instead')
+String TextReplace(String text, String replace, String by) =>
+    text.replaceAll(replace, by);
+
+@Deprecated('Use string concatenation or interpolation instead')
+String TextInsert(String text, String insert, int position) =>
+    text.substring(0, position) + insert + text.substring(position);
+
+@Deprecated('Use List.join() instead')
+String TextJoin(List<String> textList, String delimiter) =>
+    textList.join(delimiter);
+
+@Deprecated('Use .split() instead')
+List<String> TextSplit(String text, String delimiter) => text.split(delimiter);
+
+@Deprecated('Use += instead')
+String TextAppend(String text, String append) => text + append;
+
+@Deprecated('Use .indexOf() instead')
+int TextFindIndex(String text, String find) => text.indexOf(find);
+
+@Deprecated('Use .toUpperCase() instead')
+String TextToUpper(String text) => text.toUpperCase();
+
+@Deprecated('Use .toLowerCase() instead')
+String TextToLower(String text) => text.toLowerCase();
+
+/// Converts [text] from snake_case to PascalCase.
+/// Each word separated by `_` is capitalized; underscores are removed.
+String TextToPascal(String text) {
+  if (text.isEmpty) return text;
+  final buf = StringBuffer(text[0].toUpperCase());
+  for (var i = 1; i < text.length; i++) {
+    if (text[i] == '_') {
+      i++;
+      if (i < text.length) {
+        buf.write(text[i].toUpperCase());
+      }
+    } else {
+      buf.write(text[i]);
+    }
+  }
+  return buf.toString();
+}
+
+/// Converts [text] from PascalCase/camelCase to snake_case.
+/// An underscore is inserted before each uppercase letter (except the first),
+/// and the letter is lowercased.
+String TextToSnake(String text) {
+  if (text.isEmpty) return text;
+  final buf = StringBuffer();
+  for (var i = 0; i < text.length; i++) {
+    final c = text[i];
+    if (c.codeUnitAt(0) >= 0x41 && c.codeUnitAt(0) <= 0x5A) {
+      if (i > 0) buf.write('_');
+      buf.write(c.toLowerCase());
+    } else {
+      buf.write(c);
+    }
+  }
+  return buf.toString();
+}
+
+/// Converts [text] from snake_case to camelCase.
+/// Same as [TextToPascal] but the first character is lowercased.
+String TextToCamel(String text) {
+  if (text.isEmpty) return text;
+  final buf = StringBuffer(text[0].toLowerCase());
+  for (var i = 1; i < text.length; i++) {
+    if (text[i] == '_') {
+      i++;
+      if (i < text.length) {
+        buf.write(text[i].toUpperCase());
+      }
+    } else {
+      buf.write(text[i]);
+    }
+  }
+  return buf.toString();
+}
+
+@Deprecated('Use int.parse() instead')
+int TextToInteger(String text) => int.parse(text);
+
+@Deprecated('Use double.parse() instead')
+double TextToFloat(String text) => double.parse(text);

@@ -76,6 +76,42 @@ void InitWindow(int width, int height, String title) => ffi.using((arena) {
 });
 ```
 
+### 格式化输出
+
+```c
+TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps);
+```
+
+将变量用数组传入
+
+```dart
+TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps]);
+```
+
+### TextCopy
+
+Dart 的函数参数是**值传递（pass-by-value）**。当传入对象时，传递的是**对象引用的值**，而不是像 C/C++ 那样直接传递可操作的内存指针。因此，在函数内部重新给参数赋值，只会改变函数内部的引用副本，不会影响外部变量。这也是 Dart 中通常不会设计类似 `TextCopy(dst, src)` 这种通过修改目标内存完成拷贝的接口的原因。
+
+**示例**
+
+```dart
+void textCopy(String dst, String src) {
+  dst = src;   // 只改变函数内部的 dst 引用
+}
+
+void main() {
+  String a = "hello";
+  String b = "world";
+
+  textCopy(a, b);
+
+  print(a); // 仍然输出 "hello"
+}
+```
+
+在这个例子中，`textCopy` 内部对 `dst` 的赋值只改变了函数内部的引用副本，并不会修改外部变量 `a` 的值。
+
+
 ### List（数组 + count）
 
 C 的 `T* array, int count` 换成 Dart `List<T>`，消除 count 参数：
@@ -243,17 +279,7 @@ int main()
 dart 用 `~/` 代替 C 的 `/` 进行整除
 
 
-### 格式化输出
 
-```c
-TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps);
-```
-
-将变量用数组传入
-
-```dart
-TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps]);
-```
 
 
 ## 封装原则
