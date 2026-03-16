@@ -1,103 +1,100 @@
 // ignore_for_file: non_constant_identifier_names
 //
 // 本文件封装 raylib 3D 模型模块。
-//
-// 尚未代理（需要先实现对应的 struct 包装）：
-//   Model, Mesh, Material, ModelAnimation — 3D 数据结构体
-//   BoundingBox — 包围盒（含 Vector3 min/max）
-//   RayCollision — 射线碰撞结果
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
+import 'dart:typed_data';
 import 'package:vector_math/vector_math.dart';
+import 'package:image/image.dart' as img;
 import 'colors.dart';
 import 'structs.dart';
 
 // ── 3D primitives ────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show DrawLine3D;
-// export 'src/raylib.g.dart' show DrawPoint3D;
-// export 'src/raylib.g.dart' show DrawCircle3D;
-// export 'src/raylib.g.dart' show DrawTriangle3D;
-// export 'src/raylib.g.dart' show DrawTriangleStrip3D;
+// export 'src/raylib.g.dart' show DrawLine3D;              // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawPoint3D;             // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCircle3D;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawTriangle3D;          // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawTriangleStrip3D;     // → Dart wrapper below
 // ── 3D solids ────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show DrawCube;
-// export 'src/raylib.g.dart' show DrawCubeV;
-// export 'src/raylib.g.dart' show DrawCubeWires;
-// export 'src/raylib.g.dart' show DrawCubeWiresV;
-// export 'src/raylib.g.dart' show DrawSphere;
-// export 'src/raylib.g.dart' show DrawSphereEx;
-// export 'src/raylib.g.dart' show DrawSphereWires;
-// export 'src/raylib.g.dart' show DrawCylinder;
-// export 'src/raylib.g.dart' show DrawCylinderEx;
-// export 'src/raylib.g.dart' show DrawCylinderWires;
-// export 'src/raylib.g.dart' show DrawCylinderWiresEx;
-// export 'src/raylib.g.dart' show DrawCapsule;
-// export 'src/raylib.g.dart' show DrawCapsuleWires;
-// export 'src/raylib.g.dart' show DrawPlane;
-// export 'src/raylib.g.dart' show DrawRay;
+// export 'src/raylib.g.dart' show DrawCube;                // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCubeV;               // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCubeWires;           // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCubeWiresV;          // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawSphere;              // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawSphereEx;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawSphereWires;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCylinder;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCylinderEx;          // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCylinderWires;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCylinderWiresEx;     // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCapsule;             // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawCapsuleWires;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawPlane;               // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawRay;                 // → Dart wrapper below
 export 'src/raylib.g.dart' show DrawGrid;
 // ── Billboards ───────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show DrawBillboard;
-// export 'src/raylib.g.dart' show DrawBillboardRec;
-// export 'src/raylib.g.dart' show DrawBillboardPro;
+// export 'src/raylib.g.dart' show DrawBillboard;           // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawBillboardRec;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawBillboardPro;        // → Dart wrapper below
 // ── Model ────────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show LoadModel;
-// export 'src/raylib.g.dart' show LoadModelFromMesh;
-// export 'src/raylib.g.dart' show IsModelValid;
-// export 'src/raylib.g.dart' show UnloadModel;
-// export 'src/raylib.g.dart' show GetModelBoundingBox;
-// export 'src/raylib.g.dart' show DrawModel;
-// export 'src/raylib.g.dart' show DrawModelEx;
-// export 'src/raylib.g.dart' show DrawModelWires;
-// export 'src/raylib.g.dart' show DrawModelWiresEx;
-// export 'src/raylib.g.dart' show DrawModelPoints;
-// export 'src/raylib.g.dart' show DrawModelPointsEx;
-// export 'src/raylib.g.dart' show DrawBoundingBox;
+// export 'src/raylib.g.dart' show LoadModel;               // → Dart wrapper below
+// export 'src/raylib.g.dart' show LoadModelFromMesh;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show IsModelValid;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show UnloadModel;             // → model.dispose()
+// export 'src/raylib.g.dart' show GetModelBoundingBox;     // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawModel;               // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawModelEx;             // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawModelWires;          // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawModelWiresEx;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawModelPoints;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawModelPointsEx;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawBoundingBox;         // → Dart wrapper below
 // ── Mesh ─────────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show UploadMesh;
-// export 'src/raylib.g.dart' show UpdateMeshBuffer;
-// export 'src/raylib.g.dart' show UnloadMesh;
-// export 'src/raylib.g.dart' show DrawMesh;
-// export 'src/raylib.g.dart' show DrawMeshInstanced;
-// export 'src/raylib.g.dart' show GetMeshBoundingBox;
-// export 'src/raylib.g.dart' show GenMeshTangents;
-// export 'src/raylib.g.dart' show ExportMesh;
-// export 'src/raylib.g.dart' show ExportMeshAsCode;
-// export 'src/raylib.g.dart' show GenMeshPoly;
-// export 'src/raylib.g.dart' show GenMeshPlane;
-// export 'src/raylib.g.dart' show GenMeshCube;
-// export 'src/raylib.g.dart' show GenMeshSphere;
-// export 'src/raylib.g.dart' show GenMeshHemiSphere;
-// export 'src/raylib.g.dart' show GenMeshCylinder;
-// export 'src/raylib.g.dart' show GenMeshCone;
-// export 'src/raylib.g.dart' show GenMeshTorus;
-// export 'src/raylib.g.dart' show GenMeshKnot;
-// export 'src/raylib.g.dart' show GenMeshHeightmap;
-// export 'src/raylib.g.dart' show GenMeshCubicmap;
+// export 'src/raylib.g.dart' show UploadMesh;              // → Dart wrapper below
+// export 'src/raylib.g.dart' show UpdateMeshBuffer;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show UnloadMesh;              // → mesh.dispose()
+// export 'src/raylib.g.dart' show DrawMesh;                // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawMeshInstanced;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetMeshBoundingBox;      // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshTangents;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show ExportMesh;              // → Dart wrapper below
+// export 'src/raylib.g.dart' show ExportMeshAsCode;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshPoly;             // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshPlane;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshCube;             // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshSphere;           // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshHemiSphere;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshCylinder;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshCone;             // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshTorus;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshKnot;             // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshHeightmap;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show GenMeshCubicmap;         // → Dart wrapper below
 // ── Material ─────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show LoadMaterials;
-// export 'src/raylib.g.dart' show LoadMaterialDefault;
-// export 'src/raylib.g.dart' show IsMaterialValid;
-// export 'src/raylib.g.dart' show UnloadMaterial;
-// export 'src/raylib.g.dart' show SetMaterialTexture;
-// export 'src/raylib.g.dart' show SetModelMeshMaterial;
+// export 'src/raylib.g.dart' show LoadMaterials;           // → Dart wrapper below
+// export 'src/raylib.g.dart' show LoadMaterialDefault;     // → Dart wrapper below
+// export 'src/raylib.g.dart' show IsMaterialValid;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show UnloadMaterial;          // → material.dispose()
+// export 'src/raylib.g.dart' show SetMaterialTexture;      // → Dart wrapper below
+// export 'src/raylib.g.dart' show SetModelMeshMaterial;    // → Dart wrapper below
 // ── Animation ────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show LoadModelAnimations;
-// export 'src/raylib.g.dart' show UpdateModelAnimation;
-// export 'src/raylib.g.dart' show UpdateModelAnimationBones;
-// export 'src/raylib.g.dart' show UnloadModelAnimation;
-// export 'src/raylib.g.dart' show UnloadModelAnimations;
-// export 'src/raylib.g.dart' show IsModelAnimationValid;
+// export 'src/raylib.g.dart' show LoadModelAnimations;     // → Dart wrapper below
+// export 'src/raylib.g.dart' show UpdateModelAnimation;    // → Dart wrapper below
+// export 'src/raylib.g.dart' show UpdateModelAnimationBones; // → Dart wrapper below
+// export 'src/raylib.g.dart' show UnloadModelAnimation;    // → anim.dispose()
+// export 'src/raylib.g.dart' show UnloadModelAnimations;   // → Dart wrapper below
+// export 'src/raylib.g.dart' show IsModelAnimationValid;   // → Dart wrapper below
 // ── Collision ────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show CheckCollisionSpheres;
-// export 'src/raylib.g.dart' show CheckCollisionBoxes;
-// export 'src/raylib.g.dart' show CheckCollisionBoxSphere;
-// export 'src/raylib.g.dart' show GetRayCollisionSphere;
-// export 'src/raylib.g.dart' show GetRayCollisionBox;
-// export 'src/raylib.g.dart' show GetRayCollisionMesh;
-// export 'src/raylib.g.dart' show GetRayCollisionTriangle;
-// export 'src/raylib.g.dart' show GetRayCollisionQuad;
+// export 'src/raylib.g.dart' show CheckCollisionSpheres;   // → Dart wrapper below
+// export 'src/raylib.g.dart' show CheckCollisionBoxes;     // → Dart wrapper below
+// export 'src/raylib.g.dart' show CheckCollisionBoxSphere; // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetRayCollisionSphere;   // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetRayCollisionBox;      // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetRayCollisionMesh;     // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetRayCollisionTriangle; // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetRayCollisionQuad;     // → Dart wrapper below
 
 // ── 3D primitives ────────────────────────────────────────────────────────
 
@@ -419,6 +416,299 @@ void DrawBillboardPro(
   );
 });
 
+// ── Model ─────────────────────────────────────────────────────────────────
+
+Model LoadModel(String fileName) => ffi.using((arena) {
+  return raylib.LoadModel(
+    fileName.toNativeUtf8(allocator: arena).cast(),
+  ).toDart();
+});
+
+Model LoadModelFromMesh(Mesh mesh) =>
+    raylib.LoadModelFromMesh(mesh.ptr.ref).toDart();
+
+bool IsModelValid(Model model) => raylib.IsModelValid(model.ptr.ref);
+
+void UnloadModel(Model model) => model.dispose();
+
+BoundingBox GetModelBoundingBox(Model model) =>
+    raylib.GetModelBoundingBox(model.ptr.ref).toDart();
+
+void DrawModel(Model model, Vector3 position, double scale, Color tint) =>
+    ffi.using((arena) {
+      raylib.DrawModel(
+        model.ptr.ref,
+        arena.vector3(position).ref,
+        scale,
+        tint.ptr.ref,
+      );
+    });
+
+void DrawModelEx(
+  Model model,
+  Vector3 position,
+  Vector3 rotationAxis,
+  double rotationAngle,
+  Vector3 scale,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawModelEx(
+    model.ptr.ref,
+    arena.vector3(position).ref,
+    arena.vector3(rotationAxis).ref,
+    rotationAngle,
+    arena.vector3(scale).ref,
+    tint.ptr.ref,
+  );
+});
+
+void DrawModelWires(
+  Model model,
+  Vector3 position,
+  double scale,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawModelWires(
+    model.ptr.ref,
+    arena.vector3(position).ref,
+    scale,
+    tint.ptr.ref,
+  );
+});
+
+void DrawModelWiresEx(
+  Model model,
+  Vector3 position,
+  Vector3 rotationAxis,
+  double rotationAngle,
+  Vector3 scale,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawModelWiresEx(
+    model.ptr.ref,
+    arena.vector3(position).ref,
+    arena.vector3(rotationAxis).ref,
+    rotationAngle,
+    arena.vector3(scale).ref,
+    tint.ptr.ref,
+  );
+});
+
+void DrawModelPoints(
+  Model model,
+  Vector3 position,
+  double scale,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawModelPoints(
+    model.ptr.ref,
+    arena.vector3(position).ref,
+    scale,
+    tint.ptr.ref,
+  );
+});
+
+void DrawModelPointsEx(
+  Model model,
+  Vector3 position,
+  Vector3 rotationAxis,
+  double rotationAngle,
+  Vector3 scale,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawModelPointsEx(
+    model.ptr.ref,
+    arena.vector3(position).ref,
+    arena.vector3(rotationAxis).ref,
+    rotationAngle,
+    arena.vector3(scale).ref,
+    tint.ptr.ref,
+  );
+});
+
+void DrawBoundingBox(BoundingBox box, Color color) => ffi.using((arena) {
+  raylib.DrawBoundingBox(arena.boundingBox(box).ref, color.ptr.ref);
+});
+
+// ── Mesh ─────────────────────────────────────────────────────────────────
+
+/// Uploads [mesh] vertex data to the GPU (sets vaoId/vboId in-place).
+void UploadMesh(Mesh mesh, bool dynamic) =>
+    raylib.UploadMesh(mesh.ptr, dynamic);
+
+/// Replaces VBO [index] data in [mesh] with [data] starting at byte [offset].
+void UpdateMeshBuffer(Mesh mesh, int index, Uint8List data, int offset) =>
+    ffi.using((arena) {
+      final ptr = arena<Uint8>(data.length);
+      ptr.asTypedList(data.length).setAll(0, data);
+      raylib.UpdateMeshBuffer(mesh.ptr.ref, index, ptr.cast(), data.length, offset);
+    });
+
+void UnloadMesh(Mesh mesh) => mesh.dispose();
+
+void DrawMesh(Mesh mesh, Material material, Matrix4 transform) =>
+    ffi.using((arena) {
+      raylib.DrawMesh(
+        mesh.ptr.ref,
+        material.ptr.ref,
+        arena.matrix4(transform).ref,
+      );
+    });
+
+/// [transforms] replaces the C `Matrix *transforms, int instances` pair.
+void DrawMeshInstanced(
+  Mesh mesh,
+  Material material,
+  List<Matrix4> transforms,
+) => ffi.using((arena) {
+  raylib.DrawMeshInstanced(
+    mesh.ptr.ref,
+    material.ptr.ref,
+    arena.matrix4s(transforms),
+    transforms.length,
+  );
+});
+
+BoundingBox GetMeshBoundingBox(Mesh mesh) =>
+    raylib.GetMeshBoundingBox(mesh.ptr.ref).toDart();
+
+/// Generates tangents for [mesh] in-place (requires normals and texcoords).
+void GenMeshTangents(Mesh mesh) => raylib.GenMeshTangents(mesh.ptr);
+
+bool ExportMesh(Mesh mesh, String fileName) => ffi.using((arena) {
+  return raylib.ExportMesh(
+    mesh.ptr.ref,
+    fileName.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+bool ExportMeshAsCode(Mesh mesh, String fileName) => ffi.using((arena) {
+  return raylib.ExportMeshAsCode(
+    mesh.ptr.ref,
+    fileName.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+Mesh GenMeshPoly(int sides, double radius) =>
+    raylib.GenMeshPoly(sides, radius).toDart();
+
+Mesh GenMeshPlane(double width, double length, int resX, int resZ) =>
+    raylib.GenMeshPlane(width, length, resX, resZ).toDart();
+
+Mesh GenMeshCube(double width, double height, double length) =>
+    raylib.GenMeshCube(width, height, length).toDart();
+
+Mesh GenMeshSphere(double radius, int rings, int slices) =>
+    raylib.GenMeshSphere(radius, rings, slices).toDart();
+
+Mesh GenMeshHemiSphere(double radius, int rings, int slices) =>
+    raylib.GenMeshHemiSphere(radius, rings, slices).toDart();
+
+Mesh GenMeshCylinder(double radius, double height, int slices) =>
+    raylib.GenMeshCylinder(radius, height, slices).toDart();
+
+Mesh GenMeshCone(double radius, double height, int slices) =>
+    raylib.GenMeshCone(radius, height, slices).toDart();
+
+Mesh GenMeshTorus(double radius, double size, int radSeg, int sides) =>
+    raylib.GenMeshTorus(radius, size, radSeg, sides).toDart();
+
+Mesh GenMeshKnot(double radius, double size, int radSeg, int sides) =>
+    raylib.GenMeshKnot(radius, size, radSeg, sides).toDart();
+
+Mesh GenMeshHeightmap(img.Image heightmap, Vector3 size) =>
+    ffi.using((arena) {
+      return raylib.GenMeshHeightmap(
+        arena.image(heightmap).ref,
+        arena.vector3(size).ref,
+      ).toDart();
+    });
+
+Mesh GenMeshCubicmap(img.Image cubicmap, Vector3 cubeSize) =>
+    ffi.using((arena) {
+      return raylib.GenMeshCubicmap(
+        arena.image(cubicmap).ref,
+        arena.vector3(cubeSize).ref,
+      ).toDart();
+    });
+
+// ── Material ─────────────────────────────────────────────────────────────
+
+/// Returns all materials loaded from [fileName].
+/// Each material is independently managed by its own [Finalizer].
+List<Material> LoadMaterials(String fileName) {
+  return ffi.using((arena) {
+    final countPtr = arena<Int>();
+    final ptr = raylib.LoadMaterials(
+      fileName.toNativeUtf8(allocator: arena).cast(),
+      countPtr,
+    );
+    final count = countPtr.value;
+    final result = List.generate(count, (i) => (ptr + i).ref.toDart());
+    ffi.malloc.free(ptr);
+    return result;
+  });
+}
+
+Material LoadMaterialDefault() => raylib.LoadMaterialDefault().toDart();
+
+bool IsMaterialValid(Material material) =>
+    raylib.IsMaterialValid(material.ptr.ref);
+
+void UnloadMaterial(Material material) => material.dispose();
+
+/// Sets the texture for map slot [mapType] on [material] in-place.
+void SetMaterialTexture(Material material, int mapType, Texture texture) =>
+    ffi.using((arena) {
+      raylib.SetMaterialTexture(
+        material.ptr,
+        mapType,
+        arena.texture(texture).ref,
+      );
+    });
+
+/// Reassigns mesh [meshId] on [model] to use material [materialId] in-place.
+void SetModelMeshMaterial(Model model, int meshId, int materialId) =>
+    raylib.SetModelMeshMaterial(model.ptr, meshId, materialId);
+
+// ── Animation ────────────────────────────────────────────────────────────
+
+/// Returns all animations loaded from [fileName].
+/// Each animation is independently managed by its own [Finalizer].
+List<ModelAnimation> LoadModelAnimations(String fileName) {
+  return ffi.using((arena) {
+    final countPtr = arena<Int>();
+    final ptr = raylib.LoadModelAnimations(
+      fileName.toNativeUtf8(allocator: arena).cast(),
+      countPtr,
+    );
+    final count = countPtr.value;
+    final result = List.generate(count, (i) => (ptr + i).ref.toDart());
+    ffi.malloc.free(ptr);
+    return result;
+  });
+}
+
+void UpdateModelAnimation(Model model, ModelAnimation anim, int frame) =>
+    raylib.UpdateModelAnimation(model.ptr.ref, anim.ptr.ref, frame);
+
+void UpdateModelAnimationBones(
+  Model model,
+  ModelAnimation anim,
+  int frame,
+) => raylib.UpdateModelAnimationBones(model.ptr.ref, anim.ptr.ref, frame);
+
+void UnloadModelAnimation(ModelAnimation anim) => anim.dispose();
+
+void UnloadModelAnimations(List<ModelAnimation> animations) {
+  for (final anim in animations) {
+    anim.dispose();
+  }
+}
+
+bool IsModelAnimationValid(Model model, ModelAnimation anim) =>
+    raylib.IsModelAnimationValid(model.ptr.ref, anim.ptr.ref);
+
 // ── Collision ────────────────────────────────────────────────────────────
 
 bool CheckCollisionSpheres(
@@ -434,3 +724,68 @@ bool CheckCollisionSpheres(
     radius2,
   );
 });
+
+bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2) =>
+    ffi.using((arena) => raylib.CheckCollisionBoxes(
+      arena.boundingBox(box1).ref,
+      arena.boundingBox(box2).ref,
+    ));
+
+bool CheckCollisionBoxSphere(
+  BoundingBox box,
+  Vector3 center,
+  double radius,
+) => ffi.using((arena) => raylib.CheckCollisionBoxSphere(
+  arena.boundingBox(box).ref,
+  arena.vector3(center).ref,
+  radius,
+));
+
+RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, double radius) =>
+    ffi.using((arena) => raylib.GetRayCollisionSphere(
+      arena.ray(ray).ref,
+      arena.vector3(center).ref,
+      radius,
+    ).toDart());
+
+RayCollision GetRayCollisionBox(Ray ray, BoundingBox box) =>
+    ffi.using((arena) => raylib.GetRayCollisionBox(
+      arena.ray(ray).ref,
+      arena.boundingBox(box).ref,
+    ).toDart());
+
+RayCollision GetRayCollisionMesh(
+  Ray ray,
+  Mesh mesh,
+  Matrix4 transform,
+) => ffi.using((arena) => raylib.GetRayCollisionMesh(
+  arena.ray(ray).ref,
+  mesh.ptr.ref,
+  arena.matrix4(transform).ref,
+).toDart());
+
+RayCollision GetRayCollisionTriangle(
+  Ray ray,
+  Vector3 p1,
+  Vector3 p2,
+  Vector3 p3,
+) => ffi.using((arena) => raylib.GetRayCollisionTriangle(
+  arena.ray(ray).ref,
+  arena.vector3(p1).ref,
+  arena.vector3(p2).ref,
+  arena.vector3(p3).ref,
+).toDart());
+
+RayCollision GetRayCollisionQuad(
+  Ray ray,
+  Vector3 p1,
+  Vector3 p2,
+  Vector3 p3,
+  Vector3 p4,
+) => ffi.using((arena) => raylib.GetRayCollisionQuad(
+  arena.ray(ray).ref,
+  arena.vector3(p1).ref,
+  arena.vector3(p2).ref,
+  arena.vector3(p3).ref,
+  arena.vector3(p4).ref,
+).toDart());

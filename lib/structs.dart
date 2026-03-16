@@ -248,10 +248,88 @@ class NPatchInfo {
 }
 
 // ── GlyphInfo ────────────────────────────────────────────────────────────
-// not yet wrapped
+
+/// Font glyph metrics for a single character.
+///
+/// The glyph bitmap image is omitted — use [Font.glyphRect] if needed.
+@immutable
+class GlyphInfo {
+  /// Unicode codepoint.
+  final int value;
+  final int offsetX;
+  final int offsetY;
+  final int advanceX;
+
+  const GlyphInfo({
+    required this.value,
+    required this.offsetX,
+    required this.offsetY,
+    required this.advanceX,
+  });
+}
 
 // ── Font ─────────────────────────────────────────────────────────────────
-// not yet wrapped
+
+/// Handle to a loaded font.
+///
+/// Created by LoadFont / LoadFontEx; released by [UnloadFont] or [dispose].
+class Font {
+  final Pointer<raylib.Font> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Font>>(_free);
+  static void _free(Pointer<raylib.Font> ptr) {
+    raylib.UnloadFont(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Font._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get baseSize => ptr.ref.baseSize;
+  int get glyphCount => ptr.ref.glyphCount;
+  int get glyphPadding => ptr.ref.glyphPadding;
+  Texture get texture => ptr.ref.texture.toDart();
+
+  GlyphInfo glyphInfo(int index) {
+    final g = (ptr.ref.glyphs + index).ref;
+    return GlyphInfo(
+      value: g.value,
+      offsetX: g.offsetX,
+      offsetY: g.offsetY,
+      advanceX: g.advanceX,
+    );
+  }
+
+  Rectangle glyphRect(int index) => (ptr.ref.recs + index).ref.toDart();
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibFontToDart on raylib.Font {
+  Font toDart() {
+    final p = ffi.malloc<raylib.Font>();
+    p.ref
+      ..baseSize = baseSize
+      ..glyphCount = glyphCount
+      ..glyphPadding = glyphPadding
+      ..texture.id = texture.id
+      ..texture.width = texture.width
+      ..texture.height = texture.height
+      ..texture.mipmaps = texture.mipmaps
+      ..texture.format = texture.format
+      ..recs = recs
+      ..glyphs = glyphs;
+    return Font._(p);
+  }
+}
 
 // ── Camera2D ─────────────────────────────────────────────────────────────
 
@@ -426,26 +504,346 @@ extension RaylibShaderToDart on raylib.Shader {
   }
 }
 
-// ── MaterialMap ──────────────────────────────────────────────────────────
-// not yet wrapped
+// ── MaterialMap ───────────────────────────────────────────────────────────
 
-// ── Material ─────────────────────────────────────────────────────────────
-// not yet wrapped
+/// Texture + color tint + scalar value for one material channel.
+///
+/// Access via [Material.operator[]] with a MATERIAL_MAP_* index.
+/// The color components (r, g, b, a) can be passed to `Color(r:r, g:g, b:b, a:a)`.
+@immutable
+class MaterialMap {
+  final Texture texture;
+  final int colorR;
+  final int colorG;
+  final int colorB;
+  final int colorA;
+  final double value;
 
-// ── Mesh ─────────────────────────────────────────────────────────────────
-// not yet wrapped
+  const MaterialMap({
+    required this.texture,
+    required this.colorR,
+    required this.colorG,
+    required this.colorB,
+    required this.colorA,
+    required this.value,
+  });
+}
 
-// ── Model ────────────────────────────────────────────────────────────────
-// not yet wrapped
+// ── Material ──────────────────────────────────────────────────────────────
 
-// ── ModelAnimation ───────────────────────────────────────────────────────
-// not yet wrapped
+/// Handle to a material (shader + texture maps + params).
+///
+/// Created by LoadMaterials / LoadMaterialDefault;
+/// released by [UnloadMaterial] or [dispose].
+class Material {
+  final Pointer<raylib.Material> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Material>>(_free);
+  static void _free(Pointer<raylib.Material> ptr) {
+    raylib.UnloadMaterial(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Material._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  /// Access a material map by index (use MATERIAL_MAP_* constants).
+  MaterialMap operator [](int index) {
+    final m = (ptr.ref.maps + index).ref;
+    return MaterialMap(
+      texture: m.texture.toDart(),
+      colorR: m.color.r,
+      colorG: m.color.g,
+      colorB: m.color.b,
+      colorA: m.color.a,
+      value: m.value,
+    );
+  }
+
+  /// User-defined float parameters [0..3].
+  Float32List get params => Float32List.fromList([
+    ptr.ref.params[0],
+    ptr.ref.params[1],
+    ptr.ref.params[2],
+    ptr.ref.params[3],
+  ]);
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibMaterialToDart on raylib.Material {
+  Material toDart() {
+    final p = ffi.malloc<raylib.Material>();
+    p.ref.shader
+      ..id = shader.id
+      ..locs = shader.locs;
+    p.ref.maps = maps;
+    for (var i = 0; i < 4; i++) {
+      p.ref.params[i] = params[i];
+    }
+    return Material._(p);
+  }
+}
+
+// ── Mesh ──────────────────────────────────────────────────────────────────
+
+/// Handle to mesh vertex data (CPU + GPU).
+///
+/// Created by GenMesh* or LoadModel internally;
+/// released by [UnloadMesh] or [dispose].
+class Mesh {
+  final Pointer<raylib.Mesh> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Mesh>>(_free);
+  static void _free(Pointer<raylib.Mesh> ptr) {
+    raylib.UnloadMesh(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Mesh._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get vertexCount => ptr.ref.vertexCount;
+  int get triangleCount => ptr.ref.triangleCount;
+
+  /// OpenGL VAO id (0 if not uploaded).
+  int get vaoId => ptr.ref.vaoId;
+
+  /// XYZ vertex positions; length = vertexCount × 3.
+  Float32List? get vertices => ptr.ref.vertices == nullptr
+      ? null : ptr.ref.vertices.asTypedList(vertexCount * 3);
+
+  /// UV texture coordinates; length = vertexCount × 2.
+  Float32List? get texcoords => ptr.ref.texcoords == nullptr
+      ? null : ptr.ref.texcoords.asTypedList(vertexCount * 2);
+
+  /// Secondary UV coords; length = vertexCount × 2.
+  Float32List? get texcoords2 => ptr.ref.texcoords2 == nullptr
+      ? null : ptr.ref.texcoords2.asTypedList(vertexCount * 2);
+
+  /// XYZ normals; length = vertexCount × 3.
+  Float32List? get normals => ptr.ref.normals == nullptr
+      ? null : ptr.ref.normals.asTypedList(vertexCount * 3);
+
+  /// XYZW tangents; length = vertexCount × 4.
+  Float32List? get tangents => ptr.ref.tangents == nullptr
+      ? null : ptr.ref.tangents.asTypedList(vertexCount * 4);
+
+  /// RGBA vertex colors; length = vertexCount × 4.
+  Uint8List? get colors => ptr.ref.colors == nullptr
+      ? null : ptr.ref.colors.cast<Uint8>().asTypedList(vertexCount * 4);
+
+  /// Triangle indices; length = triangleCount × 3.
+  Uint16List? get indices => ptr.ref.indices == nullptr
+      ? null : ptr.ref.indices.cast<Uint16>().asTypedList(triangleCount * 3);
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibMeshToDart on raylib.Mesh {
+  Mesh toDart() {
+    final p = ffi.malloc<raylib.Mesh>();
+    p.ref
+      ..vertexCount = vertexCount
+      ..triangleCount = triangleCount
+      ..vertices = vertices
+      ..texcoords = texcoords
+      ..texcoords2 = texcoords2
+      ..normals = normals
+      ..tangents = tangents
+      ..colors = colors
+      ..indices = indices
+      ..animVertices = animVertices
+      ..animNormals = animNormals
+      ..boneIds = boneIds
+      ..boneWeights = boneWeights
+      ..boneMatrices = boneMatrices
+      ..boneCount = boneCount
+      ..vaoId = vaoId
+      ..vboId = vboId;
+    return Mesh._(p);
+  }
+}
+
+// ── Model ─────────────────────────────────────────────────────────────────
+
+/// Handle to a 3D model (meshes + materials + bones).
+///
+/// Created by LoadModel / LoadModelFromMesh;
+/// released by [UnloadModel] or [dispose].
+class Model {
+  final Pointer<raylib.Model> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Model>>(_free);
+  static void _free(Pointer<raylib.Model> ptr) {
+    raylib.UnloadModel(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Model._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  Matrix4 get transform => ptr.ref.transform.toDart();
+  set transform(Matrix4 value) => _copyMatrix4(ptr.ref.transform, value);
+
+  int get meshCount => ptr.ref.meshCount;
+  int get materialCount => ptr.ref.materialCount;
+  int get boneCount => ptr.ref.boneCount;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibModelToDart on raylib.Model {
+  Model toDart() {
+    final p = ffi.malloc<raylib.Model>();
+    _copyMatrix(p.ref.transform, transform);
+    p.ref
+      ..meshCount = meshCount
+      ..materialCount = materialCount
+      ..meshes = meshes
+      ..materials = materials
+      ..meshMaterial = meshMaterial
+      ..boneCount = boneCount
+      ..bones = bones
+      ..bindPose = bindPose;
+    return Model._(p);
+  }
+}
+
+// ── ModelAnimation ────────────────────────────────────────────────────────
+
+/// Handle to a skeletal animation.
+///
+/// Created by LoadModelAnimations;
+/// released by [UnloadModelAnimation] or [dispose].
+class ModelAnimation {
+  final Pointer<raylib.ModelAnimation> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.ModelAnimation>>(_free);
+  static void _free(Pointer<raylib.ModelAnimation> ptr) {
+    raylib.UnloadModelAnimation(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  ModelAnimation._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get boneCount => ptr.ref.boneCount;
+  int get frameCount => ptr.ref.frameCount;
+
+  String get name {
+    final sb = StringBuffer();
+    for (var i = 0; i < 32; i++) {
+      final c = ptr.ref.name[i];
+      if (c == 0) break;
+      sb.writeCharCode(c);
+    }
+    return sb.toString();
+  }
+
+  BoneInfo boneInfo(int index) => (ptr.ref.bones + index).ref.toDart();
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibModelAnimationToDart on raylib.ModelAnimation {
+  ModelAnimation toDart() {
+    final p = ffi.malloc<raylib.ModelAnimation>();
+    p.ref
+      ..boneCount = boneCount
+      ..frameCount = frameCount
+      ..bones = bones
+      ..framePoses = framePoses;
+    for (var i = 0; i < 32; i++) {
+      p.ref.name[i] = name[i];
+    }
+    return ModelAnimation._(p);
+  }
+}
 
 // ── Transform ────────────────────────────────────────────────────────────
-// not yet wrapped
+
+/// Vertex transformation data (translation, rotation, scale).
+@immutable
+class Transform {
+  final Vector3 translation;
+
+  /// Rotation quaternion (x, y, z, w).
+  final Quaternion rotation;
+
+  final Vector3 scale;
+
+  const Transform({
+    required this.translation,
+    required this.rotation,
+    required this.scale,
+  });
+}
+
+extension TransformExt on raylib.Transform {
+  Transform toDart() => Transform(
+    translation: translation.toDart(),
+    rotation: Quaternion(rotation.x, rotation.y, rotation.z, rotation.w),
+    scale: scale.toDart(),
+  );
+}
 
 // ── BoneInfo ─────────────────────────────────────────────────────────────
-// not yet wrapped
+
+/// Skeletal bone definition.
+@immutable
+class BoneInfo {
+  final String name;
+
+  /// Index of the parent bone (-1 for root).
+  final int parent;
+
+  const BoneInfo({required this.name, required this.parent});
+}
+
+extension BoneInfoExt on raylib.BoneInfo {
+  BoneInfo toDart() {
+    final sb = StringBuffer();
+    for (var i = 0; i < 32; i++) {
+      final c = name[i];
+      if (c == 0) break;
+      sb.writeCharCode(c);
+    }
+    return BoneInfo(name: sb.toString(), parent: parent);
+  }
+}
 
 // ── Ray ──────────────────────────────────────────────────────────────────
 // via package:vector_math — Ray
@@ -455,22 +853,247 @@ extension RayExtension on raylib.Ray {
 }
 
 // ── RayCollision ─────────────────────────────────────────────────────────
-// not yet wrapped
 
-// ── BoundingBox ──────────────────────────────────────────────────────────
-// not yet wrapped
+/// Result of a ray cast hit test.
+@immutable
+class RayCollision {
+  final bool hit;
+  final double distance;
+  final Vector3 point;
+  final Vector3 normal;
 
-// ── Wave ─────────────────────────────────────────────────────────────────
-// not yet wrapped
+  const RayCollision({
+    required this.hit,
+    required this.distance,
+    required this.point,
+    required this.normal,
+  });
+}
 
-// ── AudioStream ──────────────────────────────────────────────────────────
-// not yet wrapped
+extension RayCollisionExt on raylib.RayCollision {
+  RayCollision toDart() => RayCollision(
+    hit: hit,
+    distance: distance,
+    point: point.toDart(),
+    normal: normal.toDart(),
+  );
+}
 
-// ── Sound ────────────────────────────────────────────────────────────────
-// not yet wrapped
+// ── BoundingBox ───────────────────────────────────────────────────────────
 
-// ── Music ────────────────────────────────────────────────────────────────
-// not yet wrapped
+/// Axis-aligned bounding box.
+@immutable
+class BoundingBox {
+  final Vector3 min;
+  final Vector3 max;
+
+  const BoundingBox({required this.min, required this.max});
+}
+
+extension BoundingBoxExt on raylib.BoundingBox {
+  BoundingBox toDart() => BoundingBox(min: min.toDart(), max: max.toDart());
+}
+
+// ── Wave ──────────────────────────────────────────────────────────────────
+
+/// Handle to audio wave data (PCM samples in RAM).
+///
+/// Created by LoadWave / LoadWaveFromMemory;
+/// released by [UnloadWave] or [dispose].
+class Wave {
+  final Pointer<raylib.Wave> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Wave>>(_free);
+  static void _free(Pointer<raylib.Wave> ptr) {
+    raylib.UnloadWave(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Wave._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get frameCount => ptr.ref.frameCount;
+  int get sampleRate => ptr.ref.sampleRate;
+  int get sampleSize => ptr.ref.sampleSize;
+  int get channels => ptr.ref.channels;
+
+  /// Raw PCM sample bytes.
+  /// Size = frameCount × channels × (sampleSize ÷ 8).
+  Uint8List get data {
+    final byteSize = frameCount * channels * (sampleSize ~/ 8);
+    return ptr.ref.data.cast<Uint8>().asTypedList(byteSize);
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibWaveToDart on raylib.Wave {
+  Wave toDart() {
+    final p = ffi.malloc<raylib.Wave>();
+    p.ref
+      ..frameCount = frameCount
+      ..sampleRate = sampleRate
+      ..sampleSize = sampleSize
+      ..channels = channels
+      ..data = data;
+    return Wave._(p);
+  }
+}
+
+// ── AudioStream ───────────────────────────────────────────────────────────
+
+/// Handle to a raw audio stream (for streaming audio data).
+///
+/// Created by LoadAudioStream;
+/// released by [UnloadAudioStream] or [dispose].
+class AudioStream {
+  final Pointer<raylib.AudioStream> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.AudioStream>>(_free);
+  static void _free(Pointer<raylib.AudioStream> ptr) {
+    raylib.UnloadAudioStream(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  AudioStream._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get sampleRate => ptr.ref.sampleRate;
+  int get sampleSize => ptr.ref.sampleSize;
+  int get channels => ptr.ref.channels;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibAudioStreamToDart on raylib.AudioStream {
+  AudioStream toDart() {
+    final p = ffi.malloc<raylib.AudioStream>();
+    p.ref
+      ..buffer = buffer
+      ..processor = processor
+      ..sampleRate = sampleRate
+      ..sampleSize = sampleSize
+      ..channels = channels;
+    return AudioStream._(p);
+  }
+}
+
+// ── Sound ─────────────────────────────────────────────────────────────────
+
+/// Handle to a loaded sound (short audio clip).
+///
+/// Created by LoadSound / LoadSoundFromWave;
+/// released by [UnloadSound] or [dispose].
+class Sound {
+  final Pointer<raylib.Sound> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Sound>>(_free);
+  static void _free(Pointer<raylib.Sound> ptr) {
+    raylib.UnloadSound(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Sound._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get frameCount => ptr.ref.frameCount;
+  int get sampleRate => ptr.ref.stream.sampleRate;
+  int get sampleSize => ptr.ref.stream.sampleSize;
+  int get channels => ptr.ref.stream.channels;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibSoundToDart on raylib.Sound {
+  Sound toDart() {
+    final p = ffi.malloc<raylib.Sound>();
+    p.ref
+      ..stream.buffer = stream.buffer
+      ..stream.processor = stream.processor
+      ..stream.sampleRate = stream.sampleRate
+      ..stream.sampleSize = stream.sampleSize
+      ..stream.channels = stream.channels
+      ..frameCount = frameCount;
+    return Sound._(p);
+  }
+}
+
+// ── Music ─────────────────────────────────────────────────────────────────
+
+/// Handle to a music stream (long audio, streamed from file/memory).
+///
+/// Created by LoadMusicStream / LoadMusicStreamFromMemory;
+/// released by [UnloadMusicStream] or [dispose].
+class Music {
+  final Pointer<raylib.Music> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Music>>(_free);
+  static void _free(Pointer<raylib.Music> ptr) {
+    raylib.UnloadMusicStream(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Music._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get frameCount => ptr.ref.frameCount;
+  bool get looping => ptr.ref.looping;
+  set looping(bool value) => ptr.ref.looping = value;
+  int get sampleRate => ptr.ref.stream.sampleRate;
+  int get sampleSize => ptr.ref.stream.sampleSize;
+  int get channels => ptr.ref.stream.channels;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibMusicToDart on raylib.Music {
+  Music toDart() {
+    final p = ffi.malloc<raylib.Music>();
+    p.ref
+      ..stream.buffer = stream.buffer
+      ..stream.processor = stream.processor
+      ..stream.sampleRate = stream.sampleRate
+      ..stream.sampleSize = stream.sampleSize
+      ..stream.channels = stream.channels
+      ..frameCount = frameCount
+      ..looping = looping
+      ..ctxType = ctxType
+      ..ctxData = ctxData;
+    return Music._(p);
+  }
+}
 
 // ── VrDeviceInfo ─────────────────────────────────────────────────────────
 
@@ -541,6 +1164,15 @@ void _copyMatrix(raylib.Matrix dst, raylib.Matrix src) {
     ..m1  = src.m1  ..m5  = src.m5  ..m9  = src.m9  ..m13 = src.m13
     ..m2  = src.m2  ..m6  = src.m6  ..m10 = src.m10 ..m14 = src.m14
     ..m3  = src.m3  ..m7  = src.m7  ..m11 = src.m11 ..m15 = src.m15;
+}
+
+void _copyMatrix4(raylib.Matrix dst, Matrix4 src) {
+  final s = src.storage;
+  dst
+    ..m0  = s[0]  ..m4  = s[4]  ..m8  = s[8]  ..m12 = s[12]
+    ..m1  = s[1]  ..m5  = s[5]  ..m9  = s[9]  ..m13 = s[13]
+    ..m2  = s[2]  ..m6  = s[6]  ..m10 = s[10] ..m14 = s[14]
+    ..m3  = s[3]  ..m7  = s[7]  ..m11 = s[11] ..m15 = s[15];
 }
 
 extension RaylibVrStereoConfigToDart on raylib.VrStereoConfig {
@@ -696,6 +1328,18 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
+  Pointer<raylib.BoundingBox> boundingBox(BoundingBox value) {
+    final ptr = this<raylib.BoundingBox>();
+    ptr.ref
+      ..min.x = value.min.x
+      ..min.y = value.min.y
+      ..min.z = value.min.z
+      ..max.x = value.max.x
+      ..max.y = value.max.y
+      ..max.z = value.max.z;
+    return ptr;
+  }
+
   Pointer<raylib.Texture> texture(Texture value) {
     final ptr = this<raylib.Texture>();
     ptr.ref
@@ -736,6 +1380,20 @@ extension ArenaExt on ffi.Arena {
       ..right = value.right
       ..bottom = value.bottom
       ..layout = value.layout.value;
+    return ptr;
+  }
+
+  Pointer<raylib.Matrix> matrix4(Matrix4 value) {
+    final ptr = this<raylib.Matrix>();
+    _copyMatrix4(ptr.ref, value);
+    return ptr;
+  }
+
+  Pointer<raylib.Matrix> matrix4s(List<Matrix4> values) {
+    final ptr = this<raylib.Matrix>(values.length);
+    for (var i = 0; i < values.length; i++) {
+      _copyMatrix4((ptr + i).ref, values[i]);
+    }
     return ptr;
   }
 

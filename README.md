@@ -63,12 +63,8 @@ void InitWindow(int width, int height, String title) {
 
 ### 不代理
 
-有些 API 在 Dart 中有更好的替代，直接省略：
 
-- `MemAlloc / MemRealloc / MemFree` — 用 `ffi.malloc` 替代
-- `TraceLog` — 用 Dart 的 `dart:developer` 替代
-- `TextCopy / TextIsEqual / TextLength / TextSplit` 等 C 字符串工具 — 用 Dart `String` 的方法替代
-- `SetTraceLogCallback`（native 版）— 已由 `src/logging.dart` 的 Dart 版替代
+- `MemAlloc / MemRealloc / MemFree` — 不暴露给用户
 
 ### char 类型
 

@@ -4,43 +4,46 @@
 //   - Functions taking only primitive C types (int, no pointers) → direct export
 //   - Functions taking Pointer<Char> → Dart wrapper (String conversion via Arena)
 //   - Functions returning codepoint + size-out param → record (int, int)
-//   - Font-dependent functions → commented out (Font not yet wrapped)
 //   - C string utilities with Dart equivalents → commented out
 //   - C memory-managed string/codepoint helpers → commented out
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
+import 'dart:typed_data';
+import 'package:vector_math/vector_math.dart';
 import 'colors.dart';
+import 'structs.dart';
 
 // ── Font ───────────────────────────────────────────────────────────────
-// export 'src/raylib.g.dart' show GetFontDefault;      // Font not yet wrapped
-// export 'src/raylib.g.dart' show LoadFont;            // Font not yet wrapped
-// export 'src/raylib.g.dart' show LoadFontEx;          // Font not yet wrapped
-// export 'src/raylib.g.dart' show LoadFontFromImage;   // Font not yet wrapped
-// export 'src/raylib.g.dart' show LoadFontFromMemory;  // Font not yet wrapped
-// export 'src/raylib.g.dart' show IsFontValid;         // Font not yet wrapped
-// export 'src/raylib.g.dart' show LoadFontData;        // Font not yet wrapped
-// export 'src/raylib.g.dart' show GenImageFontAtlas;   // Font not yet wrapped
-// export 'src/raylib.g.dart' show UnloadFontData;      // Font not yet wrapped
-// export 'src/raylib.g.dart' show UnloadFont;          // Font not yet wrapped
-// export 'src/raylib.g.dart' show ExportFontAsCode;    // Font not yet wrapped
+// export 'src/raylib.g.dart' show GetFontDefault;      // → Dart wrapper below
+// export 'src/raylib.g.dart' show LoadFont;            // → Dart wrapper below
+// export 'src/raylib.g.dart' show LoadFontEx;          // → Dart wrapper below
+// export 'src/raylib.g.dart' show LoadFontFromImage;   // needs Image wrapper
+// export 'src/raylib.g.dart' show LoadFontFromMemory;  // → Dart wrapper below
+// export 'src/raylib.g.dart' show IsFontValid;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show LoadFontData;        // raw GlyphInfo* — skip
+// export 'src/raylib.g.dart' show GenImageFontAtlas;   // returns Image — skip
+// export 'src/raylib.g.dart' show UnloadFontData;      // raw GlyphInfo* — skip
+// export 'src/raylib.g.dart' show UnloadFont;          // → Dart wrapper below
+// export 'src/raylib.g.dart' show ExportFontAsCode;    // → Dart wrapper below
 
 // ── Text drawing ────────────────────────────────────────────────────────
 export 'src/raylib.g.dart' show DrawFPS;
 export 'src/raylib.g.dart' show SetTextLineSpacing;
+export 'src/text.dart' show TextFormat;
 // export 'src/raylib.g.dart' show DrawText;            // → Dart wrapper below
-// export 'src/raylib.g.dart' show DrawTextEx;          // Font not yet wrapped
-// export 'src/raylib.g.dart' show DrawTextPro;         // Font not yet wrapped
-// export 'src/raylib.g.dart' show DrawTextCodepoint;   // Font not yet wrapped
-// export 'src/raylib.g.dart' show DrawTextCodepoints;  // Font not yet wrapped
+// export 'src/raylib.g.dart' show DrawTextEx;          // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawTextPro;         // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawTextCodepoint;   // → Dart wrapper below
+// export 'src/raylib.g.dart' show DrawTextCodepoints;  // → Dart wrapper below
 
 // ── Text measurement ────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show MeasureText;         // → Dart wrapper below
-// export 'src/raylib.g.dart' show MeasureTextEx;       // Font not yet wrapped
-// export 'src/raylib.g.dart' show GetGlyphIndex;       // Font not yet wrapped
-// export 'src/raylib.g.dart' show GetGlyphInfo;        // Font not yet wrapped
-// export 'src/raylib.g.dart' show GetGlyphAtlasRec;    // Font not yet wrapped
+// export 'src/raylib.g.dart' show MeasureTextEx;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetGlyphIndex;       // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetGlyphInfo;        // → Dart wrapper below
+// export 'src/raylib.g.dart' show GetGlyphAtlasRec;    // → Dart wrapper below
 
 // ── Codepoints ──────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show LoadUTF8;            // C memory management — use Dart strings
@@ -55,23 +58,99 @@ export 'src/raylib.g.dart' show SetTextLineSpacing;
 
 // ── Text utilities ───────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show TextCopy;            // C string utilities — use Dart string methods instead
-// export 'src/raylib.g.dart' show TextIsEqual;         // C string utilities — use Dart string methods instead (==)
-// export 'src/raylib.g.dart' show TextLength;          // C string utilities — use Dart string methods instead (.length)
-export 'src/text.dart' show TextFormat;
-// export 'src/raylib.g.dart' show TextSubtext;         // C string utilities — use Dart string methods instead (.substring())
-// export 'src/raylib.g.dart' show TextReplace;         // C string utilities — use Dart string methods instead (.replaceAll())
-// export 'src/raylib.g.dart' show TextInsert;          // C string utilities — use Dart string methods instead (string interpolation)
-// export 'src/raylib.g.dart' show TextJoin;            // C string utilities — use Dart string methods instead (.join())
-// export 'src/raylib.g.dart' show TextSplit;           // C string utilities — use Dart string methods instead (.split())
-// export 'src/raylib.g.dart' show TextAppend;          // C string utilities — use Dart string methods instead (+=)
-// export 'src/raylib.g.dart' show TextFindIndex;       // C string utilities — use Dart string methods instead (.indexOf())
-// export 'src/raylib.g.dart' show TextToUpper;         // C string utilities — use Dart string methods instead (.toUpperCase())
-// export 'src/raylib.g.dart' show TextToLower;         // C string utilities — use Dart string methods instead (.toLowerCase())
+// export 'src/raylib.g.dart' show TextIsEqual;         // C string utilities — use == instead
+// export 'src/raylib.g.dart' show TextLength;          // C string utilities — use .length instead
+// export 'src/raylib.g.dart' show TextSubtext;         // C string utilities — use .substring()
+// export 'src/raylib.g.dart' show TextReplace;         // C string utilities — use .replaceAll()
+// export 'src/raylib.g.dart' show TextInsert;          // C string utilities — use string interpolation
+// export 'src/raylib.g.dart' show TextJoin;            // C string utilities — use .join()
+// export 'src/raylib.g.dart' show TextSplit;           // C string utilities — use .split()
+// export 'src/raylib.g.dart' show TextAppend;          // C string utilities — use +=
+// export 'src/raylib.g.dart' show TextFindIndex;       // C string utilities — use .indexOf()
+// export 'src/raylib.g.dart' show TextToUpper;         // C string utilities — use .toUpperCase()
+// export 'src/raylib.g.dart' show TextToLower;         // C string utilities — use .toLowerCase()
 // export 'src/raylib.g.dart' show TextToPascal;        // no Dart equivalent
 // export 'src/raylib.g.dart' show TextToSnake;         // no Dart equivalent
 // export 'src/raylib.g.dart' show TextToCamel;         // no Dart equivalent
 // export 'src/raylib.g.dart' show TextToInteger;       // → Dart wrapper below
 // export 'src/raylib.g.dart' show TextToFloat;         // → Dart wrapper below
+
+// ── Font loading ────────────────────────────────────────────────────────
+
+Font GetFontDefault() => raylib.GetFontDefault().toDart();
+
+Font LoadFont(String fileName) => ffi.using((arena) {
+  return raylib.LoadFont(
+    fileName.toNativeUtf8(allocator: arena).cast(),
+  ).toDart();
+});
+
+/// Loads a font with custom [fontSize] and optional [codepoints].
+/// If [codepoints] is null, the default ASCII charset is loaded.
+Font LoadFontEx(String fileName, int fontSize, [List<int>? codepoints]) =>
+    ffi.using((arena) {
+      final Pointer<Int> cpPtr;
+      final int cpCount;
+      if (codepoints == null) {
+        cpPtr = nullptr;
+        cpCount = 0;
+      } else {
+        cpPtr = arena<Int>(codepoints.length);
+        for (var i = 0; i < codepoints.length; i++) {
+          cpPtr[i] = codepoints[i];
+        }
+        cpCount = codepoints.length;
+      }
+      return raylib.LoadFontEx(
+        fileName.toNativeUtf8(allocator: arena).cast(),
+        fontSize,
+        cpPtr,
+        cpCount,
+      ).toDart();
+    });
+
+/// Loads a font from [fileData] bytes with the given [fileType] extension
+/// (e.g. `".ttf"`). Pass [codepoints] to restrict the glyph set.
+Font LoadFontFromMemory(
+  String fileType,
+  Uint8List fileData,
+  int fontSize, [
+  List<int>? codepoints,
+]) => ffi.using((arena) {
+  final dataPtr = arena<Uint8>(fileData.length);
+  dataPtr.asTypedList(fileData.length).setAll(0, fileData);
+  final Pointer<Int> cpPtr;
+  final int cpCount;
+  if (codepoints == null) {
+    cpPtr = nullptr;
+    cpCount = 0;
+  } else {
+    cpPtr = arena<Int>(codepoints.length);
+    for (var i = 0; i < codepoints.length; i++) {
+      cpPtr[i] = codepoints[i];
+    }
+    cpCount = codepoints.length;
+  }
+  return raylib.LoadFontFromMemory(
+    fileType.toNativeUtf8(allocator: arena).cast(),
+    dataPtr.cast(),
+    fileData.length,
+    fontSize,
+    cpPtr,
+    cpCount,
+  ).toDart();
+});
+
+bool IsFontValid(Font font) => raylib.IsFontValid(font.ptr.ref);
+
+void UnloadFont(Font font) => font.dispose();
+
+bool ExportFontAsCode(Font font, String fileName) => ffi.using((arena) {
+  return raylib.ExportFontAsCode(
+    font.ptr.ref,
+    fileName.toNativeUtf8(allocator: arena).cast(),
+  );
+});
 
 // ── Text drawing ────────────────────────────────────────────────────────
 
@@ -86,6 +165,86 @@ void DrawText(String text, int posX, int posY, int fontSize, Color color) =>
       );
     });
 
+void DrawTextEx(
+  Font font,
+  String text,
+  Vector2 position,
+  double fontSize,
+  double spacing,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawTextEx(
+    font.ptr.ref,
+    text.toNativeUtf8(allocator: arena).cast(),
+    arena.vector2(position).ref,
+    fontSize,
+    spacing,
+    tint.ptr.ref,
+  );
+});
+
+void DrawTextPro(
+  Font font,
+  String text,
+  Vector2 position,
+  Vector2 origin,
+  double rotation,
+  double fontSize,
+  double spacing,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawTextPro(
+    font.ptr.ref,
+    text.toNativeUtf8(allocator: arena).cast(),
+    arena.vector2(position).ref,
+    arena.vector2(origin).ref,
+    rotation,
+    fontSize,
+    spacing,
+    tint.ptr.ref,
+  );
+});
+
+void DrawTextCodepoint(
+  Font font,
+  int codepoint,
+  Vector2 position,
+  double fontSize,
+  Color tint,
+) => ffi.using((arena) {
+  raylib.DrawTextCodepoint(
+    font.ptr.ref,
+    codepoint,
+    arena.vector2(position).ref,
+    fontSize,
+    tint.ptr.ref,
+  );
+});
+
+/// [codepoints] replaces the C `int *codepoints, int codepointCount` pair.
+void DrawTextCodepoints(
+  Font font,
+  List<int> codepoints,
+  Vector2 position,
+  double fontSize,
+  double spacing,
+  Color tint,
+) => ffi.using((arena) {
+  final cpPtr = arena<Int>(codepoints.length);
+  for (var i = 0; i < codepoints.length; i++) {
+    cpPtr[i] = codepoints[i];
+  }
+  raylib.DrawTextCodepoints(
+    font.ptr.ref,
+    cpPtr,
+    codepoints.length,
+    arena.vector2(position).ref,
+    fontSize,
+    spacing,
+    tint.ptr.ref,
+  );
+});
+
 // ── Text measurement ────────────────────────────────────────────────────
 
 int MeasureText(String text, int fontSize) => ffi.using((arena) {
@@ -94,6 +253,36 @@ int MeasureText(String text, int fontSize) => ffi.using((arena) {
     fontSize,
   );
 });
+
+Vector2 MeasureTextEx(
+  Font font,
+  String text,
+  double fontSize,
+  double spacing,
+) => ffi.using((arena) {
+  return raylib.MeasureTextEx(
+    font.ptr.ref,
+    text.toNativeUtf8(allocator: arena).cast(),
+    fontSize,
+    spacing,
+  ).toDart();
+});
+
+int GetGlyphIndex(Font font, int codepoint) =>
+    raylib.GetGlyphIndex(font.ptr.ref, codepoint);
+
+GlyphInfo GetGlyphInfo(Font font, int codepoint) {
+  final g = raylib.GetGlyphInfo(font.ptr.ref, codepoint);
+  return GlyphInfo(
+    value: g.value,
+    offsetX: g.offsetX,
+    offsetY: g.offsetY,
+    advanceX: g.advanceX,
+  );
+}
+
+Rectangle GetGlyphAtlasRec(Font font, int codepoint) =>
+    raylib.GetGlyphAtlasRec(font.ptr.ref, codepoint).toDart();
 
 // ── Codepoints ──────────────────────────────────────────────────────────
 
