@@ -1,5 +1,15 @@
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
+//
+// TODO: 以下接口尚未代理，需要先实现对应的 struct 包装：
+//   AutomationEvent / AutomationEventList:
+//     LoadAutomationEventList, UnloadAutomationEventList,
+//     ExportAutomationEventList, SetAutomationEventList, PlayAutomationEvent
+//
+// 故意不代理（无合理的 Dart 等价）：
+//   MemAlloc, MemRealloc, MemFree  — 底层内存管理，用 ffi.malloc 替代
+//   SetTraceLogCallback (native)   — 已由 src/logging.dart 的 Dart 版替代
+//   SetLoad/SaveFile*Callback (native) — 已由 src/callback.dart 的 Dart 版替代
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
@@ -126,14 +136,16 @@ export 'src/raylib.g.dart' show GetRandomValue;
 // export 'src/raylib.g.dart' show UnloadRandomSequence;
 // ── Misc ───────────────────────────────────────────────────────────────
 // export 'src/raylib.g.dart' show TakeScreenshot;
-export 'src/raylib.g.dart' show SetConfigFlags;
+// export 'src/raylib.g.dart' show SetConfigFlags;
 // export 'src/raylib.g.dart' show OpenURL;
 // export 'src/raylib.g.dart' show TraceLog;
+export 'src/logging.dart' show TraceLog;
 export 'src/raylib.g.dart' show SetTraceLogLevel;
 // export 'src/raylib.g.dart' show MemAlloc;
 // export 'src/raylib.g.dart' show MemRealloc;
 // export 'src/raylib.g.dart' show MemFree;
 // export 'src/raylib.g.dart' show SetTraceLogCallback;
+export 'src/logging.dart' show SetTraceLogCallback;
 // export 'src/raylib.g.dart' show SetLoadFileDataCallback;
 // export 'src/raylib.g.dart' show SetSaveFileDataCallback;
 // export 'src/raylib.g.dart' show SetLoadFileTextCallback;
@@ -231,8 +243,8 @@ export 'src/raylib.g.dart' show GetTouchY;
 export 'src/raylib.g.dart' show GetTouchPointId;
 export 'src/raylib.g.dart' show GetTouchPointCount;
 // ── Gestures ───────────────────────────────────────────────────────────
-export 'src/raylib.g.dart' show SetGesturesEnabled;
-export 'src/raylib.g.dart' show IsGestureDetected;
+// export 'src/raylib.g.dart' show SetGesturesEnabled;
+// export 'src/raylib.g.dart' show IsGestureDetected;
 export 'src/raylib.g.dart' show GetGestureDetected;
 export 'src/raylib.g.dart' show GetGestureHoldDuration;
 // export 'src/raylib.g.dart' show GetGestureDragVector;
@@ -497,9 +509,6 @@ void OpenURL(String url) => ffi.using((arena) {
   raylib.OpenURL(url.toNativeUtf8(allocator: arena).cast());
 });
 
-void TraceLog(int logLevel, String text) => ffi.using((arena) {
-  raylib.TraceLog(logLevel, text.toNativeUtf8(allocator: arena).cast());
-});
 
 // ── File I/O ───────────────────────────────────────────────────────────
 
@@ -763,6 +772,17 @@ Vector2 GetTouchPosition(int index) => raylib.GetTouchPosition(index).toDart();
 
 Vector2 GetGestureDragVector() => raylib.GetGestureDragVector().toDart();
 Vector2 GetGesturePinchVector() => raylib.GetGesturePinchVector().toDart();
+
+// ── Config / Gestures ──────────────────────────────────────────────────
+
+void SetConfigFlags(consts.ConfigFlags flags) =>
+    raylib.SetConfigFlags(flags.value);
+
+void SetGesturesEnabled(consts.Gesture gesture) =>
+    raylib.SetGesturesEnabled(gesture.value);
+
+bool IsGestureDetected(consts.Gesture gesture) =>
+    raylib.IsGestureDetected(gesture.value);
 
 // ── Camera update ──────────────────────────────────────────────────────
 
