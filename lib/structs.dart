@@ -164,6 +164,23 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
+  Pointer<raylib.VrDeviceInfo> vrDeviceInfo(VrDeviceInfo value) {
+    final ptr = this<raylib.VrDeviceInfo>();
+    ptr.ref
+      ..hResolution = value.hResolution
+      ..vResolution = value.vResolution
+      ..hScreenSize = value.hScreenSize
+      ..vScreenSize = value.vScreenSize
+      ..eyeToScreenDistance = value.eyeToScreenDistance
+      ..lensSeparationDistance = value.lensSeparationDistance
+      ..interpupillaryDistance = value.interpupillaryDistance;
+    for (var i = 0; i < 4; i++) {
+      ptr.ref.lensDistortionValues[i] = value.lensDistortionValues[i];
+      ptr.ref.chromaAbCorrection[i] = value.chromaAbCorrection[i];
+    }
+    return ptr;
+  }
+
   /// dart Image → native raylib.Image (PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
   ///
   /// Both the pixel data and the Image struct are arena-managed —
@@ -380,6 +397,96 @@ class Camera2D {
     _finalizer.detach(this); // 取消自动释放
     _free(ptr);
     _disposed = true;
+  }
+}
+
+// ── VrDeviceInfo ────────────────────────────────────────────────────────
+
+/// Immutable description of a VR headset's optical/display properties.
+///
+/// Pass to [LoadVrStereoConfig] to generate a [VrStereoConfig].
+class VrDeviceInfo {
+  final int hResolution;
+  final int vResolution;
+  final double hScreenSize;
+  final double vScreenSize;
+  final double eyeToScreenDistance;
+  final double lensSeparationDistance;
+  final double interpupillaryDistance;
+
+  /// 4-element distortion coefficients [k0, k1, k2, k3].
+  final List<double> lensDistortionValues;
+
+  /// 4-element chromatic aberration correction values [r, rg, b, bg].
+  final List<double> chromaAbCorrection;
+
+  const VrDeviceInfo({
+    required this.hResolution,
+    required this.vResolution,
+    required this.hScreenSize,
+    required this.vScreenSize,
+    required this.eyeToScreenDistance,
+    required this.lensSeparationDistance,
+    required this.interpupillaryDistance,
+    required this.lensDistortionValues,
+    required this.chromaAbCorrection,
+  });
+}
+
+// ── VrStereoConfig ──────────────────────────────────────────────────────
+
+/// Handle to a VR stereo rendering configuration.
+///
+/// Created by [LoadVrStereoConfig]; released by [UnloadVrStereoConfig].
+/// The [dispose] method frees the wrapper struct allocated by this class
+/// and calls the native UnloadVrStereoConfig automatically.
+class VrStereoConfig {
+  final Pointer<raylib.VrStereoConfig> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.VrStereoConfig>>(_free);
+  static void _free(Pointer<raylib.VrStereoConfig> ptr) {
+    raylib.UnloadVrStereoConfig(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  VrStereoConfig._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+void _copyMatrix(raylib.Matrix dst, raylib.Matrix src) {
+  dst
+    ..m0 = src.m0 ..m4 = src.m4 ..m8  = src.m8  ..m12 = src.m12
+    ..m1 = src.m1 ..m5 = src.m5 ..m9  = src.m9  ..m13 = src.m13
+    ..m2 = src.m2 ..m6 = src.m6 ..m10 = src.m10 ..m14 = src.m14
+    ..m3 = src.m3 ..m7 = src.m7 ..m11 = src.m11 ..m15 = src.m15;
+}
+
+extension RaylibVrStereoConfigToDart on raylib.VrStereoConfig {
+  VrStereoConfig toDart() {
+    final p = ffi.malloc<raylib.VrStereoConfig>();
+    _copyMatrix(p.ref.projection[0], projection[0]);
+    _copyMatrix(p.ref.projection[1], projection[1]);
+    _copyMatrix(p.ref.viewOffset[0], viewOffset[0]);
+    _copyMatrix(p.ref.viewOffset[1], viewOffset[1]);
+    for (var i = 0; i < 2; i++) {
+      p.ref.leftLensCenter[i] = leftLensCenter[i];
+      p.ref.rightLensCenter[i] = rightLensCenter[i];
+      p.ref.leftScreenCenter[i] = leftScreenCenter[i];
+      p.ref.rightScreenCenter[i] = rightScreenCenter[i];
+      p.ref.scale[i] = scale[i];
+      p.ref.scaleIn[i] = scaleIn[i];
+    }
+    return VrStereoConfig._(p);
   }
 }
 

@@ -80,10 +80,10 @@ export 'src/raylib.g.dart' show EndShaderMode;
 export 'src/raylib.g.dart' show EndBlendMode;
 export 'src/raylib.g.dart' show BeginScissorMode;
 export 'src/raylib.g.dart' show EndScissorMode;
-export 'src/raylib.g.dart' show BeginVrStereoMode;
+// export 'src/raylib.g.dart' show BeginVrStereoMode;
 export 'src/raylib.g.dart' show EndVrStereoMode;
-export 'src/raylib.g.dart' show LoadVrStereoConfig;
-export 'src/raylib.g.dart' show UnloadVrStereoConfig;
+// export 'src/raylib.g.dart' show LoadVrStereoConfig;
+// export 'src/raylib.g.dart' show UnloadVrStereoConfig;
 export 'src/raylib.g.dart' show LoadShader;
 export 'src/raylib.g.dart' show LoadShaderFromMemory;
 export 'src/raylib.g.dart' show IsShaderValid;
@@ -301,3 +301,12 @@ void BeginTextureMode(RenderTexture2D target) => ffi.using((arena) {
 void BeginShaderMode(Shader shader) => raylib.BeginShaderMode(shader.ptr.ref);
 void BeginBlendMode(consts.BlendMode mode) =>
     raylib.BeginBlendMode(mode.value);
+
+VrStereoConfig LoadVrStereoConfig(VrDeviceInfo device) => ffi.using((arena) {
+  return raylib.LoadVrStereoConfig(arena.vrDeviceInfo(device).ref).toDart();
+});
+
+void UnloadVrStereoConfig(VrStereoConfig config) => config.dispose();
+
+void BeginVrStereoMode(VrStereoConfig config) =>
+    raylib.BeginVrStereoMode(config.ptr.ref);
