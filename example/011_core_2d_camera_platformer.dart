@@ -16,7 +16,6 @@
 import "package:raylib_dart/raylib_dart.dart";
 
 import "package:raylib_dart/raymath.dart";
-import "package:cdart/math.dart";
 
 const G = 400;
 const PLAYER_JUMP_SPD = 350.0;

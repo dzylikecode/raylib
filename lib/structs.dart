@@ -410,7 +410,7 @@ class Camera3D {
     Vector3? target,
     Vector3? up,
     double fovy = 45.0,
-    int projection = 0, // CAMERA_PERSPECTIVE
+    consts.CameraProjection projection = .perspective,
   }) {
     final pointer = ffi.malloc<raylib.Camera3D>();
     return Camera3D._(pointer)
@@ -445,8 +445,8 @@ class Camera3D {
   double get fovy => ptr.ref.fovy;
   set fovy(double value) => ptr.ref.fovy = value;
 
-  int get projection => ptr.ref.projection;
-  set projection(int value) => ptr.ref.projection = value;
+  consts.CameraProjection get projection => .fromValue(ptr.ref.projection);
+  set projection(consts.CameraProjection value) => ptr.ref.projection = value.value;
 
   @mustCallSuper
   void dispose() {
@@ -481,10 +481,6 @@ class Shader {
   }
 
   int get id => ptr.ref.id;
-
-  /// Raylib-managed locations array.
-  /// Use [GetShaderLocation] rather than indexing this directly.
-  Pointer<Int> get locs => ptr.ref.locs;
 
   @override
   bool operator ==(Object other) => other is Shader && other.id == id;

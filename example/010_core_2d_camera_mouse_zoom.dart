@@ -15,7 +15,6 @@ import "package:raylib_dart/raylib_dart.dart";
 
 import "package:raylib_dart/rlgl.dart";
 import "package:raylib_dart/raymath.dart";
-import "package:cdart/math.dart";
 
 //------------------------------------------------------------------------------------
 // Program main entry point
