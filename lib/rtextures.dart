@@ -1,17 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 //
 // 本文件封装 raylib 纹理模块。
-//
-// 尚未代理（需要先实现对应的 Dart 包装类）：
-//   Image — 所有 LoadImage*, GenImage*, Image* 操作均需要 Image Dart 包装类
-//   LoadImageColors, LoadImagePalette — 返回 Color* 数组，需要独立 API
-//   GetPixelColor, SetPixelColor — 需要原始 void* 指针
 
 import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'dart:typed_data';
-import 'package:image/image.dart' as img;
 import 'colors.dart';
 import 'structs.dart';
 import 'src/raylib_const.dart' as consts;
@@ -138,83 +132,34 @@ import 'src/raylib_const.dart' as consts;
 // export 'src/raylib.g.dart' show SetPixelColor;          // needs void* pointer
 // export 'src/raylib.g.dart' show GetPixelDataSize;       // → Dart wrapper below
 
-// ── Image helpers (private) ─────────────────────────────────────────────
-
-/// Allocates a native raylib.Image with C-malloc'd pixel data.
-/// Compatible with raylib's RL_FREE; use for in-place Image operations.
-Pointer<raylib.Image> _mallocImage(img.Image value) {
-  final Uint8List bytes;
-  if (value.numChannels == 4 && value.format == img.Format.uint8) {
-    bytes = value.getBytes(order: img.ChannelOrder.rgba);
-  } else {
-    bytes = Uint8List(value.width * value.height * 4);
-    var i = 0;
-    for (final pixel in value) {
-      bytes[i++] = (pixel.rNormalized * 255).round();
-      bytes[i++] = (pixel.gNormalized * 255).round();
-      bytes[i++] = (pixel.bNormalized * 255).round();
-      bytes[i++] = (pixel.aNormalized * 255).round();
-    }
-  }
-  final dataPtr = ffi.malloc<Uint8>(bytes.length);
-  dataPtr.asTypedList(bytes.length).setAll(0, bytes);
-  final ptr = ffi.malloc<raylib.Image>();
-  ptr.ref
-    ..data = dataPtr.cast()
-    ..width = value.width
-    ..height = value.height
-    ..mipmaps = 1
-    ..format = consts.PixelFormat.uncompressedR8g8b8a8.value;
-  return ptr;
-}
-
-/// Converts img.Image → native, runs [fn] (may modify in-place),
-/// converts back to img.Image, and frees native memory.
-img.Image _withMutableImage(img.Image image, void Function(Pointer<raylib.Image>) fn) {
-  final ptr = _mallocImage(image);
-  fn(ptr);
-  final result = ptr.ref.toDart();
-  raylib.UnloadImage(ptr.ref);
-  ffi.malloc.free(ptr);
-  return result;
-}
-
 // ── Image loading ────────────────────────────────────────────────────────
 
-img.Image LoadImage(String fileName) => ffi.using((arena) {
-  final native = raylib.LoadImage(fileName.toNativeUtf8(allocator: arena).cast());
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
+Image LoadImage(String fileName) => ffi.using((arena) {
+  return raylib.LoadImage(fileName.toNativeUtf8(allocator: arena).cast()).toDart();
 });
 
-img.Image LoadImageRaw(
+Image LoadImageRaw(
   String fileName,
   int width,
   int height,
   consts.PixelFormat format,
   int headerSize,
 ) => ffi.using((arena) {
-  final native = raylib.LoadImageRaw(
+  return raylib.LoadImageRaw(
     fileName.toNativeUtf8(allocator: arena).cast(),
     width, height, format.value, headerSize,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
+  ).toDart();
 });
 
-({img.Image image, int frames}) LoadImageAnim(String fileName) => ffi.using((arena) {
+({Image image, int frames}) LoadImageAnim(String fileName) => ffi.using((arena) {
   final framesPtr = arena<Int>();
   final native = raylib.LoadImageAnim(
     fileName.toNativeUtf8(allocator: arena).cast(), framesPtr,
   );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return (image: result, frames: framesPtr.value);
+  return (image: native.toDart(), frames: framesPtr.value);
 });
 
-({img.Image image, int frames}) LoadImageAnimFromMemory(
+({Image image, int frames}) LoadImageAnimFromMemory(
   String fileType,
   Uint8List fileData,
 ) => ffi.using((arena) {
@@ -225,55 +170,39 @@ img.Image LoadImageRaw(
     fileType.toNativeUtf8(allocator: arena).cast(),
     dataPtr.cast(), fileData.length, framesPtr,
   );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return (image: result, frames: framesPtr.value);
+  return (image: native.toDart(), frames: framesPtr.value);
 });
 
-img.Image LoadImageFromMemory(String fileType, Uint8List fileData) => ffi.using((arena) {
+Image LoadImageFromMemory(String fileType, Uint8List fileData) => ffi.using((arena) {
   final dataPtr = arena<Uint8>(fileData.length);
   dataPtr.asTypedList(fileData.length).setAll(0, fileData);
-  final native = raylib.LoadImageFromMemory(
+  return raylib.LoadImageFromMemory(
     fileType.toNativeUtf8(allocator: arena).cast(),
     dataPtr.cast(), fileData.length,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
+  ).toDart();
 });
 
-img.Image LoadImageFromTexture(Texture texture) => ffi.using((arena) {
-  final native = raylib.LoadImageFromTexture(arena.texture(texture).ref);
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
+Image LoadImageFromTexture(Texture texture) => ffi.using((arena) {
+  return raylib.LoadImageFromTexture(arena.texture(texture).ref).toDart();
 });
 
-img.Image LoadImageFromScreen() {
-  final native = raylib.LoadImageFromScreen();
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+Image LoadImageFromScreen() => raylib.LoadImageFromScreen().toDart();
 
-bool IsImageValid(img.Image image) => ffi.using((arena) {
-  return raylib.IsImageValid(arena.image(image).ref);
-});
+bool IsImageValid(Image image) => raylib.IsImageValid(image.ptr.ref);
 
-@Deprecated('Image memory is managed by Dart. This is a no-op.')
-void UnloadImage(img.Image image) {}
+void UnloadImage(Image image) => image.dispose();
 
-bool ExportImage(img.Image image, String fileName) => ffi.using((arena) {
+bool ExportImage(Image image, String fileName) => ffi.using((arena) {
   return raylib.ExportImage(
-    arena.image(image).ref,
+    image.ptr.ref,
     fileName.toNativeUtf8(allocator: arena).cast(),
   );
 });
 
-Uint8List ExportImageToMemory(img.Image image, String fileType) => ffi.using((arena) {
+Uint8List ExportImageToMemory(Image image, String fileType) => ffi.using((arena) {
   final sizePtr = arena<Int>();
   final data = raylib.ExportImageToMemory(
-    arena.image(image).ref,
+    image.ptr.ref,
     fileType.toNativeUtf8(allocator: arena).cast(),
     sizePtr,
   );
@@ -282,263 +211,171 @@ Uint8List ExportImageToMemory(img.Image image, String fileType) => ffi.using((ar
   return result;
 });
 
-bool ExportImageAsCode(img.Image image, String fileName) => ffi.using((arena) {
+bool ExportImageAsCode(Image image, String fileName) => ffi.using((arena) {
   return raylib.ExportImageAsCode(
-    arena.image(image).ref,
+    image.ptr.ref,
     fileName.toNativeUtf8(allocator: arena).cast(),
   );
 });
 
 // ── Image generation ─────────────────────────────────────────────────────
 
-img.Image GenImageColor(int width, int height, Color color) {
-  final native = raylib.GenImageColor(width, height, color.ptr.ref);
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+Image GenImageColor(int width, int height, Color color) =>
+    raylib.GenImageColor(width, height, color.ptr.ref).toDart();
 
-img.Image GenImageGradientLinear(
+Image GenImageGradientLinear(
   int width, int height, int direction, Color start, Color end,
-) {
-  final native = raylib.GenImageGradientLinear(
-    width, height, direction, start.ptr.ref, end.ptr.ref,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+) => raylib.GenImageGradientLinear(
+  width, height, direction, start.ptr.ref, end.ptr.ref,
+).toDart();
 
-img.Image GenImageGradientRadial(
+Image GenImageGradientRadial(
   int width, int height, double density, Color inner, Color outer,
-) {
-  final native = raylib.GenImageGradientRadial(
-    width, height, density, inner.ptr.ref, outer.ptr.ref,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+) => raylib.GenImageGradientRadial(
+  width, height, density, inner.ptr.ref, outer.ptr.ref,
+).toDart();
 
-img.Image GenImageGradientSquare(
+Image GenImageGradientSquare(
   int width, int height, double density, Color inner, Color outer,
-) {
-  final native = raylib.GenImageGradientSquare(
-    width, height, density, inner.ptr.ref, outer.ptr.ref,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+) => raylib.GenImageGradientSquare(
+  width, height, density, inner.ptr.ref, outer.ptr.ref,
+).toDart();
 
-img.Image GenImageChecked(
+Image GenImageChecked(
   int width, int height, int checksX, int checksY, Color col1, Color col2,
-) {
-  final native = raylib.GenImageChecked(
-    width, height, checksX, checksY, col1.ptr.ref, col2.ptr.ref,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+) => raylib.GenImageChecked(
+  width, height, checksX, checksY, col1.ptr.ref, col2.ptr.ref,
+).toDart();
 
-img.Image GenImageWhiteNoise(int width, int height, double factor) {
-  final native = raylib.GenImageWhiteNoise(width, height, factor);
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+Image GenImageWhiteNoise(int width, int height, double factor) =>
+    raylib.GenImageWhiteNoise(width, height, factor).toDart();
 
-img.Image GenImagePerlinNoise(
+Image GenImagePerlinNoise(
   int width, int height, int offsetX, int offsetY, double scale,
-) {
-  final native = raylib.GenImagePerlinNoise(
-    width, height, offsetX, offsetY, scale,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+) => raylib.GenImagePerlinNoise(width, height, offsetX, offsetY, scale).toDart();
 
-img.Image GenImageCellular(int width, int height, int tileSize) {
-  final native = raylib.GenImageCellular(width, height, tileSize);
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-}
+Image GenImageCellular(int width, int height, int tileSize) =>
+    raylib.GenImageCellular(width, height, tileSize).toDart();
 
-img.Image GenImageText(int width, int height, String text) => ffi.using((arena) {
-  final native = raylib.GenImageText(
+Image GenImageText(int width, int height, String text) => ffi.using((arena) {
+  return raylib.GenImageText(
     width, height, text.toNativeUtf8(allocator: arena).cast(),
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
+  ).toDart();
 });
 
 // ── Image manipulation ───────────────────────────────────────────────────
 
-img.Image ImageCopy(img.Image image) => ffi.using((arena) {
-  final native = raylib.ImageCopy(arena.image(image).ref);
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-});
+Image ImageCopy(Image image) =>
+    raylib.ImageCopy(image.ptr.ref).toDart();
 
-img.Image ImageFromImage(img.Image image, Rectangle rec) => ffi.using((arena) {
-  final native = raylib.ImageFromImage(arena.image(image).ref, rec.ptr.ref);
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-});
+Image ImageFromImage(Image image, Rectangle rec) =>
+    raylib.ImageFromImage(image.ptr.ref, rec.ptr.ref).toDart();
 
-img.Image ImageFromChannel(img.Image image, int selectedChannel) => ffi.using((arena) {
-  final native = raylib.ImageFromChannel(arena.image(image).ref, selectedChannel);
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
-});
+Image ImageFromChannel(Image image, int selectedChannel) =>
+    raylib.ImageFromChannel(image.ptr.ref, selectedChannel).toDart();
 
-img.Image ImageText(String text, int fontSize, Color color) => ffi.using((arena) {
-  final native = raylib.ImageText(
+Image ImageText(String text, int fontSize, Color color) => ffi.using((arena) {
+  return raylib.ImageText(
     text.toNativeUtf8(allocator: arena).cast(), fontSize, color.ptr.ref,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
+  ).toDart();
 });
 
-img.Image ImageTextEx(
+Image ImageTextEx(
   Font font, String text, double fontSize, double spacing, Color tint,
 ) => ffi.using((arena) {
-  final native = raylib.ImageTextEx(
+  return raylib.ImageTextEx(
     font.ptr.ref, text.toNativeUtf8(allocator: arena).cast(),
     fontSize, spacing, tint.ptr.ref,
-  );
-  final result = native.toDart();
-  raylib.UnloadImage(native);
-  return result;
+  ).toDart();
 });
 
-img.Image ImageFormat(img.Image image, consts.PixelFormat newFormat) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageFormat(ptr, newFormat.value);
-    });
+void ImageFormat(Image image, consts.PixelFormat newFormat) =>
+    raylib.ImageFormat(image.ptr, newFormat.value);
 
-img.Image ImageToPOT(img.Image image, Color fill) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageToPOT(ptr, fill.ptr.ref);
-    });
+void ImageToPOT(Image image, Color fill) =>
+    raylib.ImageToPOT(image.ptr, fill.ptr.ref);
 
-img.Image ImageCrop(img.Image image, Rectangle crop) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageCrop(ptr, crop.ptr.ref);
-    });
+void ImageCrop(Image image, Rectangle crop) =>
+    raylib.ImageCrop(image.ptr, crop.ptr.ref);
 
-img.Image ImageAlphaCrop(img.Image image, double threshold) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageAlphaCrop(ptr, threshold);
-    });
+void ImageAlphaCrop(Image image, double threshold) =>
+    raylib.ImageAlphaCrop(image.ptr, threshold);
 
-img.Image ImageAlphaClear(img.Image image, Color color, double threshold) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageAlphaClear(ptr, color.ptr.ref, threshold);
-    });
+void ImageAlphaClear(Image image, Color color, double threshold) =>
+    raylib.ImageAlphaClear(image.ptr, color.ptr.ref, threshold);
 
-img.Image ImageAlphaMask(img.Image image, img.Image alphaMask) =>
-    _withMutableImage(image, (ptr) => ffi.using((arena) {
-      raylib.ImageAlphaMask(ptr, arena.image(alphaMask).ref);
-    }));
+void ImageAlphaMask(Image image, Image alphaMask) =>
+    raylib.ImageAlphaMask(image.ptr, alphaMask.ptr.ref);
 
-img.Image ImageAlphaPremultiply(img.Image image) =>
-    _withMutableImage(image, raylib.ImageAlphaPremultiply);
+void ImageAlphaPremultiply(Image image) =>
+    raylib.ImageAlphaPremultiply(image.ptr);
 
-img.Image ImageBlurGaussian(img.Image image, int blurSize) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageBlurGaussian(ptr, blurSize);
-    });
+void ImageBlurGaussian(Image image, int blurSize) =>
+    raylib.ImageBlurGaussian(image.ptr, blurSize);
 
-img.Image ImageKernelConvolution(img.Image image, List<double> kernel) =>
-    _withMutableImage(image, (ptr) => ffi.using((arena) {
+void ImageKernelConvolution(Image image, List<double> kernel) =>
+    ffi.using((arena) {
       final kPtr = arena<Float>(kernel.length);
       for (var i = 0; i < kernel.length; i++) {
         kPtr[i] = kernel[i];
       }
-      raylib.ImageKernelConvolution(ptr, kPtr, kernel.length);
-    }));
-
-img.Image ImageResize(img.Image image, int newWidth, int newHeight) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageResize(ptr, newWidth, newHeight);
+      raylib.ImageKernelConvolution(image.ptr, kPtr, kernel.length);
     });
 
-img.Image ImageResizeNN(img.Image image, int newWidth, int newHeight) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageResizeNN(ptr, newWidth, newHeight);
-    });
+void ImageResize(Image image, int newWidth, int newHeight) =>
+    raylib.ImageResize(image.ptr, newWidth, newHeight);
 
-img.Image ImageResizeCanvas(
-  img.Image image, int newWidth, int newHeight,
+void ImageResizeNN(Image image, int newWidth, int newHeight) =>
+    raylib.ImageResizeNN(image.ptr, newWidth, newHeight);
+
+void ImageResizeCanvas(
+  Image image, int newWidth, int newHeight,
   int offsetX, int offsetY, Color fill,
-) => _withMutableImage(image, (ptr) {
-  raylib.ImageResizeCanvas(
-    ptr, newWidth, newHeight, offsetX, offsetY, fill.ptr.ref,
-  );
-});
+) => raylib.ImageResizeCanvas(
+  image.ptr, newWidth, newHeight, offsetX, offsetY, fill.ptr.ref,
+);
 
-img.Image ImageMipmaps(img.Image image) =>
-    _withMutableImage(image, raylib.ImageMipmaps);
+void ImageMipmaps(Image image) =>
+    raylib.ImageMipmaps(image.ptr);
 
-img.Image ImageDither(img.Image image, int rBpp, int gBpp, int bBpp, int aBpp) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageDither(ptr, rBpp, gBpp, bBpp, aBpp);
-    });
+void ImageDither(Image image, int rBpp, int gBpp, int bBpp, int aBpp) =>
+    raylib.ImageDither(image.ptr, rBpp, gBpp, bBpp, aBpp);
 
-img.Image ImageFlipVertical(img.Image image) =>
-    _withMutableImage(image, raylib.ImageFlipVertical);
+void ImageFlipVertical(Image image) =>
+    raylib.ImageFlipVertical(image.ptr);
 
-img.Image ImageFlipHorizontal(img.Image image) =>
-    _withMutableImage(image, raylib.ImageFlipHorizontal);
+void ImageFlipHorizontal(Image image) =>
+    raylib.ImageFlipHorizontal(image.ptr);
 
-img.Image ImageRotate(img.Image image, int degrees) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageRotate(ptr, degrees);
-    });
+void ImageRotate(Image image, int degrees) =>
+    raylib.ImageRotate(image.ptr, degrees);
 
-img.Image ImageRotateCW(img.Image image) =>
-    _withMutableImage(image, raylib.ImageRotateCW);
+void ImageRotateCW(Image image) =>
+    raylib.ImageRotateCW(image.ptr);
 
-img.Image ImageRotateCCW(img.Image image) =>
-    _withMutableImage(image, raylib.ImageRotateCCW);
+void ImageRotateCCW(Image image) =>
+    raylib.ImageRotateCCW(image.ptr);
 
-img.Image ImageColorTint(img.Image image, Color color) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageColorTint(ptr, color.ptr.ref);
-    });
+void ImageColorTint(Image image, Color color) =>
+    raylib.ImageColorTint(image.ptr, color.ptr.ref);
 
-img.Image ImageColorInvert(img.Image image) =>
-    _withMutableImage(image, raylib.ImageColorInvert);
+void ImageColorInvert(Image image) =>
+    raylib.ImageColorInvert(image.ptr);
 
-img.Image ImageColorGrayscale(img.Image image) =>
-    _withMutableImage(image, raylib.ImageColorGrayscale);
+void ImageColorGrayscale(Image image) =>
+    raylib.ImageColorGrayscale(image.ptr);
 
-img.Image ImageColorContrast(img.Image image, double contrast) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageColorContrast(ptr, contrast);
-    });
+void ImageColorContrast(Image image, double contrast) =>
+    raylib.ImageColorContrast(image.ptr, contrast);
 
-img.Image ImageColorBrightness(img.Image image, int brightness) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageColorBrightness(ptr, brightness);
-    });
+void ImageColorBrightness(Image image, int brightness) =>
+    raylib.ImageColorBrightness(image.ptr, brightness);
 
-img.Image ImageColorReplace(img.Image image, Color color, Color replace) =>
-    _withMutableImage(image, (ptr) {
-      raylib.ImageColorReplace(ptr, color.ptr.ref, replace.ptr.ref);
-    });
+void ImageColorReplace(Image image, Color color, Color replace) =>
+    raylib.ImageColorReplace(image.ptr, color.ptr.ref, replace.ptr.ref);
 
-List<Color> LoadImageColors(img.Image image) => ffi.using((arena) {
-  final colors = raylib.LoadImageColors(arena.image(image).ref);
+List<Color> LoadImageColors(Image image) {
+  final colors = raylib.LoadImageColors(image.ptr.ref);
   final count = image.width * image.height;
   final result = List<Color>.generate(
     count,
@@ -546,12 +383,12 @@ List<Color> LoadImageColors(img.Image image) => ffi.using((arena) {
   );
   raylib.UnloadImageColors(colors);
   return result;
-});
+}
 
-List<Color> LoadImagePalette(img.Image image, int maxPaletteSize) => ffi.using((arena) {
+List<Color> LoadImagePalette(Image image, int maxPaletteSize) => ffi.using((arena) {
   final countPtr = arena<Int>();
   final colors = raylib.LoadImagePalette(
-    arena.image(image).ref, maxPaletteSize, countPtr,
+    image.ptr.ref, maxPaletteSize, countPtr,
   );
   final count = countPtr.value;
   final result = List<Color>.generate(
@@ -568,182 +405,163 @@ void UnloadImageColors(List<Color> colors) {}
 @Deprecated('Color list memory is managed by Dart. This is a no-op.')
 void UnloadImagePalette(List<Color> colors) {}
 
-Rectangle GetImageAlphaBorder(img.Image image, double threshold) => ffi.using((arena) {
-  return raylib.GetImageAlphaBorder(arena.image(image).ref, threshold).toDart();
-});
+Rectangle GetImageAlphaBorder(Image image, double threshold) =>
+    raylib.GetImageAlphaBorder(image.ptr.ref, threshold).toDart();
 
-Color GetImageColor(img.Image image, int x, int y) => ffi.using((arena) {
-  final c = raylib.GetImageColor(arena.image(image).ref, x, y);
+Color GetImageColor(Image image, int x, int y) {
+  final c = raylib.GetImageColor(image.ptr.ref, x, y);
   return Color.fromRGBA(c.r, c.g, c.b, c.a);
-});
+}
 
 // ── Image drawing ────────────────────────────────────────────────────────
 
-img.Image ImageClearBackground(img.Image dst, Color color) =>
-    _withMutableImage(dst, (ptr) {
-      raylib.ImageClearBackground(ptr, color.ptr.ref);
+void ImageClearBackground(Image dst, Color color) =>
+    raylib.ImageClearBackground(dst.ptr, color.ptr.ref);
+
+void ImageDrawPixel(Image dst, int posX, int posY, Color color) =>
+    raylib.ImageDrawPixel(dst.ptr, posX, posY, color.ptr.ref);
+
+void ImageDrawPixelV(Image dst, Vector2 position, Color color) =>
+    ffi.using((arena) {
+      raylib.ImageDrawPixelV(dst.ptr, arena.vector2(position).ref, color.ptr.ref);
     });
 
-img.Image ImageDrawPixel(img.Image dst, int posX, int posY, Color color) =>
-    _withMutableImage(dst, (ptr) {
-      raylib.ImageDrawPixel(ptr, posX, posY, color.ptr.ref);
-    });
-
-img.Image ImageDrawPixelV(img.Image dst, Vector2 position, Color color) =>
-    _withMutableImage(dst, (ptr) => ffi.using((arena) {
-      raylib.ImageDrawPixelV(ptr, arena.vector2(position).ref, color.ptr.ref);
-    }));
-
-img.Image ImageDrawLine(
-  img.Image dst, int startPosX, int startPosY,
+void ImageDrawLine(
+  Image dst, int startPosX, int startPosY,
   int endPosX, int endPosY, Color color,
-) => _withMutableImage(dst, (ptr) {
-  raylib.ImageDrawLine(
-    ptr, startPosX, startPosY, endPosX, endPosY, color.ptr.ref,
-  );
-});
+) => raylib.ImageDrawLine(
+  dst.ptr, startPosX, startPosY, endPosX, endPosY, color.ptr.ref,
+);
 
-img.Image ImageDrawLineV(
-  img.Image dst, Vector2 start, Vector2 end, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawLineV(
+  Image dst, Vector2 start, Vector2 end, Color color,
+) => ffi.using((arena) {
   raylib.ImageDrawLineV(
-    ptr, arena.vector2(start).ref, arena.vector2(end).ref, color.ptr.ref,
+    dst.ptr, arena.vector2(start).ref, arena.vector2(end).ref, color.ptr.ref,
   );
-}));
+});
 
-img.Image ImageDrawLineEx(
-  img.Image dst, Vector2 start, Vector2 end, int thick, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawLineEx(
+  Image dst, Vector2 start, Vector2 end, int thick, Color color,
+) => ffi.using((arena) {
   raylib.ImageDrawLineEx(
-    ptr, arena.vector2(start).ref, arena.vector2(end).ref, thick, color.ptr.ref,
+    dst.ptr, arena.vector2(start).ref, arena.vector2(end).ref, thick, color.ptr.ref,
   );
-}));
-
-img.Image ImageDrawCircle(
-  img.Image dst, int centerX, int centerY, int radius, Color color,
-) => _withMutableImage(dst, (ptr) {
-  raylib.ImageDrawCircle(ptr, centerX, centerY, radius, color.ptr.ref);
 });
 
-img.Image ImageDrawCircleV(
-  img.Image dst, Vector2 center, int radius, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
-  raylib.ImageDrawCircleV(ptr, arena.vector2(center).ref, radius, color.ptr.ref);
-}));
+void ImageDrawCircle(
+  Image dst, int centerX, int centerY, int radius, Color color,
+) => raylib.ImageDrawCircle(dst.ptr, centerX, centerY, radius, color.ptr.ref);
 
-img.Image ImageDrawCircleLines(
-  img.Image dst, int centerX, int centerY, int radius, Color color,
-) => _withMutableImage(dst, (ptr) {
-  raylib.ImageDrawCircleLines(ptr, centerX, centerY, radius, color.ptr.ref);
+void ImageDrawCircleV(
+  Image dst, Vector2 center, int radius, Color color,
+) => ffi.using((arena) {
+  raylib.ImageDrawCircleV(dst.ptr, arena.vector2(center).ref, radius, color.ptr.ref);
 });
 
-img.Image ImageDrawCircleLinesV(
-  img.Image dst, Vector2 center, int radius, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawCircleLines(
+  Image dst, int centerX, int centerY, int radius, Color color,
+) => raylib.ImageDrawCircleLines(dst.ptr, centerX, centerY, radius, color.ptr.ref);
+
+void ImageDrawCircleLinesV(
+  Image dst, Vector2 center, int radius, Color color,
+) => ffi.using((arena) {
   raylib.ImageDrawCircleLinesV(
-    ptr, arena.vector2(center).ref, radius, color.ptr.ref,
+    dst.ptr, arena.vector2(center).ref, radius, color.ptr.ref,
   );
-}));
-
-img.Image ImageDrawRectangle(
-  img.Image dst, int posX, int posY, int width, int height, Color color,
-) => _withMutableImage(dst, (ptr) {
-  raylib.ImageDrawRectangle(ptr, posX, posY, width, height, color.ptr.ref);
 });
 
-img.Image ImageDrawRectangleV(
-  img.Image dst, Vector2 position, Vector2 size, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawRectangle(
+  Image dst, int posX, int posY, int width, int height, Color color,
+) => raylib.ImageDrawRectangle(dst.ptr, posX, posY, width, height, color.ptr.ref);
+
+void ImageDrawRectangleV(
+  Image dst, Vector2 position, Vector2 size, Color color,
+) => ffi.using((arena) {
   raylib.ImageDrawRectangleV(
-    ptr, arena.vector2(position).ref, arena.vector2(size).ref, color.ptr.ref,
+    dst.ptr, arena.vector2(position).ref, arena.vector2(size).ref, color.ptr.ref,
   );
-}));
-
-img.Image ImageDrawRectangleRec(img.Image dst, Rectangle rec, Color color) =>
-    _withMutableImage(dst, (ptr) {
-      raylib.ImageDrawRectangleRec(ptr, rec.ptr.ref, color.ptr.ref);
-    });
-
-img.Image ImageDrawRectangleLines(
-  img.Image dst, Rectangle rec, int thick, Color color,
-) => _withMutableImage(dst, (ptr) {
-  raylib.ImageDrawRectangleLines(ptr, rec.ptr.ref, thick, color.ptr.ref);
 });
 
-img.Image ImageDrawTriangle(
-  img.Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawRectangleRec(Image dst, Rectangle rec, Color color) =>
+    raylib.ImageDrawRectangleRec(dst.ptr, rec.ptr.ref, color.ptr.ref);
+
+void ImageDrawRectangleLines(
+  Image dst, Rectangle rec, int thick, Color color,
+) => raylib.ImageDrawRectangleLines(dst.ptr, rec.ptr.ref, thick, color.ptr.ref);
+
+void ImageDrawTriangle(
+  Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color,
+) => ffi.using((arena) {
   raylib.ImageDrawTriangle(
-    ptr,
+    dst.ptr,
     arena.vector2(v1).ref, arena.vector2(v2).ref,
     arena.vector2(v3).ref, color.ptr.ref,
   );
-}));
+});
 
-img.Image ImageDrawTriangleEx(
-  img.Image dst, Vector2 v1, Vector2 v2, Vector2 v3,
+void ImageDrawTriangleEx(
+  Image dst, Vector2 v1, Vector2 v2, Vector2 v3,
   Color c1, Color c2, Color c3,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+) => ffi.using((arena) {
   raylib.ImageDrawTriangleEx(
-    ptr,
+    dst.ptr,
     arena.vector2(v1).ref, arena.vector2(v2).ref, arena.vector2(v3).ref,
     c1.ptr.ref, c2.ptr.ref, c3.ptr.ref,
   );
-}));
+});
 
-img.Image ImageDrawTriangleLines(
-  img.Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawTriangleLines(
+  Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color,
+) => ffi.using((arena) {
   raylib.ImageDrawTriangleLines(
-    ptr,
+    dst.ptr,
     arena.vector2(v1).ref, arena.vector2(v2).ref,
     arena.vector2(v3).ref, color.ptr.ref,
   );
-}));
+});
 
-img.Image ImageDrawTriangleFan(img.Image dst, List<Vector2> points, Color color) =>
-    _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawTriangleFan(Image dst, List<Vector2> points, Color color) =>
+    ffi.using((arena) {
       raylib.ImageDrawTriangleFan(
-        ptr, arena.vector2s(points), points.length, color.ptr.ref,
+        dst.ptr, arena.vector2s(points), points.length, color.ptr.ref,
       );
-    }));
+    });
 
-img.Image ImageDrawTriangleStrip(img.Image dst, List<Vector2> points, Color color) =>
-    _withMutableImage(dst, (ptr) => ffi.using((arena) {
+void ImageDrawTriangleStrip(Image dst, List<Vector2> points, Color color) =>
+    ffi.using((arena) {
       raylib.ImageDrawTriangleStrip(
-        ptr, arena.vector2s(points), points.length, color.ptr.ref,
+        dst.ptr, arena.vector2s(points), points.length, color.ptr.ref,
       );
-    }));
+    });
 
-img.Image ImageDraw(
-  img.Image dst, img.Image src,
+void ImageDraw(
+  Image dst, Image src,
   Rectangle srcRec, Rectangle dstRec, Color tint,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
-  raylib.ImageDraw(
-    ptr, arena.image(src).ref,
-    srcRec.ptr.ref, dstRec.ptr.ref, tint.ptr.ref,
-  );
-}));
+) => raylib.ImageDraw(
+  dst.ptr, src.ptr.ref,
+  srcRec.ptr.ref, dstRec.ptr.ref, tint.ptr.ref,
+);
 
-img.Image ImageDrawText(
-  img.Image dst, String text,
+void ImageDrawText(
+  Image dst, String text,
   int posX, int posY, int fontSize, Color color,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+) => ffi.using((arena) {
   raylib.ImageDrawText(
-    ptr, text.toNativeUtf8(allocator: arena).cast(),
+    dst.ptr, text.toNativeUtf8(allocator: arena).cast(),
     posX, posY, fontSize, color.ptr.ref,
   );
-}));
+});
 
-img.Image ImageDrawTextEx(
-  img.Image dst, Font font, String text,
+void ImageDrawTextEx(
+  Image dst, Font font, String text,
   Vector2 position, double fontSize, double spacing, Color tint,
-) => _withMutableImage(dst, (ptr) => ffi.using((arena) {
+) => ffi.using((arena) {
   raylib.ImageDrawTextEx(
-    ptr, font.ptr.ref, text.toNativeUtf8(allocator: arena).cast(),
+    dst.ptr, font.ptr.ref, text.toNativeUtf8(allocator: arena).cast(),
     arena.vector2(position).ref, fontSize, spacing, tint.ptr.ref,
   );
-}));
+});
 
 // ── Texture loading/management ───────────────────────────────────────────
 
@@ -751,16 +569,13 @@ Texture LoadTexture(String fileName) => ffi.using((arena) {
   return raylib.LoadTexture(fileName.toNativeUtf8(allocator: arena).cast()).toDart();
 });
 
-Texture LoadTextureFromImage(img.Image image) => ffi.using((arena) {
-  return raylib.LoadTextureFromImage(arena.image(image).ref).toDart();
-});
+Texture LoadTextureFromImage(Image image) =>
+    raylib.LoadTextureFromImage(image.ptr.ref).toDart();
 
 TextureCubemap LoadTextureCubemap(
-  img.Image image,
+  Image image,
   consts.CubemapLayout layout,
-) => ffi.using((arena) {
-  return raylib.LoadTextureCubemap(arena.image(image).ref, layout.value).toDart();
-});
+) => raylib.LoadTextureCubemap(image.ptr.ref, layout.value).toDart();
 
 RenderTexture2D LoadRenderTexture(int width, int height) =>
     raylib.LoadRenderTexture(width, height).toDart();

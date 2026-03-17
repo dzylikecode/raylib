@@ -7,7 +7,6 @@ import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:vector_math/vector_math.dart';
-import 'package:image/image.dart' as img;
 import 'colors.dart';
 import 'structs.dart';
 
@@ -625,18 +624,18 @@ Mesh GenMeshTorus(double radius, double size, int radSeg, int sides) =>
 Mesh GenMeshKnot(double radius, double size, int radSeg, int sides) =>
     raylib.GenMeshKnot(radius, size, radSeg, sides).toDart();
 
-Mesh GenMeshHeightmap(img.Image heightmap, Vector3 size) =>
+Mesh GenMeshHeightmap(Image heightmap, Vector3 size) =>
     ffi.using((arena) {
       return raylib.GenMeshHeightmap(
-        arena.image(heightmap).ref,
+        heightmap.ptr.ref,
         arena.vector3(size).ref,
       ).toDart();
     });
 
-Mesh GenMeshCubicmap(img.Image cubicmap, Vector3 cubeSize) =>
+Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize) =>
     ffi.using((arena) {
       return raylib.GenMeshCubicmap(
-        arena.image(cubicmap).ref,
+        cubicmap.ptr.ref,
         arena.vector3(cubeSize).ref,
       ).toDart();
     });

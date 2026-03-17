@@ -8,7 +8,6 @@ import 'dart:typed_data';
 import 'package:ffi/ffi.dart' as ffi;
 import 'src/raylib_const.dart' as consts;
 
-export 'package:image/image.dart' show Image; // for img.Image
 export 'package:vector_math/vector_math.dart' show Vector2;
 export 'package:vector_math/vector_math.dart' show Vector3;
 export 'package:vector_math/vector_math.dart' show Vector4;
@@ -112,47 +111,113 @@ extension RectangleExt on raylib.Rectangle {
 }
 
 // ── Image ────────────────────────────────────────────────────────────────
-// via package:image — img.Image
-//
-// raylib.Image → img.Image: RaylibImageToDart.toDart()
-// img.Image → raylib.Image: ArenaExt.image()
-//
-// Only uncompressed formats (grayscale/grayAlpha/R8G8B8/R8G8B8A8) are
-// supported for conversion. Throws [UnsupportedError] for others.
-// The caller is responsible for UnloadImage after toDart().
 
-extension RaylibImageToDart on raylib.Image {
+/// Handle to a CPU-side image (pixel data in RAM).
+///
+/// Created by LoadImage / GenImage*; released by [UnloadImage] or [dispose].
+class Image {
+  final Pointer<raylib.Image> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raylib.Image>>(_free);
+  static void _free(Pointer<raylib.Image> ptr) {
+    raylib.UnloadImage(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Image._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get width => ptr.ref.width;
+  int get height => ptr.ref.height;
+  int get mipmaps => ptr.ref.mipmaps;
+  consts.PixelFormat get format => .fromValue(ptr.ref.format);
+
+  /// Convert to `package:image` Image for Dart-side pixel manipulation.
+  ///
+  /// Only uncompressed formats (grayscale/grayAlpha/R8G8B8/R8G8B8A8) are
+  /// supported. Throws [UnsupportedError] for others.
   img.Image toDart() {
     final n = width * height;
-    final fmt = consts.PixelFormat.fromValue(format);
+    final ref = ptr.ref;
+    final fmt = consts.PixelFormat.fromValue(ref.format);
     return switch (fmt) {
-      .uncompressedGrayscale => .fromBytes(
+      .uncompressedGrayscale => img.Image.fromBytes(
         width: width,
         height: height,
-        bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n)).buffer,
+        bytes: Uint8List.fromList(ref.data.cast<Uint8>().asTypedList(n)).buffer,
         numChannels: 1,
       ),
-      .uncompressedGrayAlpha => .fromBytes(
+      .uncompressedGrayAlpha => img.Image.fromBytes(
         width: width,
         height: height,
-        bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n * 2)).buffer,
+        bytes: Uint8List.fromList(ref.data.cast<Uint8>().asTypedList(n * 2)).buffer,
         numChannels: 2,
       ),
-      .uncompressedR8g8b8 => .fromBytes(
+      .uncompressedR8g8b8 => img.Image.fromBytes(
         width: width,
         height: height,
-        bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n * 3)).buffer,
+        bytes: Uint8List.fromList(ref.data.cast<Uint8>().asTypedList(n * 3)).buffer,
         numChannels: 3,
       ),
-      .uncompressedR8g8b8a8 => .fromBytes(
+      .uncompressedR8g8b8a8 => img.Image.fromBytes(
         width: width,
         height: height,
-        bytes: Uint8List.fromList(data.cast<Uint8>().asTypedList(n * 4)).buffer,
+        bytes: Uint8List.fromList(ref.data.cast<Uint8>().asTypedList(n * 4)).buffer,
         numChannels: 4,
-        order: .rgba,
+        order: img.ChannelOrder.rgba,
       ),
-      _ => throw UnsupportedError('PixelFormat $format is not supported for conversion to dart Image'),
+      _ => throw UnsupportedError('PixelFormat ${ref.format} is not supported for conversion to dart Image'),
     };
+  }
+
+  /// Create an [Image] from a `package:image` Image.
+  factory Image.fromImage(img.Image value) {
+    final Uint8List bytes;
+    if (value.numChannels == 4 && value.format == img.Format.uint8) {
+      bytes = value.getBytes(order: img.ChannelOrder.rgba);
+    } else {
+      bytes = Uint8List(value.width * value.height * 4);
+      var i = 0;
+      for (final pixel in value) {
+        bytes[i++] = (pixel.rNormalized * 255).round();
+        bytes[i++] = (pixel.gNormalized * 255).round();
+        bytes[i++] = (pixel.bNormalized * 255).round();
+        bytes[i++] = (pixel.aNormalized * 255).round();
+      }
+    }
+    final dataPtr = ffi.malloc<Uint8>(bytes.length);
+    dataPtr.asTypedList(bytes.length).setAll(0, bytes);
+    final ptr = ffi.malloc<raylib.Image>();
+    ptr.ref
+      ..data = dataPtr.cast()
+      ..width = value.width
+      ..height = value.height
+      ..mipmaps = 1
+      ..format = consts.PixelFormat.uncompressedR8g8b8a8.value;
+    return Image._(ptr);
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibImageToDart on raylib.Image {
+  Image toDart() {
+    final p = ffi.malloc<raylib.Image>();
+    p.ref
+      ..data = data
+      ..width = width
+      ..height = height
+      ..mipmaps = mipmaps
+      ..format = format;
+    return Image._(p);
   }
 }
 
@@ -1429,33 +1494,5 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  /// dart Image → native raylib.Image (PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
-  ///
-  /// Both the pixel data and the Image struct are arena-managed —
-  /// no manual free needed, they are released when the arena is disposed.
-  Pointer<raylib.Image> image(img.Image value) {
-    final Uint8List bytes;
-    if (value.numChannels == 4 && value.format == img.Format.uint8) {
-      bytes = value.getBytes(order: img.ChannelOrder.rgba);
-    } else {
-      bytes = Uint8List(value.width * value.height * 4);
-      var i = 0;
-      for (final pixel in value) {
-        bytes[i++] = (pixel.rNormalized * 255).round();
-        bytes[i++] = (pixel.gNormalized * 255).round();
-        bytes[i++] = (pixel.bNormalized * 255).round();
-        bytes[i++] = (pixel.aNormalized * 255).round();
-      }
-    }
-    final dataPtr = this<Uint8>(bytes.length);
-    dataPtr.asTypedList(bytes.length).setAll(0, bytes);
-    final ptr = this<raylib.Image>();
-    ptr.ref
-      ..data = dataPtr.cast()
-      ..width = value.width
-      ..height = value.height
-      ..mipmaps = 1
-      ..format = consts.PixelFormat.uncompressedR8g8b8a8.value;
-    return ptr;
-  }
+  Pointer<raylib.Image> image(Image value) => value.ptr;
 }
