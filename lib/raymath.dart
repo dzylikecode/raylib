@@ -3,6 +3,8 @@
 import 'dart:math' as math;
 import 'package:vector_math/vector_math.dart';
 
+export 'package:cdart/math.dart';
+
 // export 'src/raylib.g.dart' show Clamp;
 // export 'src/raylib.g.dart' show Lerp;
 // export 'src/raylib.g.dart' show Normalize;
