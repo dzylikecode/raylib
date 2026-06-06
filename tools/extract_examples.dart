@@ -5,6 +5,10 @@
 
 import 'dart:io';
 
+const skips = [
+  'core_loading_thread'
+];
+
 void main() {
   const readmePath = 'src/raylib/examples/README.md';
   const srcBase = 'src/raylib/examples';
@@ -25,8 +29,8 @@ void main() {
     final relPath = m.group(3)!;
 
     final src = File('$srcBase/$relPath');
-    if (!src.existsSync()) {
-      print('SKIP (not found): $relPath');
+    if (!src.existsSync() || skips.contains(name)) {
+      print('SKIP (not found or skipped): $relPath');
       skipped++;
       continue;
     }
