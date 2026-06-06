@@ -2,7 +2,7 @@ set_policy("package.requires_lock", true)
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build/"})
 
-add_requires("raylib 5.5")
+add_requires("raylib 5.5", {configs = {shared = true}})
 add_requires("raygui 4.0")
 
 target("interface")

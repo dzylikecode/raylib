@@ -6,19 +6,30 @@
 import 'dart:io';
 
 const skips = [
-  'core_loading_thread'
+  'core_loading_thread', // not cross-platform
+  'core_3d_camera_first_person',
+  'models_loading_vox',
+  'shaders_basic_lighting',
+  'shaders_fog',
+  'shaders_mesh_instancing',
+  'shaders_deferred_render',
+  'rlgl_standalone',
+  'raylib_opengl_interop',
+  'embedded_files_loading',
 ];
 
-void main() {
-  const readmePath = 'src/raylib/examples/README.md';
-  const srcBase = 'src/raylib/examples';
-  const destDir = 'example';
+const readmePath = 'ref_code/raylib/examples/README.md';
+const srcBase = 'ref_code/raylib/examples';
+const destDir = 'example';
 
+void main() {
   final readme = File(readmePath).readAsStringSync();
 
   // Matches lines like: | 01 | [core_basic_window](core/core_basic_window.c)
-  final pattern = RegExp(r'^\|\s*(\d+)\s*\|\s*\[(\w+)\]\(([^)]+\.c)\)',
-      multiLine: true);
+  final pattern = RegExp(
+    r'^\|\s*(\d+)\s*\|\s*\[(\w+)\]\(([^)]+\.c)\)',
+    multiLine: true,
+  );
 
   var copied = 0;
   var skipped = 0;

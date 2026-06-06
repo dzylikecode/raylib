@@ -35,7 +35,15 @@
             },
             version = "4.0"
         },
-        ["raylib 5.5#f56260b5"] = {
+        ["raylib 5.5#16fb575b"] = {
+            repo = {
+                branch = "master",
+                commit = "302bbd1b8e59927507a151cb21e4bd8733312ab0",
+                url = "https://gitcode.com/xmake-io/xmake-repo.git"
+            },
+            version = "5.5"
+        },
+        ["raylib 5.x#f56260b5"] = {
             repo = {
                 branch = "master",
                 commit = "302bbd1b8e59927507a151cb21e4bd8733312ab0",
