@@ -191,6 +191,8 @@ C 的 out 参数（`int* bytesRead`、`bool* collided`）换成 Dart record：
 
 C 结构体需要在多次调用之间保持稳定地址（如 `Camera2D` 被 `BeginMode2D` 读取），用 Dart 类持有原生指针，并注册 `Finalizer` 自动释放：
 
+- `Image` 虽然有库，但 raylib 的 Image 与 dart 的库相差太大，仅仅提供互相转换的接口
+
 ```dart
 class Camera2D {
   final Pointer<raylib.Camera2D> ptr;
@@ -250,16 +252,8 @@ SetLoadFileDataCallback((filename) => File(filename).readAsBytesSync());
 C 的某些数据类型，在 Dart 生态中已有成熟的对应库，直接用它们替代，而不是自己造轮子：
 
 - `Vector2 / Vector3 / Matrix / Ray` — 用 [vector_math](https://pub.dev/packages/vector_math)，同名类型，直接对应
-- `Image`（像素数据）— 用 [image](https://pub.dev/packages/image) 的 `img.Image`，具备完整的编解码和像素操作能力
 
 封装层负责在 Dart 类型和 C struct 之间做转换桥接（通过 Arena 临时复制），对调用者完全透明：
-
-```dart
-// 调用者传入 img.Image，封装层负责转成 raylib.Image 传给 C
-Texture LoadTextureFromImage(img.Image image) => ffi.using((arena) {
-  return raylib.LoadTextureFromImage(arena.image(image).ref).toDart();
-});
-```
 
 
 ## 从 C 迁移

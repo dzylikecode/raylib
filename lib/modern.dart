@@ -1,7 +1,6 @@
 import 'structs.dart';
 import 'rcore.dart';
 import 'src/raylib_const.dart';
-import 'package:vector_math/vector_math.dart';
 
 extension Camera2DExt on Camera2D {
   R using<R>(R Function(Camera2D) computation) {
