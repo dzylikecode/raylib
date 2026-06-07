@@ -477,7 +477,7 @@ class Font {
   Texture get texture => ptr.ref.texture.toDart();
 
   GlyphInfo glyphInfo(int index) {
-    final g = (ptr.ref.glyphs + index).ref;
+    final g = ptr.ref.glyphs[index];
     return GlyphInfo(
       value: g.value,
       offsetX: g.offsetX,
@@ -486,7 +486,7 @@ class Font {
     );
   }
 
-  Rectangle glyphRect(int index) => (ptr.ref.recs + index).ref.toDart();
+  Rectangle glyphRect(int index) => ptr.ref.recs[index].toDart();
 
   @mustCallSuper
   void dispose() {
@@ -895,7 +895,7 @@ class Material {
     _finalizer.attach(this, ptr, detach: this);
   }
 
-  MaterialMap operator [](int index) => (ptr.ref.maps + index).ref.toDart();
+  MaterialMap operator [](int index) => ptr.ref.maps[index].toDart();
 
   (double, double, double, double) get params => (
     ptr.ref.params[0],
@@ -991,10 +991,10 @@ extension ModelSkeletonExt on raw.ModelSkeleton {
     boneCount: boneCount,
     bones: bones == nullptr
         ? []
-        : [for (var i = 0; i < boneCount; i++) (bones + i).ref.toDart()],
+        : [for (var i = 0; i < boneCount; i++) bones[i].toDart()],
     bindPose: bindPose == nullptr
         ? []
-        : [for (var i = 0; i < boneCount; i++) (bindPose + i).ref.toDart()],
+        : [for (var i = 0; i < boneCount; i++) bindPose[i].toDart()],
   );
 }
 
@@ -1312,7 +1312,7 @@ extension RaylibMusicToDart on raw.Music {
       ..looping = looping
       ..ctxType = ctxType
       ..ctxData = ctxData;
-    return Music._(p);
+    return ._(p);
   }
 }
 
@@ -1472,11 +1472,11 @@ class AutomationEventList {
   int get capacity => ptr.ref.capacity;
 
   AutomationEvent operator [](int index) {
-    final e = (ptr.ref.events + index).ref;
+    final e = ptr.ref.events[index];
     return AutomationEvent(
       frame: e.frame,
       type: e.type,
-      params: List<int>.generate(4, (i) => e.params[i], growable: false),
+      params: .generate(4, (i) => e.params[i], growable: false),
     );
   }
 
@@ -1496,7 +1496,7 @@ extension RaylibAutomationEventListToDart on raw.AutomationEventList {
       ..capacity = capacity
       ..count = count
       ..events = events;
-    return AutomationEventList._(p);
+    return ._(p);
   }
 }
 
@@ -1617,7 +1617,7 @@ extension ArenaExt on ffi.Arena {
   Pointer<raw.Matrix> matrix4s(List<Matrix4> values) {
     final ptr = this<raw.Matrix>(values.length);
     for (var i = 0; i < values.length; i++) {
-      _copyMatrix4((ptr + i).ref, values[i]);
+      _copyMatrix4(ptr[i], values[i]);
     }
     return ptr;
   }
