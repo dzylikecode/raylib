@@ -67,8 +67,7 @@ import 'dart:typed_data';
           'double GetGamepadAxisMovement(int gamepad, GamepadAxis axis)',
       'IsMouseButtonPressed': 'bool IsMouseButtonPressed(MouseButton button)',
       'IsMouseButtonDown': 'bool IsMouseButtonDown(MouseButton button)',
-      'IsMouseButtonReleased':
-          'bool IsMouseButtonReleased(MouseButton button)',
+      'IsMouseButtonReleased': 'bool IsMouseButtonReleased(MouseButton button)',
       'IsMouseButtonUp': 'bool IsMouseButtonUp(MouseButton button)',
       'SetMouseCursor': 'void SetMouseCursor(MouseCursor cursor)',
       'SetGesturesEnabled': 'void SetGesturesEnabled(Gesture gesture)',
@@ -83,8 +82,14 @@ import 'dart:typed_data';
     deps: """
 import 'structs.dart';
 """,
-    customInterfaces: {}
-  )
+    customInterfaces: {},
+  ),
+  'textures': (
+    deps: """
+import 'structs.dart';
+""",
+    customInterfaces: {},
+  ),
 };
 
 String toDartType(CType type) {
