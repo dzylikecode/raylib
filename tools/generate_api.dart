@@ -79,6 +79,12 @@ import 'dart:typed_data';
           'void UpdateCameraPro(Camera3D camera, Vector3 movement, Vector3 rotation, double zoom)',
     },
   ),
+  'shapes': (
+    deps: """
+import 'structs.dart';
+""",
+    customInterfaces: {}
+  )
 };
 
 String toDartType(CType type) {
