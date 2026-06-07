@@ -9,15 +9,15 @@ import 'raylib.g.dart' as raw;
 
 final _logger = Logger('callback');
 
-typedef _LoadFileDataCb = Uint8List Function(String);
-typedef _SaveFileDataCb = bool Function(String, Uint8List);
-typedef _LoadFileTextCb = String Function(String);
-typedef _SaveFileTextCb = bool Function(String, String);
+typedef LoadFileDataCallback = Uint8List Function(String);
+typedef SaveFileDataCallback = bool Function(String, Uint8List);
+typedef LoadFileTextCallback = String Function(String);
+typedef SaveFileTextCallback = bool Function(String, String);
 
-_LoadFileDataCb? _currentLoadFileDataCb;
-_SaveFileDataCb? _currentSaveFileDataCb;
-_LoadFileTextCb? _currentLoadFileTextCb;
-_SaveFileTextCb? _currentSaveFileTextCb;
+LoadFileDataCallback? _currentLoadFileDataCb;
+SaveFileDataCallback? _currentSaveFileDataCb;
+LoadFileTextCallback? _currentLoadFileTextCb;
+SaveFileTextCallback? _currentSaveFileTextCb;
 
 final _nativeLoadFileDataCallback =
     NativeCallable<raw.LoadFileDataCallbackFunction>.isolateLocal(
@@ -47,7 +47,7 @@ Pointer<UnsignedChar> _ffiLoadFileData(
 }
 
 bool _useDartLoadFileDataCallback = false;
-void SetLoadFileDataCallback([_LoadFileDataCb? callback]) {
+void SetLoadFileDataCallback([LoadFileDataCallback? callback]) {
   _currentLoadFileDataCb = callback;
   if (callback == null) {
     _logger.info('Use C load file data callback');
@@ -86,7 +86,7 @@ bool _ffiSaveFileData(
 }
 
 bool _useDartSaveFileDataCallback = false;
-void SetSaveFileDataCallback([_SaveFileDataCb? callback]) {
+void SetSaveFileDataCallback([SaveFileDataCallback? callback]) {
   _currentSaveFileDataCb = callback;
   if (callback == null) {
     _logger.info('Use C save file data callback');
@@ -129,7 +129,7 @@ Pointer<Char> _ffiLoadFileText(Pointer<Char> fileName) {
 }
 
 bool _useDartLoadFileTextCallback = false;
-void SetLoadFileTextCallback([_LoadFileTextCb? callback]) {
+void SetLoadFileTextCallback([LoadFileTextCallback? callback]) {
   _currentLoadFileTextCb = callback;
   if (callback == null) {
     _logger.info('Use C load file text callback');
@@ -164,7 +164,7 @@ bool _ffiSaveFileText(Pointer<Char> fileName, Pointer<Char> text) {
 }
 
 bool _useDartSaveFileTextCallback = false;
-void SetSaveFileTextCallback([_SaveFileTextCb? callback]) {
+void SetSaveFileTextCallback([SaveFileTextCallback? callback]) {
   _currentSaveFileTextCb = callback;
   if (callback == null) {
     _logger.info('Use C save file text callback');

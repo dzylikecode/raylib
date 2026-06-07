@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart' as ffi;
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import 'raylib.g.dart' as raw;
@@ -14,6 +15,14 @@ import 'package:vector_math/vector_math.dart'
     show Vector2, Vector3, Vector4, Matrix4, Quaternion, Ray;
 export 'package:vector_math/vector_math.dart'
     show Vector2, Vector3, Vector4, Matrix4, Quaternion, Ray;
+
+typedef TraceLogCallback = void Function(LogRecord);
+
+typedef LoadFileDataCallback = Uint8List Function(String);
+typedef SaveFileDataCallback = bool Function(String, Uint8List);
+typedef LoadFileTextCallback = String Function(String);
+typedef SaveFileTextCallback = bool Function(String, String);
+
 
 typedef Matrix = Matrix4;
 
