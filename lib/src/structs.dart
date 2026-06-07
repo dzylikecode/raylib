@@ -630,6 +630,8 @@ class Camera3D {
 }
 
 class Mesh {
+  static const _maxMeshVertexBuffers = 7;
+
   final Pointer<raw.Mesh> ptr;
   bool _disposed = false;
 
@@ -646,45 +648,133 @@ class Mesh {
   int get vertexCount => ptr.ref.vertexCount;
   int get triangleCount => ptr.ref.triangleCount;
 
-  /// XYZ vertex positions; length = vertexCount × 3.
-  List<double> get vertices => ptr.ref.vertices == nullptr
-      ? []
+  static List<Vector2> _vector2List(Float32List values) => [
+    for (var i = 0; i < values.length; i += 2)
+      Vector2(values[i], values[i + 1]),
+  ];
+
+  static List<Vector3> _vector3List(Float32List values) => [
+    for (var i = 0; i < values.length; i += 3)
+      Vector3(values[i], values[i + 1], values[i + 2]),
+  ];
+
+  static List<Vector4> _vector4List(Float32List values) => [
+    for (var i = 0; i < values.length; i += 4)
+      Vector4(values[i], values[i + 1], values[i + 2], values[i + 3]),
+  ];
+
+  static List<Color> _colorList(Uint8List values) => [
+    for (var i = 0; i < values.length; i += 4)
+      Color.fromRGBA(values[i], values[i + 1], values[i + 2], values[i + 3]),
+  ];
+
+  static List<(int, int, int)> _triangleList(Uint16List values) => [
+    for (var i = 0; i < values.length; i += 3)
+      (values[i], values[i + 1], values[i + 2]),
+  ];
+
+  static List<(int, int, int, int)> _quadList(Uint8List values) => [
+    for (var i = 0; i < values.length; i += 4)
+      (values[i], values[i + 1], values[i + 2], values[i + 3]),
+  ];
+
+  /// Raw XYZ vertex position buffer; length = vertexCount × 3.
+  Float32List get vertexBuffer => ptr.ref.vertices == nullptr
+      ? Float32List(0)
       : ptr.ref.vertices.asTypedList(vertexCount * 3);
 
-  /// UV texture coordinates; length = vertexCount × 2.
-  List<double> get texcoords => ptr.ref.texcoords == nullptr
-      ? []
+  /// XYZ vertex positions.
+  List<Vector3> get vertices => _vector3List(vertexBuffer);
+
+  /// Raw UV texture coordinate buffer; length = vertexCount × 2.
+  Float32List get texcoordBuffer => ptr.ref.texcoords == nullptr
+      ? Float32List(0)
       : ptr.ref.texcoords.asTypedList(vertexCount * 2);
 
-  /// Secondary UV coords; length = vertexCount × 2.
-  List<double> get texcoords2 => ptr.ref.texcoords2 == nullptr
-      ? []
+  /// UV texture coordinates.
+  List<Vector2> get texcoords => _vector2List(texcoordBuffer);
+
+  /// Raw secondary UV coordinate buffer; length = vertexCount × 2.
+  Float32List get texcoord2Buffer => ptr.ref.texcoords2 == nullptr
+      ? Float32List(0)
       : ptr.ref.texcoords2.asTypedList(vertexCount * 2);
 
-  /// XYZ normals; length = vertexCount × 3.
-  List<double> get normals => ptr.ref.normals == nullptr
-      ? []
+  /// Secondary UV coords.
+  List<Vector2> get texcoords2 => _vector2List(texcoord2Buffer);
+
+  /// Raw XYZ normal buffer; length = vertexCount × 3.
+  Float32List get normalBuffer => ptr.ref.normals == nullptr
+      ? Float32List(0)
       : ptr.ref.normals.asTypedList(vertexCount * 3);
 
-  /// XYZW tangents; length = vertexCount × 4.
-  List<double> get tangents => ptr.ref.tangents == nullptr
-      ? []
+  /// XYZ normals.
+  List<Vector3> get normals => _vector3List(normalBuffer);
+
+  /// Raw XYZW tangent buffer; length = vertexCount × 4.
+  Float32List get tangentBuffer => ptr.ref.tangents == nullptr
+      ? Float32List(0)
       : ptr.ref.tangents.asTypedList(vertexCount * 4);
 
-  /// RGBA vertex colors; length = vertexCount × 4.
-  Uint8List? get colors => ptr.ref.colors == nullptr
-      ? null
+  /// XYZW tangents.
+  List<Vector4> get tangents => _vector4List(tangentBuffer);
+
+  /// Raw RGBA vertex color buffer; length = vertexCount × 4.
+  Uint8List get colorBuffer => ptr.ref.colors == nullptr
+      ? Uint8List(0)
       : ptr.ref.colors.cast<Uint8>().asTypedList(vertexCount * 4);
 
-  /// Triangle indices; length = triangleCount × 3.
-  Uint16List? get indices => ptr.ref.indices == nullptr
-      ? null
+  /// RGBA vertex colors.
+  List<Color> get colors => _colorList(colorBuffer);
+
+  /// Raw triangle index buffer; length = triangleCount × 3.
+  Uint16List get indexBuffer => ptr.ref.indices == nullptr
+      ? Uint16List(0)
       : ptr.ref.indices.cast<Uint16>().asTypedList(triangleCount * 3);
 
+  /// Triangle vertex indices.
+  List<(int, int, int)> get indices => _triangleList(indexBuffer);
+
+  int get boneCount => ptr.ref.boneCount;
+
+  /// Raw vertex bone index buffer; length = vertexCount × 4.
+  Uint8List get boneIndexBuffer => ptr.ref.boneIndices == nullptr
+      ? Uint8List(0)
+      : ptr.ref.boneIndices.cast<Uint8>().asTypedList(vertexCount * 4);
+
+  /// Vertex bone indices.
+  List<(int, int, int, int)> get boneIndices => _quadList(boneIndexBuffer);
+
+  /// Raw vertex bone weight buffer; length = vertexCount × 4.
+  Float32List get boneWeightBuffer => ptr.ref.boneWeights == nullptr
+      ? Float32List(0)
+      : ptr.ref.boneWeights.asTypedList(vertexCount * 4);
+
+  /// Vertex bone weights.
+  List<Vector4> get boneWeights => _vector4List(boneWeightBuffer);
+
+  /// Raw animated XYZ vertex position buffer; length = vertexCount × 3.
+  Float32List get animVertexBuffer => ptr.ref.animVertices == nullptr
+      ? Float32List(0)
+      : ptr.ref.animVertices.asTypedList(vertexCount * 3);
+
+  /// Animated XYZ vertex positions.
+  List<Vector3> get animVertices => _vector3List(animVertexBuffer);
+
+  /// Raw animated XYZ normal buffer; length = vertexCount × 3.
+  Float32List get animNormalBuffer => ptr.ref.animNormals == nullptr
+      ? Float32List(0)
+      : ptr.ref.animNormals.asTypedList(vertexCount * 3);
+
+  /// Animated XYZ normals.
+  List<Vector3> get animNormals => _vector3List(animNormalBuffer);
 
   /// OpenGL VAO id (0 if not uploaded).
   int get vaoId => ptr.ref.vaoId;
 
+  /// OpenGL VBO ids.
+  Uint32List get vboId => ptr.ref.vboId == nullptr
+      ? Uint32List(0)
+      : ptr.ref.vboId.cast<Uint32>().asTypedList(_maxMeshVertexBuffers);
 
   @mustCallSuper
   void dispose() {
@@ -710,9 +800,8 @@ extension RaylibMeshToDart on raw.Mesh {
       ..indices = indices
       ..animVertices = animVertices
       ..animNormals = animNormals
-      ..boneIds = boneIds
+      ..boneIndices = boneIndices
       ..boneWeights = boneWeights
-      ..boneMatrices = boneMatrices
       ..boneCount = boneCount
       ..vaoId = vaoId
       ..vboId = vboId;
@@ -779,6 +868,8 @@ class MaterialMap {
     required this.value,
   });
 }
+
+
 
 class Material {
   final Pointer<raw.Material> ptr;
