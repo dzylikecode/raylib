@@ -487,7 +487,8 @@ enum ShaderLocationIndex {
   SHADER_LOC_MAP_BRDF(25),
   SHADER_LOC_VERTEX_BONEIDS(26),
   SHADER_LOC_VERTEX_BONEWEIGHTS(27),
-  SHADER_LOC_BONE_MATRICES(28);
+  SHADER_LOC_MATRIX_BONETRANSFORMS(28),
+  SHADER_LOC_VERTEX_INSTANCETRANSFORM(29);
 
   final int value;
   const ShaderLocationIndex(this.value);
@@ -521,7 +522,8 @@ enum ShaderLocationIndex {
     25 => SHADER_LOC_MAP_BRDF,
     26 => SHADER_LOC_VERTEX_BONEIDS,
     27 => SHADER_LOC_VERTEX_BONEWEIGHTS,
-    28 => SHADER_LOC_BONE_MATRICES,
+    28 => SHADER_LOC_MATRIX_BONETRANSFORMS,
+    29 => SHADER_LOC_VERTEX_INSTANCETRANSFORM,
     _ => throw ArgumentError('Unknown value for ShaderLocationIndex: $value'),
   };
 }
@@ -535,7 +537,11 @@ enum ShaderUniformDataType {
   SHADER_UNIFORM_IVEC2(5),
   SHADER_UNIFORM_IVEC3(6),
   SHADER_UNIFORM_IVEC4(7),
-  SHADER_UNIFORM_SAMPLER2D(8);
+  SHADER_UNIFORM_UINT(8),
+  SHADER_UNIFORM_UIVEC2(9),
+  SHADER_UNIFORM_UIVEC3(10),
+  SHADER_UNIFORM_UIVEC4(11),
+  SHADER_UNIFORM_SAMPLER2D(12);
 
   final int value;
   const ShaderUniformDataType(this.value);
@@ -549,7 +555,11 @@ enum ShaderUniformDataType {
     5 => SHADER_UNIFORM_IVEC2,
     6 => SHADER_UNIFORM_IVEC3,
     7 => SHADER_UNIFORM_IVEC4,
-    8 => SHADER_UNIFORM_SAMPLER2D,
+    8 => SHADER_UNIFORM_UINT,
+    9 => SHADER_UNIFORM_UIVEC2,
+    10 => SHADER_UNIFORM_UIVEC3,
+    11 => SHADER_UNIFORM_UIVEC4,
+    12 => SHADER_UNIFORM_SAMPLER2D,
     _ => throw ArgumentError('Unknown value for ShaderUniformDataType: $value'),
   };
 }
@@ -817,6 +827,7 @@ enum NPatchLayout {
 }
 
 enum rlGlVersion {
+  RL_OPENGL_SOFTWARE(0),
   RL_OPENGL_11(1),
   RL_OPENGL_21(2),
   RL_OPENGL_33(3),
@@ -828,6 +839,7 @@ enum rlGlVersion {
   const rlGlVersion(this.value);
 
   static rlGlVersion fromValue(int value) => switch (value) {
+    0 => RL_OPENGL_SOFTWARE,
     1 => RL_OPENGL_11,
     2 => RL_OPENGL_21,
     3 => RL_OPENGL_33,
@@ -1164,13 +1176,13 @@ enum rlCullMode {
   };
 }
 
-const int RAYLIB_VERSION_MAJOR = 5;
+const int RAYLIB_VERSION_MAJOR = 6;
 
-const int RAYLIB_VERSION_MINOR = 5;
+const int RAYLIB_VERSION_MINOR = 0;
 
 const int RAYLIB_VERSION_PATCH = 0;
 
-const String RAYLIB_VERSION = '5.5';
+const String RAYLIB_VERSION = '6.0';
 
 const double PI = 3.1415927410125732;
 
@@ -1192,7 +1204,7 @@ const int SHADER_LOC_MAP_DIFFUSE = 15;
 
 const int SHADER_LOC_MAP_SPECULAR = 16;
 
-const String RLGL_VERSION = '5.0';
+const String RLGL_VERSION = '6.0';
 
 const int RL_DEFAULT_BATCH_BUFFER_ELEMENTS = 8192;
 
@@ -1206,9 +1218,9 @@ const int RL_MAX_MATRIX_STACK_SIZE = 32;
 
 const int RL_MAX_SHADER_LOCATIONS = 32;
 
-const double RL_CULL_DISTANCE_NEAR = 0.01;
+const double RL_CULL_DISTANCE_NEAR = 0.05;
 
-const double RL_CULL_DISTANCE_FAR = 1000.0;
+const double RL_CULL_DISTANCE_FAR = 4000.0;
 
 const int RL_TEXTURE_WRAP_S = 10242;
 
@@ -1355,6 +1367,12 @@ const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_TANGENT = 4;
 const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2 = 5;
 
 const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_INDICES = 6;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEINDICES = 7;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_BONEWEIGHTS = 8;
+
+const int RL_DEFAULT_SHADER_ATTRIB_LOCATION_INSTANCETRANSFORM = 9;
 
 const int RL_SHADER_LOC_MAP_DIFFUSE = 15;
 

@@ -3,6 +3,7 @@
 //
 // Usage: dart run tools/extract_examples.dart
 
+import 'dart:convert';
 import 'dart:io';
 
 const skips = [
@@ -18,26 +19,53 @@ const skips = [
   'embedded_files_loading',
 ];
 
-const readmePath = 'ref_code/raylib/examples/README.md';
+const readmePath =
+    'https://raw.githubusercontent.com/raysan5/raylib/refs/heads/master/examples/README.md';
 const srcBase = 'ref_code/raylib/examples';
 const destDir = 'example';
 
-void main() {
-  final readme = File(readmePath).readAsStringSync();
-
+class ExampleInfo {
   // Matches lines like: | 01 | [core_basic_window](core/core_basic_window.c)
-  final pattern = RegExp(
+  static final pattern = RegExp(
     r'^\|\s*(\d+)\s*\|\s*\[(\w+)\]\(([^)]+\.c)\)',
     multiLine: true,
   );
 
+  final int num;
+  final String name;
+  final String relPath;
+
+  ExampleInfo(this.num, this.name, this.relPath);
+
+  static List<ExampleInfo> parseAll(String readme) {
+    return pattern.allMatches(readme).map((m) {
+      final num = int.parse(m.group(1)!);
+      final name = m.group(2)!;
+      final relPath = m.group(3)!;
+      return ExampleInfo(num, name, relPath);
+    }).toList();
+  }
+}
+
+
+void main() async {
+  final readme = await () async {
+    final uri = Uri.parse(readmePath);
+    final response = await HttpClient().getUrl(uri).then((req) => req.close());
+    if (response.statusCode == 200) {
+      return await response.transform(utf8.decoder).join();
+    } else {
+      throw Exception('Failed to load README.md: ${response.statusCode}');
+    }
+  }();
+
   var copied = 0;
   var skipped = 0;
 
-  for (final m in pattern.allMatches(readme)) {
-    final num = int.parse(m.group(1)!);
-    final name = m.group(2)!;
-    final relPath = m.group(3)!;
+  for (final example in ExampleInfo.parseAll(readme)) {
+    final num = example.num;
+    final name = example.name;
+    final relPath = example.relPath;
 
     final src = File('$srcBase/$relPath');
     if (!src.existsSync() || skips.contains(name)) {

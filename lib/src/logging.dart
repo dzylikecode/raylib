@@ -6,13 +6,13 @@ import 'package:logging/logging.dart';
 final _logger = Logger('raylib');
 
 Level _toLevel(int raylibLevel) => switch (raylibLevel) {
-  1 => Level.FINEST,  // LOG_TRACE
-  2 => Level.FINE,    // LOG_DEBUG
-  3 => Level.INFO,    // LOG_INFO
-  4 => Level.WARNING, // LOG_WARNING
-  5 => Level.SEVERE,  // LOG_ERROR
-  6 => Level.SHOUT,   // LOG_FATAL
-  _ => Level.INFO,
+  1 => .FINEST,  
+  2 => .FINE,    
+  3 => .INFO,  
+  4 => .WARNING, 
+  5 => .SEVERE, 
+  6 => .SHOUT,   
+  _ => .INFO,
 };
 
 /// Log a message through Dart's [Logger] named 'raylib'.

@@ -874,7 +874,8 @@ enum ShaderLocationIndex {
   mapBrdf(.SHADER_LOC_MAP_BRDF),
   vertexBoneids(.SHADER_LOC_VERTEX_BONEIDS),
   vertexBoneweights(.SHADER_LOC_VERTEX_BONEWEIGHTS),
-  boneMatrices(.SHADER_LOC_BONE_MATRICES);
+  matrixBoneTransforms(.SHADER_LOC_MATRIX_BONETRANSFORMS),
+  vertexInstancetransform(.SHADER_LOC_VERTEX_INSTANCETRANSFORM);
 
   final consts.ShaderLocationIndex code;
   const ShaderLocationIndex(this.code);
@@ -971,8 +972,11 @@ const ShaderLocationIndex SHADER_LOC_VERTEX_BONEIDS = .vertexBoneids;
 @Deprecated('Use .vertexBoneweights instead')
 const ShaderLocationIndex SHADER_LOC_VERTEX_BONEWEIGHTS = .vertexBoneweights;
 
-@Deprecated('Use .boneMatrices instead')
-const ShaderLocationIndex SHADER_LOC_BONE_MATRICES = .boneMatrices;
+@Deprecated('Use .matrixBoneTransforms instead')
+const ShaderLocationIndex SHADER_LOC_MATRIX_BONETRANSFORMS = .matrixBoneTransforms;
+
+@Deprecated('Use .vertexInstancetransform instead')
+const ShaderLocationIndex SHADER_LOC_VERTEX_INSTANCETRANSFORM = .vertexInstancetransform;
 
 enum ShaderUniformDataType {
   float_(.SHADER_UNIFORM_FLOAT),
@@ -983,6 +987,10 @@ enum ShaderUniformDataType {
   ivec2(.SHADER_UNIFORM_IVEC2),
   ivec3(.SHADER_UNIFORM_IVEC3),
   ivec4(.SHADER_UNIFORM_IVEC4),
+  uint(.SHADER_UNIFORM_UINT),
+  uivec2(.SHADER_UNIFORM_UIVEC2),
+  uivec3(.SHADER_UNIFORM_UIVEC3),
+  uivec4(.SHADER_UNIFORM_UIVEC4),
   sampler2d(.SHADER_UNIFORM_SAMPLER2D);
 
   final consts.ShaderUniformDataType code;
@@ -1019,6 +1027,18 @@ const ShaderUniformDataType SHADER_UNIFORM_IVEC3 = .ivec3;
 
 @Deprecated('Use .ivec4 instead')
 const ShaderUniformDataType SHADER_UNIFORM_IVEC4 = .ivec4;
+
+@Deprecated('Use .uint instead')
+const ShaderUniformDataType SHADER_UNIFORM_UINT = .uint;
+
+@Deprecated('Use .uivec2 instead')
+const ShaderUniformDataType SHADER_UNIFORM_UIVEC2 = .uivec2;
+
+@Deprecated('Use .uivec3 instead')
+const ShaderUniformDataType SHADER_UNIFORM_UIVEC3 = .uivec3;
+
+@Deprecated('Use .uivec4 instead')
+const ShaderUniformDataType SHADER_UNIFORM_UIVEC4 = .uivec4;
 
 @Deprecated('Use .sampler2d instead')
 const ShaderUniformDataType SHADER_UNIFORM_SAMPLER2D = .sampler2d;
@@ -1459,6 +1479,7 @@ const NPatchLayout NPATCH_THREE_PATCH_VERTICAL = .threePatchVertical;
 const NPatchLayout NPATCH_THREE_PATCH_HORIZONTAL = .threePatchHorizontal;
 
 enum RlGlVersion {
+  openGlSoftware(.RL_OPENGL_SOFTWARE),
   openGl11(.RL_OPENGL_11),
   openGl21(.RL_OPENGL_21),
   openGl33(.RL_OPENGL_33),
@@ -1475,6 +1496,9 @@ enum RlGlVersion {
     orElse: () => throw ArgumentError('Unknown RlGlVersion value: $value'),
   );
 }
+
+@Deprecated('Use .openGlSoftware instead')
+const RlGlVersion RL_OPENGL_SOFTWARE = .openGlSoftware;
 
 @Deprecated('Use .openGl11 instead')
 const RlGlVersion RL_OPENGL_11 = .openGl11;

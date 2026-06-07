@@ -2,7 +2,7 @@ set_policy("package.requires_lock", true)
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "build/"})
 
-add_requires("raylib 5.5", {configs = {shared = true}})
+add_requires("raylib 6.0", {configs = {shared = true}})
 add_requires("raygui 4.0")
 
 target("interface")
@@ -27,12 +27,12 @@ target("basic")
 ---------------------------------------------------------
 --- Examples
 ---------------------------------------------------------
-for _, file in ipairs(os.files("example/*.c")) do
-    local name = path.basename(file)
-    target(name)
-      set_kind("binary")
-      add_files(file)
-      add_packages("raylib")
-      add_packages("raygui")
-      add_includedirs("example/others")
-end
+-- for _, file in ipairs(os.files("example/*.c")) do
+--     local name = path.basename(file)
+--     target(name)
+--       set_kind("binary")
+--       add_files(file)
+--       add_packages("raylib")
+--       add_packages("raygui")
+--       add_includedirs("example/others")
+-- end

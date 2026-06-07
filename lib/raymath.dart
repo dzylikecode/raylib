@@ -5,118 +5,6 @@ import 'package:vector_math/vector_math.dart';
 
 export 'package:cdart/math.dart';
 
-// export 'src/raylib.g.dart' show Clamp;
-// export 'src/raylib.g.dart' show Lerp;
-// export 'src/raylib.g.dart' show Normalize;
-// export 'src/raylib.g.dart' show Remap;
-// export 'src/raylib.g.dart' show Wrap;
-// export 'src/raylib.g.dart' show FloatEquals;
-// export 'src/raylib.g.dart' show Vector2Zero;
-// export 'src/raylib.g.dart' show Vector2One;
-// export 'src/raylib.g.dart' show Vector2Add;
-// export 'src/raylib.g.dart' show Vector2AddValue;
-// export 'src/raylib.g.dart' show Vector2Subtract;
-// export 'src/raylib.g.dart' show Vector2SubtractValue;
-// export 'src/raylib.g.dart' show Vector2Length;
-// export 'src/raylib.g.dart' show Vector2LengthSqr;
-// export 'src/raylib.g.dart' show Vector2DotProduct;
-// export 'src/raylib.g.dart' show Vector2Distance;
-// export 'src/raylib.g.dart' show Vector2DistanceSqr;
-// export 'src/raylib.g.dart' show Vector2Angle;
-// export 'src/raylib.g.dart' show Vector2Scale;
-// export 'src/raylib.g.dart' show Vector2Multiply;
-// export 'src/raylib.g.dart' show Vector2Negate;
-// export 'src/raylib.g.dart' show Vector2Divide;
-// export 'src/raylib.g.dart' show Vector2Normalize;
-// export 'src/raylib.g.dart' show Vector2Transform;
-// export 'src/raylib.g.dart' show Vector2Lerp;
-// export 'src/raylib.g.dart' show Vector2Reflect;
-// export 'src/raylib.g.dart' show Vector2Rotate;
-// export 'src/raylib.g.dart' show Vector2MoveTowards;
-// export 'src/raylib.g.dart' show Vector2Invert;
-// export 'src/raylib.g.dart' show Vector2Clamp;
-// export 'src/raylib.g.dart' show Vector2ClampValue;
-// export 'src/raylib.g.dart' show Vector2Equals;
-// export 'src/raylib.g.dart' show Vector3Zero;
-// export 'src/raylib.g.dart' show Vector3One;
-// export 'src/raylib.g.dart' show Vector3Add;
-// export 'src/raylib.g.dart' show Vector3AddValue;
-// export 'src/raylib.g.dart' show Vector3Subtract;
-// export 'src/raylib.g.dart' show Vector3SubtractValue;
-// export 'src/raylib.g.dart' show Vector3Scale;
-// export 'src/raylib.g.dart' show Vector3Multiply;
-// export 'src/raylib.g.dart' show Vector3CrossProduct;
-// export 'src/raylib.g.dart' show Vector3Perpendicular;
-// export 'src/raylib.g.dart' show Vector3Length;
-// export 'src/raylib.g.dart' show Vector3LengthSqr;
-// export 'src/raylib.g.dart' show Vector3DotProduct;
-// export 'src/raylib.g.dart' show Vector3Distance;
-// export 'src/raylib.g.dart' show Vector3DistanceSqr;
-// export 'src/raylib.g.dart' show Vector3Angle;
-// export 'src/raylib.g.dart' show Vector3Negate;
-// export 'src/raylib.g.dart' show Vector3Divide;
-// export 'src/raylib.g.dart' show Vector3Normalize;
-// export 'src/raylib.g.dart' show Vector3OrthoNormalize;
-// export 'src/raylib.g.dart' show Vector3Transform;
-// export 'src/raylib.g.dart' show Vector3RotateByQuaternion;
-// export 'src/raylib.g.dart' show Vector3RotateByAxisAngle;
-// export 'src/raylib.g.dart' show Vector3Lerp;
-// export 'src/raylib.g.dart' show Vector3Reflect;
-// export 'src/raylib.g.dart' show Vector3Min;
-// export 'src/raylib.g.dart' show Vector3Max;
-// export 'src/raylib.g.dart' show Vector3Barycenter;
-// export 'src/raylib.g.dart' show Vector3Unproject;
-// export 'src/raylib.g.dart' show Vector3ToFloatV;
-// export 'src/raylib.g.dart' show Vector3Invert;
-// export 'src/raylib.g.dart' show Vector3Clamp;
-// export 'src/raylib.g.dart' show Vector3ClampValue;
-// export 'src/raylib.g.dart' show Vector3Equals;
-// export 'src/raylib.g.dart' show Vector3Refract;
-// export 'src/raylib.g.dart' show MatrixDeterminant;
-// export 'src/raylib.g.dart' show MatrixTrace;
-// export 'src/raylib.g.dart' show MatrixTranspose;
-// export 'src/raylib.g.dart' show MatrixInvert;
-// export 'src/raylib.g.dart' show MatrixIdentity;
-// export 'src/raylib.g.dart' show MatrixAdd;
-// export 'src/raylib.g.dart' show MatrixSubtract;
-// export 'src/raylib.g.dart' show MatrixMultiply;
-// export 'src/raylib.g.dart' show MatrixTranslate;
-// export 'src/raylib.g.dart' show MatrixRotate;
-// export 'src/raylib.g.dart' show MatrixRotateX;
-// export 'src/raylib.g.dart' show MatrixRotateY;
-// export 'src/raylib.g.dart' show MatrixRotateZ;
-// export 'src/raylib.g.dart' show MatrixRotateXYZ;
-// export 'src/raylib.g.dart' show MatrixRotateZYX;
-// export 'src/raylib.g.dart' show MatrixScale;
-// export 'src/raylib.g.dart' show MatrixFrustum;
-// export 'src/raylib.g.dart' show MatrixPerspective;
-// export 'src/raylib.g.dart' show MatrixOrtho;
-// export 'src/raylib.g.dart' show MatrixLookAt;
-// export 'src/raylib.g.dart' show MatrixToFloatV;
-// export 'src/raylib.g.dart' show QuaternionAdd;
-// export 'src/raylib.g.dart' show QuaternionAddValue;
-// export 'src/raylib.g.dart' show QuaternionSubtract;
-// export 'src/raylib.g.dart' show QuaternionSubtractValue;
-// export 'src/raylib.g.dart' show QuaternionIdentity;
-// export 'src/raylib.g.dart' show QuaternionLength;
-// export 'src/raylib.g.dart' show QuaternionNormalize;
-// export 'src/raylib.g.dart' show QuaternionInvert;
-// export 'src/raylib.g.dart' show QuaternionMultiply;
-// export 'src/raylib.g.dart' show QuaternionScale;
-// export 'src/raylib.g.dart' show QuaternionDivide;
-// export 'src/raylib.g.dart' show QuaternionLerp;
-// export 'src/raylib.g.dart' show QuaternionNlerp;
-// export 'src/raylib.g.dart' show QuaternionSlerp;
-// export 'src/raylib.g.dart' show QuaternionFromVector3ToVector3;
-// export 'src/raylib.g.dart' show QuaternionFromMatrix;
-// export 'src/raylib.g.dart' show QuaternionToMatrix;
-// export 'src/raylib.g.dart' show QuaternionFromAxisAngle;
-// export 'src/raylib.g.dart' show QuaternionToAxisAngle;
-// export 'src/raylib.g.dart' show QuaternionFromEuler;
-// export 'src/raylib.g.dart' show QuaternionToEuler;
-// export 'src/raylib.g.dart' show QuaternionTransform;
-// export 'src/raylib.g.dart' show QuaternionEquals;
-
 @Deprecated('Use value.clamp(min, max) instead')
 double Clamp(double value, double min, double max) => value.clamp(min, max);
 
@@ -155,13 +43,13 @@ Vector2 Vector2One() => .all(1.0);
 Vector2 Vector2Add(Vector2 v1, Vector2 v2) => v1 + v2;
 
 @Deprecated('Use v + Vector2.all(add) instead')
-Vector2 Vector2AddValue(Vector2 v, double add) => v + Vector2.all(add);
+Vector2 Vector2AddValue(Vector2 v, double add) => v + .all(add);
 
 @Deprecated('Use v1 - v2 instead')
 Vector2 Vector2Subtract(Vector2 v1, Vector2 v2) => v1 - v2;
 
 @Deprecated('Use v - Vector2.all(sub) instead')
-Vector2 Vector2SubtractValue(Vector2 v, double sub) => v - Vector2.all(sub);
+Vector2 Vector2SubtractValue(Vector2 v, double sub) => v - .all(sub);
 
 @Deprecated('Use v.length instead')
 double Vector2Length(Vector2 v) => v.length;
@@ -250,13 +138,13 @@ Vector3 Vector3One() => .all(1.0);
 Vector3 Vector3Add(Vector3 v1, Vector3 v2) => v1 + v2;
 
 @Deprecated('Use v + Vector3.all(add) instead')
-Vector3 Vector3AddValue(Vector3 v, double add) => v + Vector3.all(add);
+Vector3 Vector3AddValue(Vector3 v, double add) => v + .all(add);
 
 @Deprecated('Use v1 - v2 instead')
 Vector3 Vector3Subtract(Vector3 v1, Vector3 v2) => v1 - v2;
 
 @Deprecated('Use v - Vector3.all(sub) instead')
-Vector3 Vector3SubtractValue(Vector3 v, double sub) => v - Vector3.all(sub);
+Vector3 Vector3SubtractValue(Vector3 v, double sub) => v - .all(sub);
 
 @Deprecated('Use v.scaled(scalar) instead')
 Vector3 Vector3Scale(Vector3 v, double scalar) => v.scaled(scalar);

@@ -363,11 +363,14 @@ external void SetConfigFlags(int flags);
 @ffi.Native<ffi.Void Function(ffi.Pointer<ffi.Char>)>()
 external void OpenURL(ffi.Pointer<ffi.Char> url);
 
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void SetTraceLogLevel(int logLevel);
+
 @ffi.Native<ffi.Void Function(ffi.Int, ffi.Pointer<ffi.Char>)>()
 external void TraceLog(int logLevel, ffi.Pointer<ffi.Char> text);
 
-@ffi.Native<ffi.Void Function(ffi.Int)>()
-external void SetTraceLogLevel(int logLevel);
+@ffi.Native<ffi.Void Function(TraceLogCallback)>()
+external void SetTraceLogCallback(TraceLogCallback callback);
 
 @ffi.Native<ffi.Pointer<ffi.Void> Function(ffi.UnsignedInt)>()
 external ffi.Pointer<ffi.Void> MemAlloc(int size);
@@ -379,21 +382,6 @@ external ffi.Pointer<ffi.Void> MemRealloc(ffi.Pointer<ffi.Void> ptr, int size);
 
 @ffi.Native<ffi.Void Function(ffi.Pointer<ffi.Void>)>()
 external void MemFree(ffi.Pointer<ffi.Void> ptr);
-
-@ffi.Native<ffi.Void Function(TraceLogCallback)>()
-external void SetTraceLogCallback(TraceLogCallback callback);
-
-@ffi.Native<ffi.Void Function(LoadFileDataCallback)>()
-external void SetLoadFileDataCallback(LoadFileDataCallback callback);
-
-@ffi.Native<ffi.Void Function(SaveFileDataCallback)>()
-external void SetSaveFileDataCallback(SaveFileDataCallback callback);
-
-@ffi.Native<ffi.Void Function(LoadFileTextCallback)>()
-external void SetLoadFileTextCallback(LoadFileTextCallback callback);
-
-@ffi.Native<ffi.Void Function(SaveFileTextCallback)>()
-external void SetSaveFileTextCallback(SaveFileTextCallback callback);
 
 @ffi.Native<
   ffi.Pointer<ffi.UnsignedChar> Function(
@@ -443,6 +431,58 @@ external bool SaveFileText(
   ffi.Pointer<ffi.Char> text,
 );
 
+@ffi.Native<ffi.Void Function(LoadFileDataCallback)>()
+external void SetLoadFileDataCallback(LoadFileDataCallback callback);
+
+@ffi.Native<ffi.Void Function(SaveFileDataCallback)>()
+external void SetSaveFileDataCallback(SaveFileDataCallback callback);
+
+@ffi.Native<ffi.Void Function(LoadFileTextCallback)>()
+external void SetLoadFileTextCallback(LoadFileTextCallback callback);
+
+@ffi.Native<ffi.Void Function(SaveFileTextCallback)>()
+external void SetSaveFileTextCallback(SaveFileTextCallback callback);
+
+@ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>()
+external int FileRename(
+  ffi.Pointer<ffi.Char> fileName,
+  ffi.Pointer<ffi.Char> fileRename,
+);
+
+@ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>)>()
+external int FileRemove(ffi.Pointer<ffi.Char> fileName);
+
+@ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>()
+external int FileCopy(
+  ffi.Pointer<ffi.Char> srcPath,
+  ffi.Pointer<ffi.Char> dstPath,
+);
+
+@ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>()
+external int FileMove(
+  ffi.Pointer<ffi.Char> srcPath,
+  ffi.Pointer<ffi.Char> dstPath,
+);
+
+@ffi.Native<
+  ffi.Int Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+  )
+>()
+external int FileTextReplace(
+  ffi.Pointer<ffi.Char> fileName,
+  ffi.Pointer<ffi.Char> search,
+  ffi.Pointer<ffi.Char> replacement,
+);
+
+@ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>()
+external int FileTextFindIndex(
+  ffi.Pointer<ffi.Char> fileName,
+  ffi.Pointer<ffi.Char> search,
+);
+
 @ffi.Native<ffi.Bool Function(ffi.Pointer<ffi.Char>)>()
 external bool FileExists(ffi.Pointer<ffi.Char> fileName);
 
@@ -457,6 +497,9 @@ external bool IsFileExtension(
 
 @ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>)>()
 external int GetFileLength(ffi.Pointer<ffi.Char> fileName);
+
+@ffi.Native<ffi.Long Function(ffi.Pointer<ffi.Char>)>()
+external int GetFileModTime(ffi.Pointer<ffi.Char> fileName);
 
 @ffi.Native<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>()
 external ffi.Pointer<ffi.Char> GetFileExtension(ffi.Pointer<ffi.Char> fileName);
@@ -487,7 +530,7 @@ external ffi.Pointer<ffi.Char> GetApplicationDirectory();
 external int MakeDirectory(ffi.Pointer<ffi.Char> dirPath);
 
 @ffi.Native<ffi.Bool Function(ffi.Pointer<ffi.Char>)>()
-external bool ChangeDirectory(ffi.Pointer<ffi.Char> dir);
+external bool ChangeDirectory(ffi.Pointer<ffi.Char> dirPath);
 
 @ffi.Native<ffi.Bool Function(ffi.Pointer<ffi.Char>)>()
 external bool IsPathFile(ffi.Pointer<ffi.Char> path);
@@ -519,8 +562,21 @@ external FilePathList LoadDroppedFiles();
 @ffi.Native<ffi.Void Function(FilePathList)>()
 external void UnloadDroppedFiles(FilePathList files);
 
-@ffi.Native<ffi.Long Function(ffi.Pointer<ffi.Char>)>()
-external int GetFileModTime(ffi.Pointer<ffi.Char> fileName);
+@ffi.Native<ffi.UnsignedInt Function(ffi.Pointer<ffi.Char>)>()
+external int GetDirectoryFileCount(ffi.Pointer<ffi.Char> dirPath);
+
+@ffi.Native<
+  ffi.UnsignedInt Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Bool,
+  )
+>()
+external int GetDirectoryFileCountEx(
+  ffi.Pointer<ffi.Char> basePath,
+  ffi.Pointer<ffi.Char> filter,
+  bool scanSubdirs,
+);
 
 @ffi.Native<
   ffi.Pointer<ffi.UnsignedChar> Function(
@@ -563,12 +619,12 @@ external ffi.Pointer<ffi.Char> EncodeDataBase64(
 
 @ffi.Native<
   ffi.Pointer<ffi.UnsignedChar> Function(
-    ffi.Pointer<ffi.UnsignedChar>,
+    ffi.Pointer<ffi.Char>,
     ffi.Pointer<ffi.Int>,
   )
 >()
 external ffi.Pointer<ffi.UnsignedChar> DecodeDataBase64(
-  ffi.Pointer<ffi.UnsignedChar> data,
+  ffi.Pointer<ffi.Char> text,
   ffi.Pointer<ffi.Int> outputSize,
 );
 
@@ -587,6 +643,14 @@ external ffi.Pointer<ffi.UnsignedInt> ComputeMD5(
   ffi.Pointer<ffi.UnsignedInt> Function(ffi.Pointer<ffi.UnsignedChar>, ffi.Int)
 >()
 external ffi.Pointer<ffi.UnsignedInt> ComputeSHA1(
+  ffi.Pointer<ffi.UnsignedChar> data,
+  int dataSize,
+);
+
+@ffi.Native<
+  ffi.Pointer<ffi.UnsignedInt> Function(ffi.Pointer<ffi.UnsignedChar>, ffi.Int)
+>()
+external ffi.Pointer<ffi.UnsignedInt> ComputeSHA256(
   ffi.Pointer<ffi.UnsignedChar> data,
   int dataSize,
 );
@@ -640,6 +704,9 @@ external int GetKeyPressed();
 
 @ffi.Native<ffi.Int Function()>()
 external int GetCharPressed();
+
+@ffi.Native<ffi.Pointer<ffi.Char> Function(ffi.Int)>()
+external ffi.Pointer<ffi.Char> GetKeyName(int key);
 
 @ffi.Native<ffi.Void Function(ffi.Int)>()
 external void SetExitKey(int key);
@@ -826,8 +893,28 @@ external void DrawLineBezier(
   Color color,
 );
 
+@ffi.Native<ffi.Void Function(Vector2, Vector2, ffi.Int, ffi.Int, Color)>()
+external void DrawLineDashed(
+  Vector2 startPos,
+  Vector2 endPos,
+  int dashSize,
+  int spaceSize,
+  Color color,
+);
+
 @ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Float, Color)>()
 external void DrawCircle(int centerX, int centerY, double radius, Color color);
+
+@ffi.Native<ffi.Void Function(Vector2, ffi.Float, Color)>()
+external void DrawCircleV(Vector2 center, double radius, Color color);
+
+@ffi.Native<ffi.Void Function(Vector2, ffi.Float, Color, Color)>()
+external void DrawCircleGradient(
+  Vector2 center,
+  double radius,
+  Color inner,
+  Color outer,
+);
 
 @ffi.Native<
   ffi.Void Function(Vector2, ffi.Float, ffi.Float, ffi.Float, ffi.Int, Color)
@@ -853,18 +940,6 @@ external void DrawCircleSectorLines(
   Color color,
 );
 
-@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Float, Color, Color)>()
-external void DrawCircleGradient(
-  int centerX,
-  int centerY,
-  double radius,
-  Color inner,
-  Color outer,
-);
-
-@ffi.Native<ffi.Void Function(Vector2, ffi.Float, Color)>()
-external void DrawCircleV(Vector2 center, double radius, Color color);
-
 @ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Float, Color)>()
 external void DrawCircleLines(
   int centerX,
@@ -885,10 +960,26 @@ external void DrawEllipse(
   Color color,
 );
 
+@ffi.Native<ffi.Void Function(Vector2, ffi.Float, ffi.Float, Color)>()
+external void DrawEllipseV(
+  Vector2 center,
+  double radiusH,
+  double radiusV,
+  Color color,
+);
+
 @ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Float, ffi.Float, Color)>()
 external void DrawEllipseLines(
   int centerX,
   int centerY,
+  double radiusH,
+  double radiusV,
+  Color color,
+);
+
+@ffi.Native<ffi.Void Function(Vector2, ffi.Float, ffi.Float, Color)>()
+external void DrawEllipseLinesV(
+  Vector2 center,
   double radiusH,
   double radiusV,
   Color color,
@@ -988,8 +1079,8 @@ external void DrawRectangleGradientEx(
   Rectangle rec,
   Color topLeft,
   Color bottomLeft,
-  Color topRight,
   Color bottomRight,
+  Color topRight,
 );
 
 @ffi.Native<ffi.Void Function(ffi.Int, ffi.Int, ffi.Int, ffi.Int, Color)>()
@@ -2053,6 +2144,7 @@ external bool IsFontValid(Font font);
     ffi.Pointer<ffi.Int>,
     ffi.Int,
     ffi.Int,
+    ffi.Pointer<ffi.Int>,
   )
 >()
 external ffi.Pointer<GlyphInfo> LoadFontData(
@@ -2062,6 +2154,7 @@ external ffi.Pointer<GlyphInfo> LoadFontData(
   ffi.Pointer<ffi.Int> codepoints,
   int codepointCount,
   int type,
+  ffi.Pointer<ffi.Int> glyphCount,
 );
 
 @ffi.Native<
@@ -2194,6 +2287,17 @@ external Vector2 MeasureTextEx(
   double spacing,
 );
 
+@ffi.Native<
+  Vector2 Function(Font, ffi.Pointer<ffi.Int>, ffi.Int, ffi.Float, ffi.Float)
+>()
+external Vector2 MeasureTextCodepoints(
+  Font font,
+  ffi.Pointer<ffi.Int> codepoints,
+  int length,
+  double fontSize,
+  double spacing,
+);
+
 @ffi.Native<ffi.Int Function(Font, ffi.Int)>()
 external int GetGlyphIndex(Font font, int codepoint);
 
@@ -2250,6 +2354,23 @@ external ffi.Pointer<ffi.Char> CodepointToUTF8(
   ffi.Pointer<ffi.Int> utf8Size,
 );
 
+@ffi.Native<
+  ffi.Pointer<ffi.Pointer<ffi.Char>> Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Int>,
+  )
+>()
+external ffi.Pointer<ffi.Pointer<ffi.Char>> LoadTextLines(
+  ffi.Pointer<ffi.Char> text,
+  ffi.Pointer<ffi.Int> count,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Pointer<ffi.Pointer<ffi.Char>>, ffi.Int)>()
+external void UnloadTextLines(
+  ffi.Pointer<ffi.Pointer<ffi.Char>> text,
+  int lineCount,
+);
+
 @ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>()
 external int TextCopy(ffi.Pointer<ffi.Char> dst, ffi.Pointer<ffi.Char> src);
 
@@ -2274,6 +2395,22 @@ external ffi.Pointer<ffi.Char> TextSubtext(
   int length,
 );
 
+@ffi.Native<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>()
+external ffi.Pointer<ffi.Char> TextRemoveSpaces(ffi.Pointer<ffi.Char> text);
+
+@ffi.Native<
+  ffi.Pointer<ffi.Char> Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+  )
+>()
+external ffi.Pointer<ffi.Char> GetTextBetween(
+  ffi.Pointer<ffi.Char> text,
+  ffi.Pointer<ffi.Char> begin,
+  ffi.Pointer<ffi.Char> end,
+);
+
 @ffi.Native<
   ffi.Pointer<ffi.Char> Function(
     ffi.Pointer<ffi.Char>,
@@ -2283,8 +2420,51 @@ external ffi.Pointer<ffi.Char> TextSubtext(
 >()
 external ffi.Pointer<ffi.Char> TextReplace(
   ffi.Pointer<ffi.Char> text,
-  ffi.Pointer<ffi.Char> replace,
-  ffi.Pointer<ffi.Char> by,
+  ffi.Pointer<ffi.Char> search,
+  ffi.Pointer<ffi.Char> replacement,
+);
+
+@ffi.Native<
+  ffi.Pointer<ffi.Char> Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+  )
+>()
+external ffi.Pointer<ffi.Char> TextReplaceAlloc(
+  ffi.Pointer<ffi.Char> text,
+  ffi.Pointer<ffi.Char> search,
+  ffi.Pointer<ffi.Char> replacement,
+);
+
+@ffi.Native<
+  ffi.Pointer<ffi.Char> Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+  )
+>()
+external ffi.Pointer<ffi.Char> TextReplaceBetween(
+  ffi.Pointer<ffi.Char> text,
+  ffi.Pointer<ffi.Char> begin,
+  ffi.Pointer<ffi.Char> end,
+  ffi.Pointer<ffi.Char> replacement,
+);
+
+@ffi.Native<
+  ffi.Pointer<ffi.Char> Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+  )
+>()
+external ffi.Pointer<ffi.Char> TextReplaceBetweenAlloc(
+  ffi.Pointer<ffi.Char> text,
+  ffi.Pointer<ffi.Char> begin,
+  ffi.Pointer<ffi.Char> end,
+  ffi.Pointer<ffi.Char> replacement,
 );
 
 @ffi.Native<
@@ -2295,6 +2475,19 @@ external ffi.Pointer<ffi.Char> TextReplace(
   )
 >()
 external ffi.Pointer<ffi.Char> TextInsert(
+  ffi.Pointer<ffi.Char> text,
+  ffi.Pointer<ffi.Char> insert,
+  int position,
+);
+
+@ffi.Native<
+  ffi.Pointer<ffi.Char> Function(
+    ffi.Pointer<ffi.Char>,
+    ffi.Pointer<ffi.Char>,
+    ffi.Int,
+  )
+>()
+external ffi.Pointer<ffi.Char> TextInsertAlloc(
   ffi.Pointer<ffi.Char> text,
   ffi.Pointer<ffi.Char> insert,
   int position,
@@ -2342,7 +2535,7 @@ external void TextAppend(
 @ffi.Native<ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>()
 external int TextFindIndex(
   ffi.Pointer<ffi.Char> text,
-  ffi.Pointer<ffi.Char> find,
+  ffi.Pointer<ffi.Char> search,
 );
 
 @ffi.Native<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>()
@@ -2576,26 +2769,6 @@ external void DrawModelWiresEx(
   Color tint,
 );
 
-@ffi.Native<ffi.Void Function(Model, Vector3, ffi.Float, Color)>()
-external void DrawModelPoints(
-  Model model,
-  Vector3 position,
-  double scale,
-  Color tint,
-);
-
-@ffi.Native<
-  ffi.Void Function(Model, Vector3, Vector3, ffi.Float, Vector3, Color)
->()
-external void DrawModelPointsEx(
-  Model model,
-  Vector3 position,
-  Vector3 rotationAxis,
-  double rotationAngle,
-  Vector3 scale,
-  Color tint,
-);
-
 @ffi.Native<ffi.Void Function(BoundingBox, Color)>()
 external void DrawBoundingBox(BoundingBox box, Color color);
 
@@ -2760,18 +2933,31 @@ external ffi.Pointer<ModelAnimation> LoadModelAnimations(
   ffi.Pointer<ffi.Int> animCount,
 );
 
-@ffi.Native<ffi.Void Function(Model, ModelAnimation, ffi.Int)>()
-external void UpdateModelAnimation(Model model, ModelAnimation anim, int frame);
-
-@ffi.Native<ffi.Void Function(Model, ModelAnimation, ffi.Int)>()
-external void UpdateModelAnimationBones(
+@ffi.Native<ffi.Void Function(Model, ModelAnimation, ffi.Float)>()
+external void UpdateModelAnimation(
   Model model,
   ModelAnimation anim,
-  int frame,
+  double frame,
 );
 
-@ffi.Native<ffi.Void Function(ModelAnimation)>()
-external void UnloadModelAnimation(ModelAnimation anim);
+@ffi.Native<
+  ffi.Void Function(
+    Model,
+    ModelAnimation,
+    ffi.Float,
+    ModelAnimation,
+    ffi.Float,
+    ffi.Float,
+  )
+>()
+external void UpdateModelAnimationEx(
+  Model model,
+  ModelAnimation animA,
+  double frameA,
+  ModelAnimation animB,
+  double frameB,
+  double blend,
+);
 
 @ffi.Native<ffi.Void Function(ffi.Pointer<ModelAnimation>, ffi.Int)>()
 external void UnloadModelAnimations(
@@ -3203,6 +3389,15 @@ external void rlEnableVertexAttribute(int index);
 @ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
 external void rlDisableVertexAttribute(int index);
 
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Pointer<ffi.Void>)>()
+external void rlEnableStatePointer(
+  int vertexAttribType,
+  ffi.Pointer<ffi.Void> buffer,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int)>()
+external void rlDisableStatePointer(int vertexAttribType);
+
 @ffi.Native<ffi.Void Function(ffi.Int)>()
 external void rlActiveTextureSlot(int slot);
 
@@ -3310,10 +3505,19 @@ external void rlDisableScissorTest();
 external void rlScissor(int x, int y, int width, int height);
 
 @ffi.Native<ffi.Void Function()>()
-external void rlEnableWireMode();
+external void rlEnablePointMode();
 
 @ffi.Native<ffi.Void Function()>()
-external void rlEnablePointMode();
+external void rlDisablePointMode();
+
+@ffi.Native<ffi.Void Function(ffi.Float)>()
+external void rlSetPointSize(double size);
+
+@ffi.Native<ffi.Float Function()>()
+external double rlGetPointSize();
+
+@ffi.Native<ffi.Void Function()>()
+external void rlEnableWireMode();
 
 @ffi.Native<ffi.Void Function()>()
 external void rlDisableWireMode();
@@ -3385,6 +3589,9 @@ external void rlglClose();
 
 @ffi.Native<ffi.Void Function(ffi.Pointer<ffi.Void>)>()
 external void rlLoadExtensions(ffi.Pointer<ffi.Void> loader);
+
+@ffi.Native<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Char>)>()
+external ffi.Pointer<ffi.Void> rlGetProcAddress(ffi.Pointer<ffi.Char> procName);
 
 @ffi.Native<ffi.Int Function()>()
 external int rlGetVersion();
@@ -3645,7 +3852,7 @@ external int rlLoadFramebuffer();
   ffi.Void Function(ffi.UnsignedInt, ffi.UnsignedInt, ffi.Int, ffi.Int, ffi.Int)
 >()
 external void rlFramebufferAttach(
-  int fboId,
+  int id,
   int texId,
   int attachType,
   int texType,
@@ -3659,33 +3866,55 @@ external bool rlFramebufferComplete(int id);
 external void rlUnloadFramebuffer(int id);
 
 @ffi.Native<
+  ffi.Void Function(
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Int,
+    ffi.Pointer<ffi.Void>,
+  )
+>()
+external void rlCopyFramebuffer(
+  int x,
+  int y,
+  int width,
+  int height,
+  int format,
+  ffi.Pointer<ffi.Void> pixels,
+);
+
+@ffi.Native<ffi.Void Function(ffi.Int, ffi.Int)>()
+external void rlResizeFramebuffer(int width, int height);
+
+@ffi.Native<ffi.UnsignedInt Function(ffi.Pointer<ffi.Char>, ffi.Int)>()
+external int rlLoadShader(ffi.Pointer<ffi.Char> code, int type);
+
+@ffi.Native<
   ffi.UnsignedInt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)
 >()
-external int rlLoadShaderCode(
+external int rlLoadShaderProgram(
   ffi.Pointer<ffi.Char> vsCode,
   ffi.Pointer<ffi.Char> fsCode,
 );
 
-@ffi.Native<ffi.UnsignedInt Function(ffi.Pointer<ffi.Char>, ffi.Int)>()
-external int rlCompileShader(ffi.Pointer<ffi.Char> shaderCode, int type);
-
 @ffi.Native<ffi.UnsignedInt Function(ffi.UnsignedInt, ffi.UnsignedInt)>()
-external int rlLoadShaderProgram(int vShaderId, int fShaderId);
+external int rlLoadShaderProgramEx(int vsId, int fsId);
+
+@ffi.Native<ffi.UnsignedInt Function(ffi.UnsignedInt)>()
+external int rlLoadShaderProgramCompute(int csId);
+
+@ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
+external void rlUnloadShader(int id);
 
 @ffi.Native<ffi.Void Function(ffi.UnsignedInt)>()
 external void rlUnloadShaderProgram(int id);
 
 @ffi.Native<ffi.Int Function(ffi.UnsignedInt, ffi.Pointer<ffi.Char>)>()
-external int rlGetLocationUniform(
-  int shaderId,
-  ffi.Pointer<ffi.Char> uniformName,
-);
+external int rlGetLocationUniform(int id, ffi.Pointer<ffi.Char> uniformName);
 
 @ffi.Native<ffi.Int Function(ffi.UnsignedInt, ffi.Pointer<ffi.Char>)>()
-external int rlGetLocationAttrib(
-  int shaderId,
-  ffi.Pointer<ffi.Char> attribName,
-);
+external int rlGetLocationAttrib(int id, ffi.Pointer<ffi.Char> attribName);
 
 @ffi.Native<
   ffi.Void Function(ffi.Int, ffi.Pointer<ffi.Void>, ffi.Int, ffi.Int)
@@ -3712,9 +3941,6 @@ external void rlSetUniformSampler(int locIndex, int textureId);
 
 @ffi.Native<ffi.Void Function(ffi.UnsignedInt, ffi.Pointer<ffi.Int>)>()
 external void rlSetShader(int id, ffi.Pointer<ffi.Int> locs);
-
-@ffi.Native<ffi.UnsignedInt Function(ffi.UnsignedInt)>()
-external int rlLoadComputeShaderProgram(int shaderId);
 
 @ffi.Native<
   ffi.Void Function(ffi.UnsignedInt, ffi.UnsignedInt, ffi.UnsignedInt)
@@ -4085,18 +4311,16 @@ final class Mesh extends ffi.Struct {
 
   external ffi.Pointer<ffi.UnsignedShort> indices;
 
-  external ffi.Pointer<ffi.Float> animVertices;
+  @ffi.Int()
+  external int boneCount;
 
-  external ffi.Pointer<ffi.Float> animNormals;
-
-  external ffi.Pointer<ffi.UnsignedChar> boneIds;
+  external ffi.Pointer<ffi.UnsignedChar> boneIndices;
 
   external ffi.Pointer<ffi.Float> boneWeights;
 
-  external ffi.Pointer<Matrix> boneMatrices;
+  external ffi.Pointer<ffi.Float> animVertices;
 
-  @ffi.Int()
-  external int boneCount;
+  external ffi.Pointer<ffi.Float> animNormals;
 
   @ffi.UnsignedInt()
   external int vaoId;
@@ -4137,12 +4361,23 @@ final class Transform extends ffi.Struct {
   external Vector3 scale;
 }
 
+typedef ModelAnimPose = ffi.Pointer<Transform>;
+
 final class BoneInfo extends ffi.Struct {
   @ffi.Array.multi([32])
   external ffi.Array<ffi.Char> name;
 
   @ffi.Int()
   external int parent;
+}
+
+final class ModelSkeleton extends ffi.Struct {
+  @ffi.Int()
+  external int boneCount;
+
+  external ffi.Pointer<BoneInfo> bones;
+
+  external ModelAnimPose bindPose;
 }
 
 final class Model extends ffi.Struct {
@@ -4160,27 +4395,24 @@ final class Model extends ffi.Struct {
 
   external ffi.Pointer<ffi.Int> meshMaterial;
 
-  @ffi.Int()
-  external int boneCount;
+  external ModelSkeleton skeleton;
 
-  external ffi.Pointer<BoneInfo> bones;
+  external ModelAnimPose currentPose;
 
-  external ffi.Pointer<Transform> bindPose;
+  external ffi.Pointer<Matrix> boneMatrices;
 }
 
 final class ModelAnimation extends ffi.Struct {
+  @ffi.Array.multi([32])
+  external ffi.Array<ffi.Char> name;
+
   @ffi.Int()
   external int boneCount;
 
   @ffi.Int()
-  external int frameCount;
+  external int keyframeCount;
 
-  external ffi.Pointer<BoneInfo> bones;
-
-  external ffi.Pointer<ffi.Pointer<Transform>> framePoses;
-
-  @ffi.Array.multi([32])
-  external ffi.Array<ffi.Char> name;
+  external ffi.Pointer<ModelAnimPose> keyframePoses;
 }
 
 final class Ray extends ffi.Struct {
@@ -4321,9 +4553,6 @@ final class VrStereoConfig extends ffi.Struct {
 
 final class FilePathList extends ffi.Struct {
   @ffi.UnsignedInt()
-  external int capacity;
-
-  @ffi.UnsignedInt()
   external int count;
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> paths;
@@ -4350,30 +4579,15 @@ final class AutomationEventList extends ffi.Struct {
   external ffi.Pointer<AutomationEvent> events;
 }
 
-final class __va_list_tag extends ffi.Struct {
-  @ffi.UnsignedInt()
-  external int gp_offset;
-
-  @ffi.UnsignedInt()
-  external int fp_offset;
-
-  external ffi.Pointer<ffi.Void> overflow_arg_area;
-
-  external ffi.Pointer<ffi.Void> reg_save_area;
-}
-
+typedef va_list = ffi.Pointer<ffi.Char>;
 typedef TraceLogCallbackFunction =
     ffi.Void Function(
       ffi.Int logLevel,
       ffi.Pointer<ffi.Char> text,
-      ffi.Pointer<__va_list_tag> args,
+      va_list args,
     );
 typedef DartTraceLogCallbackFunction =
-    void Function(
-      int logLevel,
-      ffi.Pointer<ffi.Char> text,
-      ffi.Pointer<__va_list_tag> args,
-    );
+    void Function(int logLevel, ffi.Pointer<ffi.Char> text, va_list args);
 typedef TraceLogCallback =
     ffi.Pointer<ffi.NativeFunction<TraceLogCallbackFunction>>;
 typedef LoadFileDataCallbackFunction =

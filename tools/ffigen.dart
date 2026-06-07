@@ -8,8 +8,8 @@ void main() {
     output: .new(dartFile: packageRoot.resolve('lib/src/raylib.g.dart')),
     headers: .new(
       entryPoints: [
-        packageRoot.resolve('src/raylib/src/raylib.h'),
-        packageRoot.resolve('src/raylib/src/rlgl.h'),
+        packageRoot.resolve('dist/include/raylib.h'),
+        packageRoot.resolve('dist/include/rlgl.h'),
       ],
       include: (header) => header.path.contains('raylib'),
     ),
@@ -22,8 +22,8 @@ void main() {
     output: .new(dartFile: packageRoot.resolve('lib/src/raylib_const.g.dart')),
     headers: .new(
       entryPoints: [
-        packageRoot.resolve('src/raylib/src/raylib.h'),
-        packageRoot.resolve('src/raylib/src/rlgl.h'),
+        packageRoot.resolve('dist/include/raylib.h'),
+        packageRoot.resolve('dist/include/rlgl.h'),
       ],
       include: (header) => header.path.contains('raylib'),
     ),

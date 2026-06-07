@@ -1,62 +1,182 @@
-import 'package:meta/meta.dart';
+// ignore_for_file: non_constant_identifier_names
 
-import 'src/raylib.g.dart' as raylib;
-import 'package:vector_math/vector_math.dart';
-import 'package:image/image.dart' as img;
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart' as ffi;
-import 'src/raylib_const.dart' as consts;
+import 'package:meta/meta.dart';
 
-export 'package:vector_math/vector_math.dart' show Vector2;
-export 'package:vector_math/vector_math.dart' show Vector3;
-export 'package:vector_math/vector_math.dart' show Vector4;
-export 'package:vector_math/vector_math.dart' show Matrix4;
-export 'package:vector_math/vector_math.dart' show Quaternion;
+import 'raylib.g.dart' as raw;
+import 'package:image/image.dart' as img;
+import 'raylib_const.dart';
 
-// ── Vector2 ──────────────────────────────────────────────────────────────
-// via package:vector_math — Vector2
+import 'package:vector_math/vector_math.dart'
+    show Vector2, Vector3, Vector4, Matrix4, Quaternion, Ray;
+export 'package:vector_math/vector_math.dart'
+    show Vector2, Vector3, Vector4, Matrix4, Quaternion, Ray;
 
-extension Vector2Extension on raylib.Vector2 {
+typedef Matrix = Matrix4;
+
+@Deprecated('Use Camera3D instead')
+typedef Camera = Camera3D;
+
+@Deprecated('Use RenderTexture2D instead')
+typedef RenderTexture = RenderTexture2D;
+
+extension Vector2Extension on raw.Vector2 {
   Vector2 toDart() => .new(x, y);
 }
 
-// ── Vector3 ──────────────────────────────────────────────────────────────
-// via package:vector_math — Vector3
-
-extension Vector3Extension on raylib.Vector3 {
+extension Vector3Extension on raw.Vector3 {
   Vector3 toDart() => .new(x, y, z);
 }
 
-// ── Vector4 ──────────────────────────────────────────────────────────────
-// via package:vector_math — Vector4
-
-extension Vector4Extension on raylib.Vector4 {
+extension Vector4Extension on raw.Vector4 {
   Vector4 toDart() => .new(x, y, z, w);
 }
 
-// ── Matrix ───────────────────────────────────────────────────────────────
-// via package:vector_math — Matrix4
-
-extension MatrixExtension on raylib.Matrix {
+extension MatrixExtension on raw.Matrix {
+  // dart format off
   Matrix4 toDart() => .new(
-    m0,  m1,  m2,  m3,
-    m4,  m5,  m6,  m7,
-    m8,  m9,  m10, m11,
+     m0,  m1,  m2,  m3,
+     m4,  m5,  m6,  m7,
+     m8,  m9, m10, m11,
     m12, m13, m14, m15,
   );
+  // dart format on
 }
 
-// ── Color ────────────────────────────────────────────────────────────────
-// see colors.dart
-
-// ── Rectangle ────────────────────────────────────────────────────────────
-
-class Rectangle {
-  final Pointer<raylib.Rectangle> ptr;
+class Color {
+  static final _finalizer = Finalizer<Pointer<raw.Color>>(ffi.malloc.free);
+  final Pointer<raw.Color> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Rectangle>>(ffi.malloc.free);
+  Color._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  factory Color({int r = 0, int g = 0, int b = 0, int a = 255}) =>
+      Color._(ffi.malloc<raw.Color>())
+        ..r = r
+        ..g = g
+        ..b = b
+        ..a = a;
+  factory Color.fromRGBA(int r, int g, int b, int a) =>
+      Color(r: r, g: g, b: b, a: a);
+
+  int get r => ptr.ref.r;
+  set r(int value) => ptr.ref.r = value;
+
+  int get g => ptr.ref.g;
+  set g(int value) => ptr.ref.g = value;
+
+  int get b => ptr.ref.b;
+  set b(int value) => ptr.ref.b = value;
+
+  int get a => ptr.ref.a;
+  set a(int value) => ptr.ref.a = value;
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this); // 取消自动释放
+    ffi.malloc.free(ptr);
+    _disposed = true;
+  }
+
+  static final lightGray = Color(r: 200, g: 200, b: 200, a: 255);
+  static final gray = Color(r: 130, g: 130, b: 130, a: 255);
+  static final darkGray = Color(r: 80, g: 80, b: 80, a: 255);
+  static final yellow = Color(r: 253, g: 249, b: 0, a: 255);
+  static final gold = Color(r: 255, g: 203, b: 0, a: 255);
+  static final orange = Color(r: 255, g: 161, b: 0, a: 255);
+  static final pink = Color(r: 255, g: 109, b: 194, a: 255);
+  static final red = Color(r: 230, g: 41, b: 55, a: 255);
+  static final maroon = Color(r: 190, g: 33, b: 55, a: 255);
+  static final green = Color(r: 0, g: 228, b: 48, a: 255);
+  static final lime = Color(r: 0, g: 158, b: 47, a: 255);
+  static final darkGreen = Color(r: 0, g: 117, b: 44, a: 255);
+  static final skyBlue = Color(r: 102, g: 191, b: 255, a: 255);
+  static final blue = Color(r: 0, g: 121, b: 241, a: 255);
+  static final darkBlue = Color(r: 0, g: 82, b: 172, a: 255);
+  static final purple = Color(r: 200, g: 122, b: 255, a: 255);
+  static final violet = Color(r: 135, g: 60, b: 190, a: 255);
+  static final darkPurple = Color(r: 112, g: 31, b: 126, a: 255);
+  static final beige = Color(r: 211, g: 176, b: 131, a: 255);
+  static final brown = Color(r: 127, g: 106, b: 79, a: 255);
+  static final darkBrown = Color(r: 76, g: 63, b: 47, a: 255);
+  static final white = Color(r: 255, g: 255, b: 255, a: 255);
+  static final black = Color(r: 0, g: 0, b: 0, a: 255);
+  static final blank = Color(r: 0, g: 0, b: 0, a: 0);
+  static final magenta = Color(r: 255, g: 0, b: 255, a: 255);
+  static final rayWhite = Color(r: 245, g: 245, b: 245, a: 255);
+
+  @override
+  String toString() => 'r: $r, g: $g, b: $b, a: $a';
+}
+
+Color Fade(Color color, double alpha) {
+  final c = raw.Fade(color.ptr.ref, alpha);
+  return .fromRGBA(c.r, c.g, c.b, c.a);
+}
+
+@Deprecated('Use .lightGray instead')
+final Color LIGHTGRAY = .lightGray;
+@Deprecated('Use .gray instead')
+final Color GRAY = .gray;
+@Deprecated('Use .darkGray instead')
+final Color DARKGRAY = .darkGray;
+@Deprecated('Use .yellow instead')
+final Color YELLOW = .yellow;
+@Deprecated('Use .gold instead')
+final Color GOLD = .gold;
+@Deprecated('Use .orange instead')
+final Color ORANGE = .orange;
+@Deprecated('Use .pink instead')
+final Color PINK = .pink;
+@Deprecated('Use .red instead')
+final Color RED = .red;
+@Deprecated('Use .maroon instead')
+final Color MAROON = .maroon;
+@Deprecated('Use .green instead')
+final Color GREEN = .green;
+@Deprecated('Use .lime instead')
+final Color LIME = .lime;
+@Deprecated('Use .darkGreen instead')
+final Color DARKGREEN = .darkGreen;
+@Deprecated('Use .skyBlue instead')
+final Color SKYBLUE = .skyBlue;
+@Deprecated('Use .blue instead')
+final Color BLUE = .blue;
+@Deprecated('Use .darkBlue instead')
+final Color DARKBLUE = .darkBlue;
+@Deprecated('Use .purple instead')
+final Color PURPLE = .purple;
+@Deprecated('Use .violet instead')
+final Color VIOLET = .violet;
+@Deprecated('Use .darkPurple instead')
+final Color DARKPURPLE = .darkPurple;
+@Deprecated('Use .beige instead')
+final Color BEIGE = .beige;
+@Deprecated('Use .brown instead')
+final Color BROWN = .brown;
+@Deprecated('Use .darkBrown instead')
+final Color DARKBROWN = .darkBrown;
+@Deprecated('Use .white instead')
+final Color WHITE = .white;
+@Deprecated('Use .black instead')
+final Color BLACK = .black;
+@Deprecated('Use .blank instead')
+final Color BLANK = .blank;
+@Deprecated('Use .magenta instead')
+final Color MAGENTA = .magenta;
+@Deprecated('Use .rayWhite instead')
+final Color RAYWHITE = .rayWhite;
+
+class Rectangle {
+  final Pointer<raw.Rectangle> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raw.Rectangle>>(ffi.malloc.free);
 
   Rectangle._(this.ptr) {
     _finalizer.attach(this, ptr, detach: this);
@@ -69,7 +189,7 @@ class Rectangle {
     double y = 0,
     double width = 0,
     double height = 0,
-  }) => Rectangle._(ffi.malloc<raylib.Rectangle>())
+  }) => ._(ffi.malloc<raw.Rectangle>())
     ..x = x
     ..y = y
     ..width = width
@@ -106,22 +226,17 @@ class Rectangle {
   String toString() => 'x: $x, y: $y, width: $width, height: $height';
 }
 
-extension RectangleExt on raylib.Rectangle {
+extension RectangleExt on raw.Rectangle {
   Rectangle toDart() => .new(x: x, y: y, width: width, height: height);
 }
 
-// ── Image ────────────────────────────────────────────────────────────────
-
-/// Handle to a CPU-side image (pixel data in RAM).
-///
-/// Created by LoadImage / GenImage*; released by [UnloadImage] or [dispose].
 class Image {
-  final Pointer<raylib.Image> ptr;
+  final Pointer<raw.Image> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Image>>(_free);
-  static void _free(Pointer<raylib.Image> ptr) {
-    raylib.UnloadImage(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Image>>(_free);
+  static void _free(Pointer<raw.Image> ptr) {
+    raw.UnloadImage(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -132,7 +247,7 @@ class Image {
   int get width => ptr.ref.width;
   int get height => ptr.ref.height;
   int get mipmaps => ptr.ref.mipmaps;
-  consts.PixelFormat get format => .fromValue(ptr.ref.format);
+  PixelFormat get format => .fromValue(ptr.ref.format);
 
   /// Convert to `package:image` Image for Dart-side pixel manipulation.
   ///
@@ -141,7 +256,7 @@ class Image {
   img.Image toDart() {
     final n = width * height;
     final ref = ptr.ref;
-    final fmt = consts.PixelFormat.fromValue(ref.format);
+    final fmt = PixelFormat.fromValue(ref.format);
     return switch (fmt) {
       .uncompressedGrayscale => .fromBytes(
         width: width,
@@ -152,23 +267,31 @@ class Image {
       .uncompressedGrayAlpha => .fromBytes(
         width: width,
         height: height,
-        bytes: Uint8List.fromList(ref.data.cast<Uint8>().asTypedList(n * 2)).buffer,
+        bytes: Uint8List.fromList(
+          ref.data.cast<Uint8>().asTypedList(n * 2),
+        ).buffer,
         numChannels: 2,
       ),
       .uncompressedR8g8b8 => .fromBytes(
         width: width,
         height: height,
-        bytes: Uint8List.fromList(ref.data.cast<Uint8>().asTypedList(n * 3)).buffer,
+        bytes: Uint8List.fromList(
+          ref.data.cast<Uint8>().asTypedList(n * 3),
+        ).buffer,
         numChannels: 3,
       ),
       .uncompressedR8g8b8a8 => .fromBytes(
         width: width,
         height: height,
-        bytes: Uint8List.fromList(ref.data.cast<Uint8>().asTypedList(n * 4)).buffer,
+        bytes: Uint8List.fromList(
+          ref.data.cast<Uint8>().asTypedList(n * 4),
+        ).buffer,
         numChannels: 4,
         order: img.ChannelOrder.rgba,
       ),
-      _ => throw UnsupportedError('PixelFormat ${ref.format} is not supported for conversion to dart Image'),
+      _ => throw UnsupportedError(
+        'PixelFormat ${ref.format} is not supported for conversion to dart Image',
+      ),
     };
   }
 
@@ -189,13 +312,13 @@ class Image {
     }
     final dataPtr = ffi.malloc<Uint8>(bytes.length);
     dataPtr.asTypedList(bytes.length).setAll(0, bytes);
-    final ptr = ffi.malloc<raylib.Image>();
+    final ptr = ffi.malloc<raw.Image>();
     ptr.ref
       ..data = dataPtr.cast()
       ..width = value.width
       ..height = value.height
       ..mipmaps = 1
-      ..format = consts.PixelFormat.uncompressedR8g8b8a8.value;
+      ..format = PixelFormat.uncompressedR8g8b8a8.value;
     return Image._(ptr);
   }
 
@@ -208,32 +331,25 @@ class Image {
   }
 }
 
-extension RaylibImageToDart on raylib.Image {
+extension RaylibImageToDart on raw.Image {
   Image toDart() {
-    final p = ffi.malloc<raylib.Image>();
+    final p = ffi.malloc<raw.Image>();
     p.ref
       ..data = data
       ..width = width
       ..height = height
       ..mipmaps = mipmaps
       ..format = format;
-    return Image._(p);
+    return ._(p);
   }
 }
 
-// ── Texture ──────────────────────────────────────────────────────────────
-
-/// Immutable handle to a GPU texture.
-///
-/// Use [UnloadTexture] to release GPU memory when done.
-/// No automatic cleanup — GPU resources must not be freed after the
-/// OpenGL context is destroyed.
 class Texture {
   final int id;
   final int width;
   final int height;
   final int mipmaps;
-  final consts.PixelFormat format;
+  final PixelFormat format;
 
   const Texture({
     required this.id,
@@ -253,28 +369,19 @@ class Texture {
 typedef Texture2D = Texture;
 typedef TextureCubemap = Texture;
 
-extension RaylibTextureToDart on raylib.Texture {
+extension RaylibTextureToDart on raw.Texture {
   Texture toDart() => Texture(
     id: id,
     width: width,
     height: height,
     mipmaps: mipmaps,
-    format: consts.PixelFormat.fromValue(format),
+    format: .fromValue(format),
   );
 }
 
-// ── RenderTexture ────────────────────────────────────────────────────────
-
-/// Immutable handle to a GPU framebuffer (FBO).
-///
-/// Use [UnloadRenderTexture] to release GPU memory when done.
 class RenderTexture2D {
   final int id;
-
-  /// Color buffer (texture attachment).
   final Texture texture;
-
-  /// Depth buffer (texture attachment).
   final Texture depth;
 
   const RenderTexture2D({
@@ -290,24 +397,18 @@ class RenderTexture2D {
   int get hashCode => id.hashCode;
 }
 
-extension RaylibRenderTextureToDart on raylib.RenderTexture {
-  RenderTexture2D toDart() => RenderTexture2D(
-    id: id,
-    texture: texture.toDart(),
-    depth: depth.toDart(),
-  );
+extension RaylibRenderTextureToDart on raw.RenderTexture {
+  RenderTexture2D toDart() =>
+      RenderTexture2D(id: id, texture: texture.toDart(), depth: depth.toDart());
 }
 
-// ── NPatchInfo ───────────────────────────────────────────────────────────
-
-/// Nine-patch image slice configuration.
 class NPatchInfo {
   final Rectangle source;
   final int left;
   final int top;
   final int right;
   final int bottom;
-  final consts.NPatchLayout layout;
+  final PixelFormat layout;
 
   NPatchInfo({
     required this.source,
@@ -319,11 +420,17 @@ class NPatchInfo {
   });
 }
 
-// ── GlyphInfo ────────────────────────────────────────────────────────────
+extension RaylibNPatchInfoToDart on raw.NPatchInfo {
+  NPatchInfo toDart() => NPatchInfo(
+    source: source.toDart(),
+    left: left,
+    top: top,
+    right: right,
+    bottom: bottom,
+    layout: .fromValue(layout),
+  );
+}
 
-/// Font glyph metrics for a single character.
-///
-/// The glyph bitmap image is omitted — use [Font.glyphRect] if needed.
 @immutable
 class GlyphInfo {
   /// Unicode codepoint.
@@ -340,18 +447,22 @@ class GlyphInfo {
   });
 }
 
-// ── Font ─────────────────────────────────────────────────────────────────
+extension RaylibGlyphInfoToDart on raw.GlyphInfo {
+  GlyphInfo toDart() => GlyphInfo(
+    value: value,
+    offsetX: offsetX,
+    offsetY: offsetY,
+    advanceX: advanceX,
+  );
+}
 
-/// Handle to a loaded font.
-///
-/// Created by LoadFont / LoadFontEx; released by [UnloadFont] or [dispose].
 class Font {
-  final Pointer<raylib.Font> ptr;
+  final Pointer<raw.Font> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Font>>(_free);
-  static void _free(Pointer<raylib.Font> ptr) {
-    raylib.UnloadFont(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Font>>(_free);
+  static void _free(Pointer<raw.Font> ptr) {
+    raw.UnloadFont(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -385,9 +496,9 @@ class Font {
   }
 }
 
-extension RaylibFontToDart on raylib.Font {
+extension RaylibFontToDart on raw.Font {
   Font toDart() {
-    final p = ffi.malloc<raylib.Font>();
+    final p = ffi.malloc<raw.Font>();
     p.ref
       ..baseSize = baseSize
       ..glyphCount = glyphCount
@@ -403,14 +514,12 @@ extension RaylibFontToDart on raylib.Font {
   }
 }
 
-// ── Camera2D ─────────────────────────────────────────────────────────────
-
 class Camera2D {
-  final Pointer<raylib.Camera2D> ptr;
+  final Pointer<raw.Camera2D> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Camera2D>>(_free);
-  static void _free(Pointer<raylib.Camera2D> ptr) => ffi.malloc.free(ptr);
+  static final _finalizer = Finalizer<Pointer<raw.Camera2D>>(_free);
+  static void _free(Pointer<raw.Camera2D> ptr) => ffi.malloc.free(ptr);
 
   Camera2D._(this.ptr) {
     _finalizer.attach(this, ptr, detach: this);
@@ -422,7 +531,7 @@ class Camera2D {
     double rotation = 0.0,
     double zoom = 1.0,
   }) {
-    final pointer = ffi.malloc<raylib.Camera2D>();
+    final pointer = ffi.malloc<raw.Camera2D>();
     return Camera2D._(pointer)
       ..offset = offset ?? .zero()
       ..target = target ?? .zero()
@@ -457,14 +566,12 @@ class Camera2D {
   }
 }
 
-// ── Camera3D ─────────────────────────────────────────────────────────────
-
 class Camera3D {
-  final Pointer<raylib.Camera3D> ptr;
+  final Pointer<raw.Camera3D> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Camera3D>>(_free);
-  static void _free(Pointer<raylib.Camera3D> ptr) => ffi.malloc.free(ptr);
+  static final _finalizer = Finalizer<Pointer<raw.Camera3D>>(_free);
+  static void _free(Pointer<raw.Camera3D> ptr) => ffi.malloc.free(ptr);
 
   Camera3D._(this.ptr) {
     _finalizer.attach(this, ptr, detach: this);
@@ -475,9 +582,9 @@ class Camera3D {
     Vector3? target,
     Vector3? up,
     double fovy = 45.0,
-    consts.CameraProjection projection = .perspective,
+    CameraProjection projection = .perspective,
   }) {
-    final pointer = ffi.malloc<raylib.Camera3D>();
+    final pointer = ffi.malloc<raw.Camera3D>();
     return Camera3D._(pointer)
       ..position = position ?? .zero()
       ..target = target ?? .zero()
@@ -510,8 +617,8 @@ class Camera3D {
   double get fovy => ptr.ref.fovy;
   set fovy(double value) => ptr.ref.fovy = value;
 
-  consts.CameraProjection get projection => .fromValue(ptr.ref.projection);
-  set projection(consts.CameraProjection value) => ptr.ref.projection = value.value;
+  CameraProjection get projection => .fromValue(ptr.ref.projection);
+  set projection(CameraProjection value) => ptr.ref.projection = value.value;
 
   @mustCallSuper
   void dispose() {
@@ -522,22 +629,104 @@ class Camera3D {
   }
 }
 
-// ── Shader ───────────────────────────────────────────────────────────────
-
-/// Handle to a GPU shader program.
-///
-/// Holds a stable native pointer so the raylib-managed [locs] array can be
-/// read/written without copying.
-///
-/// Call [UnloadShader] (or [dispose]) to release GPU resources.
-/// Must be called before the OpenGL context is destroyed.
-class Shader {
-  final Pointer<raylib.Shader> ptr;
+class Mesh {
+  final Pointer<raw.Mesh> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Shader>>(_free);
-  static void _free(Pointer<raylib.Shader> ptr) {
-    raylib.UnloadShader(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Mesh>>(_free);
+  static void _free(Pointer<raw.Mesh> ptr) {
+    raw.UnloadMesh(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Mesh._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  int get vertexCount => ptr.ref.vertexCount;
+  int get triangleCount => ptr.ref.triangleCount;
+
+  /// XYZ vertex positions; length = vertexCount × 3.
+  List<double> get vertices => ptr.ref.vertices == nullptr
+      ? []
+      : ptr.ref.vertices.asTypedList(vertexCount * 3);
+
+  /// UV texture coordinates; length = vertexCount × 2.
+  List<double> get texcoords => ptr.ref.texcoords == nullptr
+      ? []
+      : ptr.ref.texcoords.asTypedList(vertexCount * 2);
+
+  /// Secondary UV coords; length = vertexCount × 2.
+  List<double> get texcoords2 => ptr.ref.texcoords2 == nullptr
+      ? []
+      : ptr.ref.texcoords2.asTypedList(vertexCount * 2);
+
+  /// XYZ normals; length = vertexCount × 3.
+  List<double> get normals => ptr.ref.normals == nullptr
+      ? []
+      : ptr.ref.normals.asTypedList(vertexCount * 3);
+
+  /// XYZW tangents; length = vertexCount × 4.
+  List<double> get tangents => ptr.ref.tangents == nullptr
+      ? []
+      : ptr.ref.tangents.asTypedList(vertexCount * 4);
+
+  /// RGBA vertex colors; length = vertexCount × 4.
+  Uint8List? get colors => ptr.ref.colors == nullptr
+      ? null
+      : ptr.ref.colors.cast<Uint8>().asTypedList(vertexCount * 4);
+
+  /// Triangle indices; length = triangleCount × 3.
+  Uint16List? get indices => ptr.ref.indices == nullptr
+      ? null
+      : ptr.ref.indices.cast<Uint16>().asTypedList(triangleCount * 3);
+
+
+  /// OpenGL VAO id (0 if not uploaded).
+  int get vaoId => ptr.ref.vaoId;
+
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibMeshToDart on raw.Mesh {
+  Mesh toDart() {
+    final p = ffi.malloc<raw.Mesh>();
+    p.ref
+      ..vertexCount = vertexCount
+      ..triangleCount = triangleCount
+      ..vertices = vertices
+      ..texcoords = texcoords
+      ..texcoords2 = texcoords2
+      ..normals = normals
+      ..tangents = tangents
+      ..colors = colors
+      ..indices = indices
+      ..animVertices = animVertices
+      ..animNormals = animNormals
+      ..boneIds = boneIds
+      ..boneWeights = boneWeights
+      ..boneMatrices = boneMatrices
+      ..boneCount = boneCount
+      ..vaoId = vaoId
+      ..vboId = vboId;
+    return ._(p);
+  }
+}
+
+class Shader {
+  final Pointer<raw.Shader> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raw.Shader>>(_free);
+  static void _free(Pointer<raw.Shader> ptr) {
+    raw.UnloadShader(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -562,22 +751,16 @@ class Shader {
   }
 }
 
-extension RaylibShaderToDart on raylib.Shader {
+extension RaylibShaderToDart on raw.Shader {
   Shader toDart() {
-    final p = ffi.malloc<raylib.Shader>();
+    final p = ffi.malloc<raw.Shader>();
     p.ref
       ..id = id
       ..locs = locs;
-    return Shader._(p);
+    return ._(p);
   }
 }
 
-// ── MaterialMap ───────────────────────────────────────────────────────────
-
-/// Texture + color tint + scalar value for one material channel.
-///
-/// Access via [Material.operator[]] with a MATERIAL_MAP_* index.
-/// The color components (r, g, b, a) can be passed to `Color(r:r, g:g, b:b, a:a)`.
 @immutable
 class MaterialMap {
   final Texture texture;
@@ -597,19 +780,13 @@ class MaterialMap {
   });
 }
 
-// ── Material ──────────────────────────────────────────────────────────────
-
-/// Handle to a material (shader + texture maps + params).
-///
-/// Created by LoadMaterials / LoadMaterialDefault;
-/// released by [UnloadMaterial] or [dispose].
 class Material {
-  final Pointer<raylib.Material> ptr;
+  final Pointer<raw.Material> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Material>>(_free);
-  static void _free(Pointer<raylib.Material> ptr) {
-    raylib.UnloadMaterial(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Material>>(_free);
+  static void _free(Pointer<raw.Material> ptr) {
+    raw.UnloadMaterial(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -647,9 +824,9 @@ class Material {
   }
 }
 
-extension RaylibMaterialToDart on raylib.Material {
+extension RaylibMaterialToDart on raw.Material {
   Material toDart() {
-    final p = ffi.malloc<raylib.Material>();
+    final p = ffi.malloc<raw.Material>();
     p.ref.shader
       ..id = shader.id
       ..locs = shader.locs;
@@ -661,107 +838,13 @@ extension RaylibMaterialToDart on raylib.Material {
   }
 }
 
-// ── Mesh ──────────────────────────────────────────────────────────────────
-
-/// Handle to mesh vertex data (CPU + GPU).
-///
-/// Created by GenMesh* or LoadModel internally;
-/// released by [UnloadMesh] or [dispose].
-class Mesh {
-  final Pointer<raylib.Mesh> ptr;
-  bool _disposed = false;
-
-  static final _finalizer = Finalizer<Pointer<raylib.Mesh>>(_free);
-  static void _free(Pointer<raylib.Mesh> ptr) {
-    raylib.UnloadMesh(ptr.ref);
-    ffi.malloc.free(ptr);
-  }
-
-  Mesh._(this.ptr) {
-    _finalizer.attach(this, ptr, detach: this);
-  }
-
-  int get vertexCount => ptr.ref.vertexCount;
-  int get triangleCount => ptr.ref.triangleCount;
-
-  /// OpenGL VAO id (0 if not uploaded).
-  int get vaoId => ptr.ref.vaoId;
-
-  /// XYZ vertex positions; length = vertexCount × 3.
-  Float32List? get vertices => ptr.ref.vertices == nullptr
-      ? null : ptr.ref.vertices.asTypedList(vertexCount * 3);
-
-  /// UV texture coordinates; length = vertexCount × 2.
-  Float32List? get texcoords => ptr.ref.texcoords == nullptr
-      ? null : ptr.ref.texcoords.asTypedList(vertexCount * 2);
-
-  /// Secondary UV coords; length = vertexCount × 2.
-  Float32List? get texcoords2 => ptr.ref.texcoords2 == nullptr
-      ? null : ptr.ref.texcoords2.asTypedList(vertexCount * 2);
-
-  /// XYZ normals; length = vertexCount × 3.
-  Float32List? get normals => ptr.ref.normals == nullptr
-      ? null : ptr.ref.normals.asTypedList(vertexCount * 3);
-
-  /// XYZW tangents; length = vertexCount × 4.
-  Float32List? get tangents => ptr.ref.tangents == nullptr
-      ? null : ptr.ref.tangents.asTypedList(vertexCount * 4);
-
-  /// RGBA vertex colors; length = vertexCount × 4.
-  Uint8List? get colors => ptr.ref.colors == nullptr
-      ? null : ptr.ref.colors.cast<Uint8>().asTypedList(vertexCount * 4);
-
-  /// Triangle indices; length = triangleCount × 3.
-  Uint16List? get indices => ptr.ref.indices == nullptr
-      ? null : ptr.ref.indices.cast<Uint16>().asTypedList(triangleCount * 3);
-
-  @mustCallSuper
-  void dispose() {
-    if (_disposed) return;
-    _finalizer.detach(this);
-    _free(ptr);
-    _disposed = true;
-  }
-}
-
-extension RaylibMeshToDart on raylib.Mesh {
-  Mesh toDart() {
-    final p = ffi.malloc<raylib.Mesh>();
-    p.ref
-      ..vertexCount = vertexCount
-      ..triangleCount = triangleCount
-      ..vertices = vertices
-      ..texcoords = texcoords
-      ..texcoords2 = texcoords2
-      ..normals = normals
-      ..tangents = tangents
-      ..colors = colors
-      ..indices = indices
-      ..animVertices = animVertices
-      ..animNormals = animNormals
-      ..boneIds = boneIds
-      ..boneWeights = boneWeights
-      ..boneMatrices = boneMatrices
-      ..boneCount = boneCount
-      ..vaoId = vaoId
-      ..vboId = vboId;
-    return Mesh._(p);
-  }
-}
-
-// ── Model ─────────────────────────────────────────────────────────────────
-
-/// Handle to a 3D model (meshes + materials + bones).
-///
-/// Created by LoadModel / LoadModelFromMesh;
-/// released by [UnloadModel] or [dispose].
 class Model {
-  final Pointer<raylib.Model> ptr;
+  final Pointer<raw.Model> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Model>>(_free);
-  static void _free(Pointer<raylib.Model> ptr) {
-    raylib.UnloadModel(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Model>>(_free);
+  static void _free(Pointer<raw.Model> ptr) {
+    raw.UnloadModel(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -785,9 +868,9 @@ class Model {
   }
 }
 
-extension RaylibModelToDart on raylib.Model {
+extension RaylibModelToDart on raw.Model {
   Model toDart() {
-    final p = ffi.malloc<raylib.Model>();
+    final p = ffi.malloc<raw.Model>();
     _copyMatrix(p.ref.transform, transform);
     p.ref
       ..meshCount = meshCount
@@ -802,19 +885,13 @@ extension RaylibModelToDart on raylib.Model {
   }
 }
 
-// ── ModelAnimation ────────────────────────────────────────────────────────
-
-/// Handle to a skeletal animation.
-///
-/// Created by LoadModelAnimations;
-/// released by [UnloadModelAnimation] or [dispose].
 class ModelAnimation {
-  final Pointer<raylib.ModelAnimation> ptr;
+  final Pointer<raw.ModelAnimation> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.ModelAnimation>>(_free);
-  static void _free(Pointer<raylib.ModelAnimation> ptr) {
-    raylib.UnloadModelAnimation(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.ModelAnimation>>(_free);
+  static void _free(Pointer<raw.ModelAnimation> ptr) {
+    raw.UnloadModelAnimation(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -823,7 +900,7 @@ class ModelAnimation {
   }
 
   int get boneCount => ptr.ref.boneCount;
-  int get frameCount => ptr.ref.frameCount;
+  int get keyframeCount => ptr.ref.keyframeCount;
 
   String get name {
     final sb = StringBuffer();
@@ -846,24 +923,21 @@ class ModelAnimation {
   }
 }
 
-extension RaylibModelAnimationToDart on raylib.ModelAnimation {
+extension RaylibModelAnimationToDart on raw.ModelAnimation {
   ModelAnimation toDart() {
-    final p = ffi.malloc<raylib.ModelAnimation>();
+    final p = ffi.malloc<raw.ModelAnimation>();
     p.ref
       ..boneCount = boneCount
-      ..frameCount = frameCount
+      ..keyframeCount = keyframeCount
       ..bones = bones
       ..framePoses = framePoses;
     for (var i = 0; i < 32; i++) {
       p.ref.name[i] = name[i];
     }
-    return ModelAnimation._(p);
+    return ._(p);
   }
 }
 
-// ── Transform ────────────────────────────────────────────────────────────
-
-/// Vertex transformation data (translation, rotation, scale).
 @immutable
 class Transform {
   final Vector3 translation;
@@ -880,7 +954,7 @@ class Transform {
   });
 }
 
-extension TransformExt on raylib.Transform {
+extension TransformExt on raw.Transform {
   Transform toDart() => Transform(
     translation: translation.toDart(),
     rotation: Quaternion(rotation.x, rotation.y, rotation.z, rotation.w),
@@ -888,9 +962,6 @@ extension TransformExt on raylib.Transform {
   );
 }
 
-// ── BoneInfo ─────────────────────────────────────────────────────────────
-
-/// Skeletal bone definition.
 @immutable
 class BoneInfo {
   final String name;
@@ -901,7 +972,7 @@ class BoneInfo {
   const BoneInfo({required this.name, required this.parent});
 }
 
-extension BoneInfoExt on raylib.BoneInfo {
+extension BoneInfoExt on raw.BoneInfo {
   BoneInfo toDart() {
     final sb = StringBuffer();
     for (var i = 0; i < 32; i++) {
@@ -913,16 +984,10 @@ extension BoneInfoExt on raylib.BoneInfo {
   }
 }
 
-// ── Ray ──────────────────────────────────────────────────────────────────
-// via package:vector_math — Ray
-
-extension RayExtension on raylib.Ray {
+extension RayExtension on raw.Ray {
   Ray toDart() => .originDirection(position.toDart(), direction.toDart());
 }
 
-// ── RayCollision ─────────────────────────────────────────────────────────
-
-/// Result of a ray cast hit test.
 @immutable
 class RayCollision {
   final bool hit;
@@ -938,7 +1003,7 @@ class RayCollision {
   });
 }
 
-extension RayCollisionExt on raylib.RayCollision {
+extension RayCollisionExt on raw.RayCollision {
   RayCollision toDart() => RayCollision(
     hit: hit,
     distance: distance,
@@ -947,9 +1012,6 @@ extension RayCollisionExt on raylib.RayCollision {
   );
 }
 
-// ── BoundingBox ───────────────────────────────────────────────────────────
-
-/// Axis-aligned bounding box.
 @immutable
 class BoundingBox {
   final Vector3 min;
@@ -958,23 +1020,17 @@ class BoundingBox {
   const BoundingBox({required this.min, required this.max});
 }
 
-extension BoundingBoxExt on raylib.BoundingBox {
+extension BoundingBoxExt on raw.BoundingBox {
   BoundingBox toDart() => BoundingBox(min: min.toDart(), max: max.toDart());
 }
 
-// ── Wave ──────────────────────────────────────────────────────────────────
-
-/// Handle to audio wave data (PCM samples in RAM).
-///
-/// Created by LoadWave / LoadWaveFromMemory;
-/// released by [UnloadWave] or [dispose].
 class Wave {
-  final Pointer<raylib.Wave> ptr;
+  final Pointer<raw.Wave> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Wave>>(_free);
-  static void _free(Pointer<raylib.Wave> ptr) {
-    raylib.UnloadWave(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Wave>>(_free);
+  static void _free(Pointer<raw.Wave> ptr) {
+    raw.UnloadWave(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -1003,9 +1059,9 @@ class Wave {
   }
 }
 
-extension RaylibWaveToDart on raylib.Wave {
+extension RaylibWaveToDart on raw.Wave {
   Wave toDart() {
-    final p = ffi.malloc<raylib.Wave>();
+    final p = ffi.malloc<raw.Wave>();
     p.ref
       ..frameCount = frameCount
       ..sampleRate = sampleRate
@@ -1016,19 +1072,13 @@ extension RaylibWaveToDart on raylib.Wave {
   }
 }
 
-// ── AudioStream ───────────────────────────────────────────────────────────
-
-/// Handle to a raw audio stream (for streaming audio data).
-///
-/// Created by LoadAudioStream;
-/// released by [UnloadAudioStream] or [dispose].
 class AudioStream {
-  final Pointer<raylib.AudioStream> ptr;
+  final Pointer<raw.AudioStream> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.AudioStream>>(_free);
-  static void _free(Pointer<raylib.AudioStream> ptr) {
-    raylib.UnloadAudioStream(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.AudioStream>>(_free);
+  static void _free(Pointer<raw.AudioStream> ptr) {
+    raw.UnloadAudioStream(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -1049,9 +1099,9 @@ class AudioStream {
   }
 }
 
-extension RaylibAudioStreamToDart on raylib.AudioStream {
+extension RaylibAudioStreamToDart on raw.AudioStream {
   AudioStream toDart() {
-    final p = ffi.malloc<raylib.AudioStream>();
+    final p = ffi.malloc<raw.AudioStream>();
     p.ref
       ..buffer = buffer
       ..processor = processor
@@ -1062,19 +1112,13 @@ extension RaylibAudioStreamToDart on raylib.AudioStream {
   }
 }
 
-// ── Sound ─────────────────────────────────────────────────────────────────
-
-/// Handle to a loaded sound (short audio clip).
-///
-/// Created by LoadSound / LoadSoundFromWave;
-/// released by [UnloadSound] or [dispose].
 class Sound {
-  final Pointer<raylib.Sound> ptr;
+  final Pointer<raw.Sound> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Sound>>(_free);
-  static void _free(Pointer<raylib.Sound> ptr) {
-    raylib.UnloadSound(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Sound>>(_free);
+  static void _free(Pointer<raw.Sound> ptr) {
+    raw.UnloadSound(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -1096,9 +1140,9 @@ class Sound {
   }
 }
 
-extension RaylibSoundToDart on raylib.Sound {
+extension RaylibSoundToDart on raw.Sound {
   Sound toDart() {
-    final p = ffi.malloc<raylib.Sound>();
+    final p = ffi.malloc<raw.Sound>();
     p.ref
       ..stream.buffer = stream.buffer
       ..stream.processor = stream.processor
@@ -1110,19 +1154,13 @@ extension RaylibSoundToDart on raylib.Sound {
   }
 }
 
-// ── Music ─────────────────────────────────────────────────────────────────
-
-/// Handle to a music stream (long audio, streamed from file/memory).
-///
-/// Created by LoadMusicStream / LoadMusicStreamFromMemory;
-/// released by [UnloadMusicStream] or [dispose].
 class Music {
-  final Pointer<raylib.Music> ptr;
+  final Pointer<raw.Music> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.Music>>(_free);
-  static void _free(Pointer<raylib.Music> ptr) {
-    raylib.UnloadMusicStream(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.Music>>(_free);
+  static void _free(Pointer<raw.Music> ptr) {
+    raw.UnloadMusicStream(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -1146,9 +1184,9 @@ class Music {
   }
 }
 
-extension RaylibMusicToDart on raylib.Music {
+extension RaylibMusicToDart on raw.Music {
   Music toDart() {
-    final p = ffi.malloc<raylib.Music>();
+    final p = ffi.malloc<raw.Music>();
     p.ref
       ..stream.buffer = stream.buffer
       ..stream.processor = stream.processor
@@ -1163,11 +1201,6 @@ extension RaylibMusicToDart on raylib.Music {
   }
 }
 
-// ── VrDeviceInfo ─────────────────────────────────────────────────────────
-
-/// Immutable description of a VR headset's optical/display properties.
-///
-/// Pass to [LoadVrStereoConfig] to generate a [VrStereoConfig].
 class VrDeviceInfo {
   final int hResolution;
   final int vResolution;
@@ -1196,20 +1229,13 @@ class VrDeviceInfo {
   });
 }
 
-// ── VrStereoConfig ───────────────────────────────────────────────────────
-
-/// Handle to a VR stereo rendering configuration.
-///
-/// Created by [LoadVrStereoConfig]; released by [UnloadVrStereoConfig] or
-/// [dispose]. The Finalizer ensures the native config is freed even if
-/// [dispose] is never called explicitly.
 class VrStereoConfig {
-  final Pointer<raylib.VrStereoConfig> ptr;
+  final Pointer<raw.VrStereoConfig> ptr;
   bool _disposed = false;
 
-  static final _finalizer = Finalizer<Pointer<raylib.VrStereoConfig>>(_free);
-  static void _free(Pointer<raylib.VrStereoConfig> ptr) {
-    raylib.UnloadVrStereoConfig(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.VrStereoConfig>>(_free);
+  static void _free(Pointer<raw.VrStereoConfig> ptr) {
+    raw.UnloadVrStereoConfig(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -1226,26 +1252,50 @@ class VrStereoConfig {
   }
 }
 
-void _copyMatrix(raylib.Matrix dst, raylib.Matrix src) {
+void _copyMatrix(raw.Matrix dst, raw.Matrix src) {
   dst
-    ..m0  = src.m0  ..m4  = src.m4  ..m8  = src.m8  ..m12 = src.m12
-    ..m1  = src.m1  ..m5  = src.m5  ..m9  = src.m9  ..m13 = src.m13
-    ..m2  = src.m2  ..m6  = src.m6  ..m10 = src.m10 ..m14 = src.m14
-    ..m3  = src.m3  ..m7  = src.m7  ..m11 = src.m11 ..m15 = src.m15;
+    ..m0 = src.m0
+    ..m4 = src.m4
+    ..m8 = src.m8
+    ..m12 = src.m12
+    ..m1 = src.m1
+    ..m5 = src.m5
+    ..m9 = src.m9
+    ..m13 = src.m13
+    ..m2 = src.m2
+    ..m6 = src.m6
+    ..m10 = src.m10
+    ..m14 = src.m14
+    ..m3 = src.m3
+    ..m7 = src.m7
+    ..m11 = src.m11
+    ..m15 = src.m15;
 }
 
-void _copyMatrix4(raylib.Matrix dst, Matrix4 src) {
+void _copyMatrix4(raw.Matrix dst, Matrix4 src) {
   final s = src.storage;
   dst
-    ..m0  = s[0]  ..m4  = s[4]  ..m8  = s[8]  ..m12 = s[12]
-    ..m1  = s[1]  ..m5  = s[5]  ..m9  = s[9]  ..m13 = s[13]
-    ..m2  = s[2]  ..m6  = s[6]  ..m10 = s[10] ..m14 = s[14]
-    ..m3  = s[3]  ..m7  = s[7]  ..m11 = s[11] ..m15 = s[15];
+    ..m0 = s[0]
+    ..m4 = s[4]
+    ..m8 = s[8]
+    ..m12 = s[12]
+    ..m1 = s[1]
+    ..m5 = s[5]
+    ..m9 = s[9]
+    ..m13 = s[13]
+    ..m2 = s[2]
+    ..m6 = s[6]
+    ..m10 = s[10]
+    ..m14 = s[14]
+    ..m3 = s[3]
+    ..m7 = s[7]
+    ..m11 = s[11]
+    ..m15 = s[15];
 }
 
-extension RaylibVrStereoConfigToDart on raylib.VrStereoConfig {
+extension RaylibVrStereoConfigToDart on raw.VrStereoConfig {
   VrStereoConfig toDart() {
-    final p = ffi.malloc<raylib.VrStereoConfig>();
+    final p = ffi.malloc<raw.VrStereoConfig>();
     _copyMatrix(p.ref.projection[0], projection[0]);
     _copyMatrix(p.ref.projection[1], projection[1]);
     _copyMatrix(p.ref.viewOffset[0], viewOffset[0]);
@@ -1262,17 +1312,6 @@ extension RaylibVrStereoConfigToDart on raylib.VrStereoConfig {
   }
 }
 
-// ── FilePathList ──────────────────────────────────────────────────────────
-// not yet wrapped (LoadDirectoryFiles/LoadDirectoryFilesEx already return
-// List<String> directly — no Dart wrapper class needed)
-
-// ── AutomationEvent ──────────────────────────────────────────────────────
-
-/// A single recorded input event.
-///
-/// [frame] is the frame the event occurred on.
-/// [type] is the event type (internal to raylib, not a public enum).
-/// [params] is a fixed 4-element list of event parameters.
 @immutable
 class AutomationEvent {
   final int frame;
@@ -1288,20 +1327,13 @@ class AutomationEvent {
   }) : assert(params.length == 4);
 }
 
-// ── AutomationEventList ───────────────────────────────────────────────────
-
-/// Handle to a recorded automation event list.
-///
-/// Created by [LoadAutomationEventList]; released by
-/// [UnloadAutomationEventList] or [dispose].
 class AutomationEventList {
-  final Pointer<raylib.AutomationEventList> ptr;
+  final Pointer<raw.AutomationEventList> ptr;
   bool _disposed = false;
 
-  static final _finalizer =
-      Finalizer<Pointer<raylib.AutomationEventList>>(_free);
-  static void _free(Pointer<raylib.AutomationEventList> ptr) {
-    raylib.UnloadAutomationEventList(ptr.ref);
+  static final _finalizer = Finalizer<Pointer<raw.AutomationEventList>>(_free);
+  static void _free(Pointer<raw.AutomationEventList> ptr) {
+    raw.UnloadAutomationEventList(ptr.ref);
     ffi.malloc.free(ptr);
   }
 
@@ -1330,9 +1362,9 @@ class AutomationEventList {
   }
 }
 
-extension RaylibAutomationEventListToDart on raylib.AutomationEventList {
+extension RaylibAutomationEventListToDart on raw.AutomationEventList {
   AutomationEventList toDart() {
-    final p = ffi.malloc<raylib.AutomationEventList>();
+    final p = ffi.malloc<raw.AutomationEventList>();
     p.ref
       ..capacity = capacity
       ..count = count
@@ -1341,20 +1373,18 @@ extension RaylibAutomationEventListToDart on raylib.AutomationEventList {
   }
 }
 
-// ── ArenaExt ─────────────────────────────────────────────────────────────
-
 extension ArenaExt on ffi.Arena {
-  Pointer<raylib.Vector2> vector2(Vector2 value) {
-    final ptr = this<raylib.Vector2>();
+  Pointer<raw.Vector2> vector2(Vector2 value) {
+    final ptr = this<raw.Vector2>();
     ptr.ref
       ..x = value.x
       ..y = value.y;
     return ptr;
   }
 
-  Pointer<raylib.Vector2> vector2s(List<Vector2> value) {
+  Pointer<raw.Vector2> vector2s(List<Vector2> value) {
     final size = value.length;
-    final ptrs = this<raylib.Vector2>(size);
+    final ptrs = this<raw.Vector2>(size);
     for (var i = 0; i < size; i++) {
       ptrs[i]
         ..x = value[i].x
@@ -1363,8 +1393,8 @@ extension ArenaExt on ffi.Arena {
     return ptrs;
   }
 
-  Pointer<raylib.Vector3> vector3(Vector3 value) {
-    final ptr = this<raylib.Vector3>();
+  Pointer<raw.Vector3> vector3(Vector3 value) {
+    final ptr = this<raw.Vector3>();
     ptr.ref
       ..x = value.x
       ..y = value.y
@@ -1372,9 +1402,9 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.Vector3> vector3s(List<Vector3> value) {
+  Pointer<raw.Vector3> vector3s(List<Vector3> value) {
     final size = value.length;
-    final ptrs = this<raylib.Vector3>(size);
+    final ptrs = this<raw.Vector3>(size);
     for (var i = 0; i < size; i++) {
       ptrs[i]
         ..x = value[i].x
@@ -1384,8 +1414,8 @@ extension ArenaExt on ffi.Arena {
     return ptrs;
   }
 
-  Pointer<raylib.Ray> ray(Ray value) {
-    final ptr = this<raylib.Ray>();
+  Pointer<raw.Ray> ray(Ray value) {
+    final ptr = this<raw.Ray>();
     ptr.ref
       ..position.x = value.origin.x
       ..position.y = value.origin.y
@@ -1396,8 +1426,8 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.BoundingBox> boundingBox(BoundingBox value) {
-    final ptr = this<raylib.BoundingBox>();
+  Pointer<raw.BoundingBox> boundingBox(BoundingBox value) {
+    final ptr = this<raw.BoundingBox>();
     ptr.ref
       ..min.x = value.min.x
       ..min.y = value.min.y
@@ -1408,8 +1438,8 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.Texture> texture(Texture value) {
-    final ptr = this<raylib.Texture>();
+  Pointer<raw.Texture> texture(Texture value) {
+    final ptr = this<raw.Texture>();
     ptr.ref
       ..id = value.id
       ..width = value.width
@@ -1419,8 +1449,8 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.RenderTexture> renderTexture(RenderTexture2D value) {
-    final ptr = this<raylib.RenderTexture>();
+  Pointer<raw.RenderTexture> renderTexture(RenderTexture2D value) {
+    final ptr = this<raw.RenderTexture>();
     ptr.ref
       ..id = value.id
       ..texture.id = value.texture.id
@@ -1436,8 +1466,8 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.NPatchInfo> nPatchInfo(NPatchInfo value) {
-    final ptr = this<raylib.NPatchInfo>();
+  Pointer<raw.NPatchInfo> nPatchInfo(NPatchInfo value) {
+    final ptr = this<raw.NPatchInfo>();
     ptr.ref
       ..source.x = value.source.x
       ..source.y = value.source.y
@@ -1451,24 +1481,24 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.Matrix> matrix4(Matrix4 value) {
-    final ptr = this<raylib.Matrix>();
+  Pointer<raw.Matrix> matrix4(Matrix4 value) {
+    final ptr = this<raw.Matrix>();
     _copyMatrix4(ptr.ref, value);
     return ptr;
   }
 
-  Pointer<raylib.Matrix> matrix4s(List<Matrix4> values) {
-    final ptr = this<raylib.Matrix>(values.length);
+  Pointer<raw.Matrix> matrix4s(List<Matrix4> values) {
+    final ptr = this<raw.Matrix>(values.length);
     for (var i = 0; i < values.length; i++) {
       _copyMatrix4((ptr + i).ref, values[i]);
     }
     return ptr;
   }
 
-  Pointer<raylib.Shader> shader(Shader value) => value.ptr;
+  Pointer<raw.Shader> shader(Shader value) => value.ptr;
 
-  Pointer<raylib.VrDeviceInfo> vrDeviceInfo(VrDeviceInfo value) {
-    final ptr = this<raylib.VrDeviceInfo>();
+  Pointer<raw.VrDeviceInfo> vrDeviceInfo(VrDeviceInfo value) {
+    final ptr = this<raw.VrDeviceInfo>();
     ptr.ref
       ..hResolution = value.hResolution
       ..vResolution = value.vResolution
@@ -1484,8 +1514,8 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.AutomationEvent> automationEvent(AutomationEvent value) {
-    final ptr = this<raylib.AutomationEvent>();
+  Pointer<raw.AutomationEvent> automationEvent(AutomationEvent value) {
+    final ptr = this<raw.AutomationEvent>();
     ptr.ref.frame = value.frame;
     ptr.ref.type = value.type;
     for (var i = 0; i < 4; i++) {
@@ -1494,5 +1524,5 @@ extension ArenaExt on ffi.Arena {
     return ptr;
   }
 
-  Pointer<raylib.Image> image(Image value) => value.ptr;
+  Pointer<raw.Image> image(Image value) => value.ptr;
 }

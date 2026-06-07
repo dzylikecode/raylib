@@ -6,9 +6,9 @@ import 'package:meta/meta.dart';
 
 import 'src/raylib.g.dart' as raylib;
 
-final _finalizer = Finalizer<Pointer<raylib.Color>>(ffi.malloc.free);
 
 class Color {
+  static final _finalizer = Finalizer<Pointer<raylib.Color>>(ffi.malloc.free);
   final Pointer<raylib.Color> ptr;
   bool _disposed = false;
 
@@ -78,7 +78,7 @@ class Color {
 
 Color Fade(Color color, double alpha) {
   final c = raylib.Fade(color.ptr.ref, alpha);
-  return Color.fromRGBA(c.r, c.g, c.b, c.a);
+  return .fromRGBA(c.r, c.g, c.b, c.a);
 }
 
 @Deprecated('Use .lightGray instead')
