@@ -261,7 +261,7 @@ void MemFree(int ptr) => proxy.MemFree(ptr);
 
 // File system management functions
 /// Load file data as byte array (read)
-String LoadFileData(String fileName, List<int> dataSize) => proxy.LoadFileData(fileName, dataSize);
+Uint8List LoadFileData(String fileName) => proxy.LoadFileData(fileName);
 /// Unload file data allocated by LoadFileData()
 void UnloadFileData(String data) => raw.UnloadFileData(data);
 /// Save data to file from byte array (write), returns true on success

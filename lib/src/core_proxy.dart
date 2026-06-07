@@ -334,32 +334,30 @@ void MemFree(int ptr) => 0;
 
 // ── File I/O ───────────────────────────────────────────────────────────
 
-Uint8List LoadFileData(String fileName) {
-  return ffi.using((arena) {
-    final sizePtr = arena<Int>();
-    final result = raw.LoadFileData(
-      fileName.toNativeUtf8(allocator: arena).cast(),
-      sizePtr,
-    );
-    final bytes = Uint8List.fromList(
-      result.cast<Uint8>().asTypedList(sizePtr.value),
-    );
-    raw.UnloadFileData(result);
-    return bytes;
-  });
-}
+Uint8List LoadFileData(String fileName) => ffi.using((arena) {
+  final sizePtr = arena<Int>();
+  final result = raw.LoadFileData(
+    fileName.toNativeUtf8(allocator: arena).cast(),
+    sizePtr,
+  );
+  final bytes = Uint8List.fromList(
+    result.cast<Uint8>().asTypedList(sizePtr.value),
+  );
+  raw.UnloadFileData(result);
+  return bytes;
+});
 
-bool SaveFileData(String fileName, Uint8List data) {
-  return ffi.using((arena) {
-    final ptr = arena<Uint8>(data.length);
-    ptr.asTypedList(data.length).setAll(0, data);
-    return raw.SaveFileData(
-      fileName.toNativeUtf8(allocator: arena).cast(),
-      ptr.cast(),
-      data.length,
-    );
-  });
-}
+void UnloadFileData(Uint8List data) => 0;
+
+bool SaveFileData(String fileName, Uint8List data) => ffi.using((arena) {
+  final ptr = arena<Uint8>(data.length);
+  ptr.asTypedList(data.length).setAll(0, data);
+  return raw.SaveFileData(
+    fileName.toNativeUtf8(allocator: arena).cast(),
+    ptr.cast(),
+    data.length,
+  );
+});
 
 bool ExportDataAsCode(Uint8List data, String fileName) {
   return ffi.using((arena) {
@@ -561,7 +559,6 @@ void SetSaveFileTextCallback([SaveFileTextCallback? callback]) {
     _useDartSaveFileTextCallback = true;
   }
 }
-
 
 bool FileExists(String fileName) => ffi.using((arena) {
   return raw.FileExists(fileName.toNativeUtf8(allocator: arena).cast());
