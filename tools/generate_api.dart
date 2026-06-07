@@ -44,6 +44,39 @@ import 'dart:typed_data';
       'ComputeMD5': 'Uint8List ComputeMD5(Uint8List data)',
       'ComputeSHA1': 'Uint8List ComputeSHA1(Uint8List data)',
       'ComputeSHA256': 'Uint8List ComputeSHA256(Uint8List data)',
+      'SetAutomationEventList':
+          'void SetAutomationEventList(AutomationEventList list)',
+      'IsKeyPressed': 'bool IsKeyPressed(KeyboardKey key)',
+      'IsKeyPressedRepeat': 'bool IsKeyPressedRepeat(KeyboardKey key)',
+      'IsKeyDown': 'bool IsKeyDown(KeyboardKey key)',
+      'IsKeyReleased': 'bool IsKeyReleased(KeyboardKey key)',
+      'IsKeyUp': 'bool IsKeyUp(KeyboardKey key)',
+      'GetKeyPressed': 'KeyboardKey GetKeyPressed()',
+      'GetKeyName': 'String GetKeyName(KeyboardKey key)',
+      'SetExitKey': 'void SetExitKey(KeyboardKey key)',
+      'IsGamepadButtonPressed':
+          'bool IsGamepadButtonPressed(int gamepad, GamepadButton button)',
+      'IsGamepadButtonDown':
+          'bool IsGamepadButtonDown(int gamepad, GamepadButton button)',
+      'IsGamepadButtonReleased':
+          'bool IsGamepadButtonReleased(int gamepad, GamepadButton button)',
+      'IsGamepadButtonUp':
+          'bool IsGamepadButtonUp(int gamepad, GamepadButton button)',
+      'GetGamepadButtonPressed': 'GamepadButton GetGamepadButtonPressed()',
+      'GetGamepadAxisMovement':
+          'double GetGamepadAxisMovement(int gamepad, GamepadAxis axis)',
+      'IsMouseButtonPressed': 'bool IsMouseButtonPressed(MouseButton button)',
+      'IsMouseButtonDown': 'bool IsMouseButtonDown(MouseButton button)',
+      'IsMouseButtonReleased':
+          'bool IsMouseButtonReleased(MouseButton button)',
+      'IsMouseButtonUp': 'bool IsMouseButtonUp(MouseButton button)',
+      'SetMouseCursor': 'void SetMouseCursor(MouseCursor cursor)',
+      'SetGesturesEnabled': 'void SetGesturesEnabled(Gesture gesture)',
+      'IsGestureDetected': 'bool IsGestureDetected(Gesture gesture)',
+      'GetGestureDetected': 'Gesture GetGestureDetected()',
+      'UpdateCamera': 'void UpdateCamera(Camera3D camera, CameraMode mode)',
+      'UpdateCameraPro':
+          'void UpdateCameraPro(Camera3D camera, Vector3 movement, Vector3 rotation, double zoom)',
     },
   ),
 };

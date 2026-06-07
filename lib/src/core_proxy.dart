@@ -852,6 +852,8 @@ bool IsKeyDown(KeyboardKey key) => raw.IsKeyDown(key.value);
 bool IsKeyReleased(KeyboardKey key) => raw.IsKeyReleased(key.value);
 bool IsKeyUp(KeyboardKey key) => raw.IsKeyUp(key.value);
 KeyboardKey GetKeyPressed() => .fromValue(raw.GetKeyPressed());
+String GetKeyName(KeyboardKey key) =>
+    raw.GetKeyName(key.value).cast<ffi.Utf8>().toDartString();
 void SetExitKey(KeyboardKey key) => raw.SetExitKey(key.value);
 
 // ── Gamepad ─────────────────────────────────────────────────────────────

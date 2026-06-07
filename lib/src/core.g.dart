@@ -373,7 +373,7 @@ void UnloadAutomationEventList(AutomationEventList list) => proxy.UnloadAutomati
 /// Export automation events list as text file
 bool ExportAutomationEventList(AutomationEventList list, String fileName) => proxy.ExportAutomationEventList(list, fileName);
 /// Set automation event list to record to
-void SetAutomationEventList(List<AutomationEventList> list) => proxy.SetAutomationEventList(list);
+void SetAutomationEventList(AutomationEventList list) => proxy.SetAutomationEventList(list);
 /// Set automation event internal base frame to start recording
 void SetAutomationEventBaseFrame(int frame) => raw.SetAutomationEventBaseFrame(frame);
 /// Start recording automation events (AutomationEventList must be set)
@@ -389,23 +389,23 @@ void PlayAutomationEvent(AutomationEvent event) => proxy.PlayAutomationEvent(eve
 
 // Input-related functions: keyboard
 /// Check if a key has been pressed once
-bool IsKeyPressed(int key) => proxy.IsKeyPressed(key);
+bool IsKeyPressed(KeyboardKey key) => proxy.IsKeyPressed(key);
 /// Check if a key has been pressed again
-bool IsKeyPressedRepeat(int key) => proxy.IsKeyPressedRepeat(key);
+bool IsKeyPressedRepeat(KeyboardKey key) => proxy.IsKeyPressedRepeat(key);
 /// Check if a key is being pressed
-bool IsKeyDown(int key) => proxy.IsKeyDown(key);
+bool IsKeyDown(KeyboardKey key) => proxy.IsKeyDown(key);
 /// Check if a key has been released once
-bool IsKeyReleased(int key) => proxy.IsKeyReleased(key);
+bool IsKeyReleased(KeyboardKey key) => proxy.IsKeyReleased(key);
 /// Check if a key is NOT being pressed
-bool IsKeyUp(int key) => proxy.IsKeyUp(key);
+bool IsKeyUp(KeyboardKey key) => proxy.IsKeyUp(key);
 /// Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
-int GetKeyPressed() => proxy.GetKeyPressed();
+KeyboardKey GetKeyPressed() => proxy.GetKeyPressed();
 /// Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
 int GetCharPressed() => raw.GetCharPressed();
 /// Get name of a QWERTY key on the current keyboard layout (eg returns string 'q' for KEY_A on an AZERTY keyboard)
-String GetKeyName(int key) => raw.GetKeyName(key);
+String GetKeyName(KeyboardKey key) => proxy.GetKeyName(key);
 /// Set a custom key to exit program (default is ESC)
-void SetExitKey(int key) => proxy.SetExitKey(key);
+void SetExitKey(KeyboardKey key) => proxy.SetExitKey(key);
 
 // Input-related functions: gamepads
 /// Check if a gamepad is available
@@ -413,19 +413,19 @@ bool IsGamepadAvailable(int gamepad) => raw.IsGamepadAvailable(gamepad);
 /// Get gamepad internal name id
 String GetGamepadName(int gamepad) => proxy.GetGamepadName(gamepad);
 /// Check if a gamepad button has been pressed once
-bool IsGamepadButtonPressed(int gamepad, int button) => proxy.IsGamepadButtonPressed(gamepad, button);
+bool IsGamepadButtonPressed(int gamepad, GamepadButton button) => proxy.IsGamepadButtonPressed(gamepad, button);
 /// Check if a gamepad button is being pressed
-bool IsGamepadButtonDown(int gamepad, int button) => proxy.IsGamepadButtonDown(gamepad, button);
+bool IsGamepadButtonDown(int gamepad, GamepadButton button) => proxy.IsGamepadButtonDown(gamepad, button);
 /// Check if a gamepad button has been released once
-bool IsGamepadButtonReleased(int gamepad, int button) => proxy.IsGamepadButtonReleased(gamepad, button);
+bool IsGamepadButtonReleased(int gamepad, GamepadButton button) => proxy.IsGamepadButtonReleased(gamepad, button);
 /// Check if a gamepad button is NOT being pressed
-bool IsGamepadButtonUp(int gamepad, int button) => proxy.IsGamepadButtonUp(gamepad, button);
+bool IsGamepadButtonUp(int gamepad, GamepadButton button) => proxy.IsGamepadButtonUp(gamepad, button);
 /// Get the last gamepad button pressed
-int GetGamepadButtonPressed() => proxy.GetGamepadButtonPressed();
+GamepadButton GetGamepadButtonPressed() => proxy.GetGamepadButtonPressed();
 /// Get axis count for a gamepad
 int GetGamepadAxisCount(int gamepad) => raw.GetGamepadAxisCount(gamepad);
 /// Get movement value for a gamepad axis
-double GetGamepadAxisMovement(int gamepad, int axis) => proxy.GetGamepadAxisMovement(gamepad, axis);
+double GetGamepadAxisMovement(int gamepad, GamepadAxis axis) => proxy.GetGamepadAxisMovement(gamepad, axis);
 /// Set internal gamepad mappings (SDL_GameControllerDB)
 int SetGamepadMappings(String mappings) => proxy.SetGamepadMappings(mappings);
 /// Set gamepad vibration for both motors (duration in seconds)
@@ -433,13 +433,13 @@ void SetGamepadVibration(int gamepad, double leftMotor, double rightMotor, doubl
 
 // Input-related functions: mouse
 /// Check if a mouse button has been pressed once
-bool IsMouseButtonPressed(int button) => proxy.IsMouseButtonPressed(button);
+bool IsMouseButtonPressed(MouseButton button) => proxy.IsMouseButtonPressed(button);
 /// Check if a mouse button is being pressed
-bool IsMouseButtonDown(int button) => proxy.IsMouseButtonDown(button);
+bool IsMouseButtonDown(MouseButton button) => proxy.IsMouseButtonDown(button);
 /// Check if a mouse button has been released once
-bool IsMouseButtonReleased(int button) => proxy.IsMouseButtonReleased(button);
+bool IsMouseButtonReleased(MouseButton button) => proxy.IsMouseButtonReleased(button);
 /// Check if a mouse button is NOT being pressed
-bool IsMouseButtonUp(int button) => proxy.IsMouseButtonUp(button);
+bool IsMouseButtonUp(MouseButton button) => proxy.IsMouseButtonUp(button);
 /// Get mouse position X
 int GetMouseX() => raw.GetMouseX();
 /// Get mouse position Y
@@ -459,7 +459,7 @@ double GetMouseWheelMove() => raw.GetMouseWheelMove();
 /// Get mouse wheel movement for both X and Y
 Vector2 GetMouseWheelMoveV() => proxy.GetMouseWheelMoveV();
 /// Set mouse cursor
-void SetMouseCursor(int cursor) => proxy.SetMouseCursor(cursor);
+void SetMouseCursor(MouseCursor cursor) => proxy.SetMouseCursor(cursor);
 
 // Input-related functions: touch
 /// Get touch position X for touch point 0 (relative to screen size)
@@ -477,11 +477,11 @@ int GetTouchPointCount() => raw.GetTouchPointCount();
 // Gestures and Touch Handling Functions (Module: rgestures)
 //------------------------------------------------------------------------------------
 /// Enable a set of gestures using flags
-void SetGesturesEnabled(int flags) => proxy.SetGesturesEnabled(flags);
+void SetGesturesEnabled(Gesture gesture) => proxy.SetGesturesEnabled(gesture);
 /// Check if a gesture have been detected
-bool IsGestureDetected(int gesture) => proxy.IsGestureDetected(gesture);
+bool IsGestureDetected(Gesture gesture) => proxy.IsGestureDetected(gesture);
 /// Get latest detected gesture
-int GetGestureDetected() => proxy.GetGestureDetected();
+Gesture GetGestureDetected() => proxy.GetGestureDetected();
 /// Get gesture hold time in seconds
 double GetGestureHoldDuration() => raw.GetGestureHoldDuration();
 /// Get gesture drag vector
@@ -497,8 +497,8 @@ double GetGesturePinchAngle() => raw.GetGesturePinchAngle();
 // Camera System Functions (Module: rcamera)
 //------------------------------------------------------------------------------------
 /// Update camera position for selected mode
-void UpdateCamera(List<Camera> camera, int mode) => proxy.UpdateCamera(camera, mode);
+void UpdateCamera(Camera3D camera, CameraMode mode) => proxy.UpdateCamera(camera, mode);
 /// Update camera movement/rotation
-void UpdateCameraPro(List<Camera> camera, Vector3 movement, Vector3 rotation, double zoom) => proxy.UpdateCameraPro(camera, movement, rotation, zoom);
+void UpdateCameraPro(Camera3D camera, Vector3 movement, Vector3 rotation, double zoom) => proxy.UpdateCameraPro(camera, movement, rotation, zoom);
 
 
