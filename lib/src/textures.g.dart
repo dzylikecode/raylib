@@ -2,255 +2,257 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 import 'raylib.g.dart' as raw;
 import 'textures_proxy.dart' as proxy;
+import 'dart:typed_data';
+import 'raylib_const.dart';
 import 'structs.dart';
 
 // Image loading functions
 // NOTE: These functions do not require GPU access
 /// Load image from file into CPU memory (RAM)
-Image LoadImage(String fileName) => raw.LoadImage(fileName);
+Image LoadImage(String fileName) => proxy.LoadImage(fileName);
 /// Load image from RAW file data
-Image LoadImageRaw(String fileName, int width, int height, int format, int headerSize) => raw.LoadImageRaw(fileName, width, height, format, headerSize);
+Image LoadImageRaw(String fileName, int width, int height, PixelFormat format, int headerSize) => proxy.LoadImageRaw(fileName, width, height, format, headerSize);
 /// Load image sequence from file (frames appended to image.data)
-Image LoadImageAnim(String fileName, List<int> frames) => raw.LoadImageAnim(fileName, frames);
+Image LoadImageAnim(String fileName, List<int> frames) => proxy.LoadImageAnim(fileName, frames);
 /// Load image sequence from memory buffer
-Image LoadImageAnimFromMemory(String fileType, String fileData, int dataSize, List<int> frames) => raw.LoadImageAnimFromMemory(fileType, fileData, dataSize, frames);
+Image LoadImageAnimFromMemory(String fileType, Uint8List fileData, List<int> frames) => proxy.LoadImageAnimFromMemory(fileType, fileData, frames);
 /// Load image from memory buffer, fileType refers to extension: i.e. '.png'
-Image LoadImageFromMemory(String fileType, String fileData, int dataSize) => raw.LoadImageFromMemory(fileType, fileData, dataSize);
+Image LoadImageFromMemory(String fileType, Uint8List fileData) => proxy.LoadImageFromMemory(fileType, fileData);
 /// Load image from GPU texture data
-Image LoadImageFromTexture(Texture2D texture) => raw.LoadImageFromTexture(texture);
+Image LoadImageFromTexture(Texture2D texture) => proxy.LoadImageFromTexture(texture);
 /// Load image from screen buffer and (screenshot)
-Image LoadImageFromScreen() => raw.LoadImageFromScreen();
+Image LoadImageFromScreen() => proxy.LoadImageFromScreen();
 /// Check if an image is valid (data and parameters)
-bool IsImageValid(Image image) => raw.IsImageValid(image);
+bool IsImageValid(Image image) => proxy.IsImageValid(image);
 /// Unload image from CPU memory (RAM)
-void UnloadImage(Image image) => raw.UnloadImage(image);
+void UnloadImage(Image image) => proxy.UnloadImage(image);
 /// Export image data to file, returns true on success
-bool ExportImage(Image image, String fileName) => raw.ExportImage(image, fileName);
+bool ExportImage(Image image, String fileName) => proxy.ExportImage(image, fileName);
 /// Export image to memory buffer, memory must be MemFree()
-String ExportImageToMemory(Image image, String fileType, List<int> fileSize) => raw.ExportImageToMemory(image, fileType, fileSize);
+Uint8List ExportImageToMemory(Image image, String fileType) => proxy.ExportImageToMemory(image, fileType);
 /// Export image as code file defining an array of bytes, returns true on success
-bool ExportImageAsCode(Image image, String fileName) => raw.ExportImageAsCode(image, fileName);
+bool ExportImageAsCode(Image image, String fileName) => proxy.ExportImageAsCode(image, fileName);
 
 // Image generation functions
 /// Generate image: plain color
-Image GenImageColor(int width, int height, Color color) => raw.GenImageColor(width, height, color);
+Image GenImageColor(int width, int height, Color color) => proxy.GenImageColor(width, height, color);
 /// Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient
-Image GenImageGradientLinear(int width, int height, int direction, Color start, Color end) => raw.GenImageGradientLinear(width, height, direction, start, end);
+Image GenImageGradientLinear(int width, int height, int direction, Color start, Color end) => proxy.GenImageGradientLinear(width, height, direction, start, end);
 /// Generate image: radial gradient
-Image GenImageGradientRadial(int width, int height, double density, Color inner, Color outer) => raw.GenImageGradientRadial(width, height, density, inner, outer);
+Image GenImageGradientRadial(int width, int height, double density, Color inner, Color outer) => proxy.GenImageGradientRadial(width, height, density, inner, outer);
 /// Generate image: square gradient
-Image GenImageGradientSquare(int width, int height, double density, Color inner, Color outer) => raw.GenImageGradientSquare(width, height, density, inner, outer);
+Image GenImageGradientSquare(int width, int height, double density, Color inner, Color outer) => proxy.GenImageGradientSquare(width, height, density, inner, outer);
 /// Generate image: checked
-Image GenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2) => raw.GenImageChecked(width, height, checksX, checksY, col1, col2);
+Image GenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2) => proxy.GenImageChecked(width, height, checksX, checksY, col1, col2);
 /// Generate image: white noise
-Image GenImageWhiteNoise(int width, int height, double factor) => raw.GenImageWhiteNoise(width, height, factor);
+Image GenImageWhiteNoise(int width, int height, double factor) => proxy.GenImageWhiteNoise(width, height, factor);
 /// Generate image: perlin noise
-Image GenImagePerlinNoise(int width, int height, int offsetX, int offsetY, double scale) => raw.GenImagePerlinNoise(width, height, offsetX, offsetY, scale);
+Image GenImagePerlinNoise(int width, int height, int offsetX, int offsetY, double scale) => proxy.GenImagePerlinNoise(width, height, offsetX, offsetY, scale);
 /// Generate image: cellular algorithm, bigger tileSize means bigger cells
-Image GenImageCellular(int width, int height, int tileSize) => raw.GenImageCellular(width, height, tileSize);
+Image GenImageCellular(int width, int height, int tileSize) => proxy.GenImageCellular(width, height, tileSize);
 /// Generate image: grayscale image from text data
-Image GenImageText(int width, int height, String text) => raw.GenImageText(width, height, text);
+Image GenImageText(int width, int height, String text) => proxy.GenImageText(width, height, text);
 
 // Image manipulation functions
 /// Create an image duplicate (useful for transformations)
-Image ImageCopy(Image image) => raw.ImageCopy(image);
+Image ImageCopy(Image image) => proxy.ImageCopy(image);
 /// Create an image from another image piece
-Image ImageFromImage(Image image, Rectangle rec) => raw.ImageFromImage(image, rec);
+Image ImageFromImage(Image image, Rectangle rec) => proxy.ImageFromImage(image, rec);
 /// Create an image from a selected channel of another image (GRAYSCALE)
-Image ImageFromChannel(Image image, int selectedChannel) => raw.ImageFromChannel(image, selectedChannel);
+Image ImageFromChannel(Image image, int selectedChannel) => proxy.ImageFromChannel(image, selectedChannel);
 /// Create an image from text (default font)
-Image ImageText(String text, int fontSize, Color color) => raw.ImageText(text, fontSize, color);
+Image ImageText(String text, int fontSize, Color color) => proxy.ImageText(text, fontSize, color);
 /// Create an image from text (custom sprite font)
-Image ImageTextEx(Font font, String text, double fontSize, double spacing, Color tint) => raw.ImageTextEx(font, text, fontSize, spacing, tint);
+Image ImageTextEx(Font font, String text, double fontSize, double spacing, Color tint) => proxy.ImageTextEx(font, text, fontSize, spacing, tint);
 /// Convert image data to desired format
-void ImageFormat(List<Image> image, int newFormat) => raw.ImageFormat(image, newFormat);
+void ImageFormat(Image image, PixelFormat newFormat) => proxy.ImageFormat(image, newFormat);
 /// Convert image to POT (power-of-two)
-void ImageToPOT(List<Image> image, Color fill) => raw.ImageToPOT(image, fill);
+void ImageToPOT(Image image, Color fill) => proxy.ImageToPOT(image, fill);
 /// Crop an image to a defined rectangle
-void ImageCrop(List<Image> image, Rectangle crop) => raw.ImageCrop(image, crop);
+void ImageCrop(Image image, Rectangle crop) => proxy.ImageCrop(image, crop);
 /// Crop image depending on alpha value
-void ImageAlphaCrop(List<Image> image, double threshold) => raw.ImageAlphaCrop(image, threshold);
+void ImageAlphaCrop(Image image, double threshold) => proxy.ImageAlphaCrop(image, threshold);
 /// Clear alpha channel to desired color
-void ImageAlphaClear(List<Image> image, Color color, double threshold) => raw.ImageAlphaClear(image, color, threshold);
+void ImageAlphaClear(Image image, Color color, double threshold) => proxy.ImageAlphaClear(image, color, threshold);
 /// Apply alpha mask to image
-void ImageAlphaMask(List<Image> image, Image alphaMask) => raw.ImageAlphaMask(image, alphaMask);
+void ImageAlphaMask(Image image, Image alphaMask) => proxy.ImageAlphaMask(image, alphaMask);
 /// Premultiply alpha channel
-void ImageAlphaPremultiply(List<Image> image) => raw.ImageAlphaPremultiply(image);
+void ImageAlphaPremultiply(Image image) => proxy.ImageAlphaPremultiply(image);
 /// Apply Gaussian blur using a box blur approximation
-void ImageBlurGaussian(List<Image> image, int blurSize) => raw.ImageBlurGaussian(image, blurSize);
+void ImageBlurGaussian(Image image, int blurSize) => proxy.ImageBlurGaussian(image, blurSize);
 /// Apply custom square convolution kernel to image
-void ImageKernelConvolution(List<Image> image, List<double> kernel, int kernelSize) => raw.ImageKernelConvolution(image, kernel, kernelSize);
+void ImageKernelConvolution(Image image, List<double> kernel) => proxy.ImageKernelConvolution(image, kernel);
 /// Resize image (Bicubic scaling algorithm)
-void ImageResize(List<Image> image, int newWidth, int newHeight) => raw.ImageResize(image, newWidth, newHeight);
+void ImageResize(Image image, int newWidth, int newHeight) => proxy.ImageResize(image, newWidth, newHeight);
 /// Resize image (Nearest-Neighbor scaling algorithm)
-void ImageResizeNN(List<Image> image, int newWidth, int newHeight) => raw.ImageResizeNN(image, newWidth, newHeight);
+void ImageResizeNN(Image image, int newWidth, int newHeight) => proxy.ImageResizeNN(image, newWidth, newHeight);
 /// Resize canvas and fill with color
-void ImageResizeCanvas(List<Image> image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill) => raw.ImageResizeCanvas(image, newWidth, newHeight, offsetX, offsetY, fill);
+void ImageResizeCanvas(Image image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill) => proxy.ImageResizeCanvas(image, newWidth, newHeight, offsetX, offsetY, fill);
 /// Compute all mipmap levels for a provided image
-void ImageMipmaps(List<Image> image) => raw.ImageMipmaps(image);
+void ImageMipmaps(Image image) => proxy.ImageMipmaps(image);
 /// Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
-void ImageDither(List<Image> image, int rBpp, int gBpp, int bBpp, int aBpp) => raw.ImageDither(image, rBpp, gBpp, bBpp, aBpp);
+void ImageDither(Image image, int rBpp, int gBpp, int bBpp, int aBpp) => proxy.ImageDither(image, rBpp, gBpp, bBpp, aBpp);
 /// Flip image vertically
-void ImageFlipVertical(List<Image> image) => raw.ImageFlipVertical(image);
+void ImageFlipVertical(Image image) => proxy.ImageFlipVertical(image);
 /// Flip image horizontally
-void ImageFlipHorizontal(List<Image> image) => raw.ImageFlipHorizontal(image);
+void ImageFlipHorizontal(Image image) => proxy.ImageFlipHorizontal(image);
 /// Rotate image by input angle in degrees (-359 to 359)
-void ImageRotate(List<Image> image, int degrees) => raw.ImageRotate(image, degrees);
+void ImageRotate(Image image, int degrees) => proxy.ImageRotate(image, degrees);
 /// Rotate image clockwise 90deg
-void ImageRotateCW(List<Image> image) => raw.ImageRotateCW(image);
+void ImageRotateCW(Image image) => proxy.ImageRotateCW(image);
 /// Rotate image counter-clockwise 90deg
-void ImageRotateCCW(List<Image> image) => raw.ImageRotateCCW(image);
+void ImageRotateCCW(Image image) => proxy.ImageRotateCCW(image);
 /// Modify image color: tint
-void ImageColorTint(List<Image> image, Color color) => raw.ImageColorTint(image, color);
+void ImageColorTint(Image image, Color color) => proxy.ImageColorTint(image, color);
 /// Modify image color: invert
-void ImageColorInvert(List<Image> image) => raw.ImageColorInvert(image);
+void ImageColorInvert(Image image) => proxy.ImageColorInvert(image);
 /// Modify image color: grayscale
-void ImageColorGrayscale(List<Image> image) => raw.ImageColorGrayscale(image);
+void ImageColorGrayscale(Image image) => proxy.ImageColorGrayscale(image);
 /// Modify image color: contrast (-100 to 100)
-void ImageColorContrast(List<Image> image, double contrast) => raw.ImageColorContrast(image, contrast);
+void ImageColorContrast(Image image, double contrast) => proxy.ImageColorContrast(image, contrast);
 /// Modify image color: brightness (-255 to 255)
-void ImageColorBrightness(List<Image> image, int brightness) => raw.ImageColorBrightness(image, brightness);
+void ImageColorBrightness(Image image, int brightness) => proxy.ImageColorBrightness(image, brightness);
 /// Modify image color: replace color
-void ImageColorReplace(List<Image> image, Color color, Color replace) => raw.ImageColorReplace(image, color, replace);
+void ImageColorReplace(Image image, Color color, Color replace) => proxy.ImageColorReplace(image, color, replace);
 /// Load color data from image as a Color array (RGBA - 32bit)
-List<Color> LoadImageColors(Image image) => raw.LoadImageColors(image);
+List<Color> LoadImageColors(Image image) => proxy.LoadImageColors(image);
 /// Load colors palette from image as a Color array (RGBA - 32bit)
-List<Color> LoadImagePalette(Image image, int maxPaletteSize, List<int> colorCount) => raw.LoadImagePalette(image, maxPaletteSize, colorCount);
+List<Color> LoadImagePalette(Image image, int maxPaletteSize) => proxy.LoadImagePalette(image, maxPaletteSize);
 /// Unload color data loaded with LoadImageColors()
-void UnloadImageColors(List<Color> colors) => raw.UnloadImageColors(colors);
+void UnloadImageColors(List<Color> colors) => proxy.UnloadImageColors(colors);
 /// Unload colors palette loaded with LoadImagePalette()
-void UnloadImagePalette(List<Color> colors) => raw.UnloadImagePalette(colors);
+void UnloadImagePalette(List<Color> colors) => proxy.UnloadImagePalette(colors);
 /// Get image alpha border rectangle
-Rectangle GetImageAlphaBorder(Image image, double threshold) => raw.GetImageAlphaBorder(image, threshold);
+Rectangle GetImageAlphaBorder(Image image, double threshold) => proxy.GetImageAlphaBorder(image, threshold);
 /// Get image pixel color at (x, y) position
-Color GetImageColor(Image image, int x, int y) => raw.GetImageColor(image, x, y);
+Color GetImageColor(Image image, int x, int y) => proxy.GetImageColor(image, x, y);
 
 // Image drawing functions
 // NOTE: Image software-rendering functions (CPU)
 /// Clear image background with given color
-void ImageClearBackground(List<Image> dst, Color color) => raw.ImageClearBackground(dst, color);
+void ImageClearBackground(Image dst, Color color) => proxy.ImageClearBackground(dst, color);
 /// Draw pixel within an image
-void ImageDrawPixel(List<Image> dst, int posX, int posY, Color color) => raw.ImageDrawPixel(dst, posX, posY, color);
+void ImageDrawPixel(Image dst, int posX, int posY, Color color) => proxy.ImageDrawPixel(dst, posX, posY, color);
 /// Draw pixel within an image (Vector version)
-void ImageDrawPixelV(List<Image> dst, Vector2 position, Color color) => raw.ImageDrawPixelV(dst, position, color);
+void ImageDrawPixelV(Image dst, Vector2 position, Color color) => proxy.ImageDrawPixelV(dst, position, color);
 /// Draw line within an image
-void ImageDrawLine(List<Image> dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color) => raw.ImageDrawLine(dst, startPosX, startPosY, endPosX, endPosY, color);
+void ImageDrawLine(Image dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color) => proxy.ImageDrawLine(dst, startPosX, startPosY, endPosX, endPosY, color);
 /// Draw line within an image (Vector version)
-void ImageDrawLineV(List<Image> dst, Vector2 start, Vector2 end, Color color) => raw.ImageDrawLineV(dst, start, end, color);
+void ImageDrawLineV(Image dst, Vector2 start, Vector2 end, Color color) => proxy.ImageDrawLineV(dst, start, end, color);
 /// Draw a line defining thickness within an image
-void ImageDrawLineEx(List<Image> dst, Vector2 start, Vector2 end, int thick, Color color) => raw.ImageDrawLineEx(dst, start, end, thick, color);
+void ImageDrawLineEx(Image dst, Vector2 start, Vector2 end, int thick, Color color) => proxy.ImageDrawLineEx(dst, start, end, thick, color);
 /// Draw a filled circle within an image
-void ImageDrawCircle(List<Image> dst, int centerX, int centerY, int radius, Color color) => raw.ImageDrawCircle(dst, centerX, centerY, radius, color);
+void ImageDrawCircle(Image dst, int centerX, int centerY, int radius, Color color) => proxy.ImageDrawCircle(dst, centerX, centerY, radius, color);
 /// Draw a filled circle within an image (Vector version)
-void ImageDrawCircleV(List<Image> dst, Vector2 center, int radius, Color color) => raw.ImageDrawCircleV(dst, center, radius, color);
+void ImageDrawCircleV(Image dst, Vector2 center, int radius, Color color) => proxy.ImageDrawCircleV(dst, center, radius, color);
 /// Draw circle outline within an image
-void ImageDrawCircleLines(List<Image> dst, int centerX, int centerY, int radius, Color color) => raw.ImageDrawCircleLines(dst, centerX, centerY, radius, color);
+void ImageDrawCircleLines(Image dst, int centerX, int centerY, int radius, Color color) => proxy.ImageDrawCircleLines(dst, centerX, centerY, radius, color);
 /// Draw circle outline within an image (Vector version)
-void ImageDrawCircleLinesV(List<Image> dst, Vector2 center, int radius, Color color) => raw.ImageDrawCircleLinesV(dst, center, radius, color);
+void ImageDrawCircleLinesV(Image dst, Vector2 center, int radius, Color color) => proxy.ImageDrawCircleLinesV(dst, center, radius, color);
 /// Draw rectangle within an image
-void ImageDrawRectangle(List<Image> dst, int posX, int posY, int width, int height, Color color) => raw.ImageDrawRectangle(dst, posX, posY, width, height, color);
+void ImageDrawRectangle(Image dst, int posX, int posY, int width, int height, Color color) => proxy.ImageDrawRectangle(dst, posX, posY, width, height, color);
 /// Draw rectangle within an image (Vector version)
-void ImageDrawRectangleV(List<Image> dst, Vector2 position, Vector2 size, Color color) => raw.ImageDrawRectangleV(dst, position, size, color);
+void ImageDrawRectangleV(Image dst, Vector2 position, Vector2 size, Color color) => proxy.ImageDrawRectangleV(dst, position, size, color);
 /// Draw rectangle within an image
-void ImageDrawRectangleRec(List<Image> dst, Rectangle rec, Color color) => raw.ImageDrawRectangleRec(dst, rec, color);
+void ImageDrawRectangleRec(Image dst, Rectangle rec, Color color) => proxy.ImageDrawRectangleRec(dst, rec, color);
 /// Draw rectangle lines within an image
-void ImageDrawRectangleLines(List<Image> dst, Rectangle rec, int thick, Color color) => raw.ImageDrawRectangleLines(dst, rec, thick, color);
+void ImageDrawRectangleLines(Image dst, Rectangle rec, int thick, Color color) => proxy.ImageDrawRectangleLines(dst, rec, thick, color);
 /// Draw triangle within an image
-void ImageDrawTriangle(List<Image> dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) => raw.ImageDrawTriangle(dst, v1, v2, v3, color);
+void ImageDrawTriangle(Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) => proxy.ImageDrawTriangle(dst, v1, v2, v3, color);
 /// Draw triangle with interpolated colors within an image
-void ImageDrawTriangleEx(List<Image> dst, Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3) => raw.ImageDrawTriangleEx(dst, v1, v2, v3, c1, c2, c3);
+void ImageDrawTriangleEx(Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3) => proxy.ImageDrawTriangleEx(dst, v1, v2, v3, c1, c2, c3);
 /// Draw triangle outline within an image
-void ImageDrawTriangleLines(List<Image> dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) => raw.ImageDrawTriangleLines(dst, v1, v2, v3, color);
+void ImageDrawTriangleLines(Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) => proxy.ImageDrawTriangleLines(dst, v1, v2, v3, color);
 /// Draw a triangle fan defined by points within an image (first vertex is the center)
-void ImageDrawTriangleFan(List<Image> dst, List<Vector2> points, int pointCount, Color color) => raw.ImageDrawTriangleFan(dst, points, pointCount, color);
+void ImageDrawTriangleFan(Image dst, List<Vector2> points, Color color) => proxy.ImageDrawTriangleFan(dst, points, color);
 /// Draw a triangle strip defined by points within an image
-void ImageDrawTriangleStrip(List<Image> dst, List<Vector2> points, int pointCount, Color color) => raw.ImageDrawTriangleStrip(dst, points, pointCount, color);
+void ImageDrawTriangleStrip(Image dst, List<Vector2> points, Color color) => proxy.ImageDrawTriangleStrip(dst, points, color);
 /// Draw a source image within a destination image (tint applied to source)
-void ImageDraw(List<Image> dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint) => raw.ImageDraw(dst, src, srcRec, dstRec, tint);
+void ImageDraw(Image dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint) => proxy.ImageDraw(dst, src, srcRec, dstRec, tint);
 /// Draw text (using default font) within an image (destination)
-void ImageDrawText(List<Image> dst, String text, int posX, int posY, int fontSize, Color color) => raw.ImageDrawText(dst, text, posX, posY, fontSize, color);
+void ImageDrawText(Image dst, String text, int posX, int posY, int fontSize, Color color) => proxy.ImageDrawText(dst, text, posX, posY, fontSize, color);
 /// Draw text (custom sprite font) within an image (destination)
-void ImageDrawTextEx(List<Image> dst, Font font, String text, Vector2 position, double fontSize, double spacing, Color tint) => raw.ImageDrawTextEx(dst, font, text, position, fontSize, spacing, tint);
+void ImageDrawTextEx(Image dst, Font font, String text, Vector2 position, double fontSize, double spacing, Color tint) => proxy.ImageDrawTextEx(dst, font, text, position, fontSize, spacing, tint);
 
 // Texture loading functions
 // NOTE: These functions require GPU access
 /// Load texture from file into GPU memory (VRAM)
-Texture2D LoadTexture(String fileName) => raw.LoadTexture(fileName);
+Texture2D LoadTexture(String fileName) => proxy.LoadTexture(fileName);
 /// Load texture from image data
-Texture2D LoadTextureFromImage(Image image) => raw.LoadTextureFromImage(image);
+Texture2D LoadTextureFromImage(Image image) => proxy.LoadTextureFromImage(image);
 /// Load cubemap from image, multiple image cubemap layouts supported
-TextureCubemap LoadTextureCubemap(Image image, int layout) => raw.LoadTextureCubemap(image, layout);
+TextureCubemap LoadTextureCubemap(Image image, CubemapLayout layout) => proxy.LoadTextureCubemap(image, layout);
 /// Load texture for rendering (framebuffer)
-RenderTexture2D LoadRenderTexture(int width, int height) => raw.LoadRenderTexture(width, height);
+RenderTexture2D LoadRenderTexture(int width, int height) => proxy.LoadRenderTexture(width, height);
 /// Check if a texture is valid (loaded in GPU)
-bool IsTextureValid(Texture2D texture) => raw.IsTextureValid(texture);
+bool IsTextureValid(Texture2D texture) => proxy.IsTextureValid(texture);
 /// Unload texture from GPU memory (VRAM)
-void UnloadTexture(Texture2D texture) => raw.UnloadTexture(texture);
+void UnloadTexture(Texture2D texture) => proxy.UnloadTexture(texture);
 /// Check if a render texture is valid (loaded in GPU)
-bool IsRenderTextureValid(RenderTexture2D target) => raw.IsRenderTextureValid(target);
+bool IsRenderTextureValid(RenderTexture2D target) => proxy.IsRenderTextureValid(target);
 /// Unload render texture from GPU memory (VRAM)
-void UnloadRenderTexture(RenderTexture2D target) => raw.UnloadRenderTexture(target);
+void UnloadRenderTexture(RenderTexture2D target) => proxy.UnloadRenderTexture(target);
 /// Update GPU texture with new data (pixels should be able to fill texture)
-void UpdateTexture(Texture2D texture, int pixels) => raw.UpdateTexture(texture, pixels);
+void UpdateTexture(Texture2D texture, Uint8List pixels) => proxy.UpdateTexture(texture, pixels);
 /// Update GPU texture rectangle with new data (pixels and rec should fit in texture)
-void UpdateTextureRec(Texture2D texture, Rectangle rec, int pixels) => raw.UpdateTextureRec(texture, rec, pixels);
+void UpdateTextureRec(Texture2D texture, Rectangle rec, Uint8List pixels) => proxy.UpdateTextureRec(texture, rec, pixels);
 
 // Texture configuration functions
 /// Generate GPU mipmaps for a texture
-void GenTextureMipmaps(List<Texture2D> texture) => raw.GenTextureMipmaps(texture);
+Texture2D GenTextureMipmaps(Texture2D texture) => proxy.GenTextureMipmaps(texture);
 /// Set texture scaling filter mode
-void SetTextureFilter(Texture2D texture, int filter) => raw.SetTextureFilter(texture, filter);
+void SetTextureFilter(Texture2D texture, TextureFilter filter) => proxy.SetTextureFilter(texture, filter);
 /// Set texture wrapping mode
-void SetTextureWrap(Texture2D texture, int wrap) => raw.SetTextureWrap(texture, wrap);
+void SetTextureWrap(Texture2D texture, TextureWrap wrap) => proxy.SetTextureWrap(texture, wrap);
 
 // Texture drawing functions
 /// Draw a Texture2D
-void DrawTexture(Texture2D texture, int posX, int posY, Color tint) => raw.DrawTexture(texture, posX, posY, tint);
+void DrawTexture(Texture2D texture, int posX, int posY, Color tint) => proxy.DrawTexture(texture, posX, posY, tint);
 /// Draw a Texture2D with position defined as Vector2
-void DrawTextureV(Texture2D texture, Vector2 position, Color tint) => raw.DrawTextureV(texture, position, tint);
+void DrawTextureV(Texture2D texture, Vector2 position, Color tint) => proxy.DrawTextureV(texture, position, tint);
 /// Draw a Texture2D with extended parameters
-void DrawTextureEx(Texture2D texture, Vector2 position, double rotation, double scale, Color tint) => raw.DrawTextureEx(texture, position, rotation, scale, tint);
+void DrawTextureEx(Texture2D texture, Vector2 position, double rotation, double scale, Color tint) => proxy.DrawTextureEx(texture, position, rotation, scale, tint);
 /// Draw a part of a texture defined by a rectangle
-void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint) => raw.DrawTextureRec(texture, source, position, tint);
+void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint) => proxy.DrawTextureRec(texture, source, position, tint);
 /// Draw a part of a texture defined by a rectangle with 'pro' parameters
-void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, double rotation, Color tint) => raw.DrawTexturePro(texture, source, dest, origin, rotation, tint);
+void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, double rotation, Color tint) => proxy.DrawTexturePro(texture, source, dest, origin, rotation, tint);
 /// Draws a texture (or part of it) that stretches or shrinks nicely
-void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, double rotation, Color tint) => raw.DrawTextureNPatch(texture, nPatchInfo, dest, origin, rotation, tint);
+void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, double rotation, Color tint) => proxy.DrawTextureNPatch(texture, nPatchInfo, dest, origin, rotation, tint);
 
 // Color/pixel related functions
 /// Check if two colors are equal
-bool ColorIsEqual(Color col1, Color col2) => raw.ColorIsEqual(col1, col2);
+bool ColorIsEqual(Color col1, Color col2) => proxy.ColorIsEqual(col1, col2);
 /// Get color with alpha applied, alpha goes from 0.0f to 1.0f
-Color Fade(Color color, double alpha) => raw.Fade(color, alpha);
+Color Fade(Color color, double alpha) => proxy.Fade(color, alpha);
 /// Get hexadecimal value for a Color (0xRRGGBBAA)
-int ColorToInt(Color color) => raw.ColorToInt(color);
+int ColorToInt(Color color) => proxy.ColorToInt(color);
 /// Get Color normalized as float [0..1]
-Vector4 ColorNormalize(Color color) => raw.ColorNormalize(color);
+Vector4 ColorNormalize(Color color) => proxy.ColorNormalize(color);
 /// Get Color from normalized values [0..1]
-Color ColorFromNormalized(Vector4 normalized) => raw.ColorFromNormalized(normalized);
+Color ColorFromNormalized(Vector4 normalized) => proxy.ColorFromNormalized(normalized);
 /// Get HSV values for a Color, hue [0..360], saturation/value [0..1]
-Vector3 ColorToHSV(Color color) => raw.ColorToHSV(color);
+Vector3 ColorToHSV(Color color) => proxy.ColorToHSV(color);
 /// Get a Color from HSV values, hue [0..360], saturation/value [0..1]
-Color ColorFromHSV(double hue, double saturation, double value) => raw.ColorFromHSV(hue, saturation, value);
+Color ColorFromHSV(double hue, double saturation, double value) => proxy.ColorFromHSV(hue, saturation, value);
 /// Get color multiplied with another color
-Color ColorTint(Color color, Color tint) => raw.ColorTint(color, tint);
+Color ColorTint(Color color, Color tint) => proxy.ColorTint(color, tint);
 /// Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
-Color ColorBrightness(Color color, double factor) => raw.ColorBrightness(color, factor);
+Color ColorBrightness(Color color, double factor) => proxy.ColorBrightness(color, factor);
 /// Get color with contrast correction, contrast values between -1.0f and 1.0f
-Color ColorContrast(Color color, double contrast) => raw.ColorContrast(color, contrast);
+Color ColorContrast(Color color, double contrast) => proxy.ColorContrast(color, contrast);
 /// Get color with alpha applied, alpha goes from 0.0f to 1.0f
-Color ColorAlpha(Color color, double alpha) => raw.ColorAlpha(color, alpha);
+Color ColorAlpha(Color color, double alpha) => proxy.ColorAlpha(color, alpha);
 /// Get src alpha-blended into dst color with tint
-Color ColorAlphaBlend(Color dst, Color src, Color tint) => raw.ColorAlphaBlend(dst, src, tint);
+Color ColorAlphaBlend(Color dst, Color src, Color tint) => proxy.ColorAlphaBlend(dst, src, tint);
 /// Get color lerp interpolation between two colors, factor [0.0f..1.0f]
-Color ColorLerp(Color color1, Color color2, double factor) => raw.ColorLerp(color1, color2, factor);
+Color ColorLerp(Color color1, Color color2, double factor) => proxy.ColorLerp(color1, color2, factor);
 /// Get Color structure from hexadecimal value
-Color GetColor(int hexValue) => raw.GetColor(hexValue);
+Color GetColor(int hexValue) => proxy.GetColor(hexValue);
 /// Get Color from a source pixel pointer of certain format
-Color GetPixelColor(int srcPtr, int format) => raw.GetPixelColor(srcPtr, format);
+Color GetPixelColor(Uint8List src, PixelFormat format) => proxy.GetPixelColor(src, format);
 /// Set color formatted into destination pixel pointer
-void SetPixelColor(int dstPtr, Color color, int format) => raw.SetPixelColor(dstPtr, color, format);
+void SetPixelColor(Uint8List dst, Color color, PixelFormat format) => proxy.SetPixelColor(dst, color, format);
 /// Get pixel data size in bytes for certain format
-int GetPixelDataSize(int width, int height, int format) => raw.GetPixelDataSize(width, height, format);
+int GetPixelDataSize(int width, int height, PixelFormat format) => proxy.GetPixelDataSize(width, height, format);
 
 

@@ -104,9 +104,116 @@ import 'structs.dart';
   ),
   'textures': (
     deps: """
+import 'dart:typed_data';
+import 'raylib_const.dart';
 import 'structs.dart';
 """,
-    customInterfaces: {},
+    customInterfaces: {
+      'LoadImageRaw':
+          'Image LoadImageRaw(String fileName, int width, int height, PixelFormat format, int headerSize)',
+      'LoadImageAnimFromMemory':
+          'Image LoadImageAnimFromMemory(String fileType, Uint8List fileData, List<int> frames)',
+      'LoadImageFromMemory':
+          'Image LoadImageFromMemory(String fileType, Uint8List fileData)',
+      'ExportImageToMemory':
+          'Uint8List ExportImageToMemory(Image image, String fileType)',
+      'ImageFormat': 'void ImageFormat(Image image, PixelFormat newFormat)',
+      'ImageToPOT': 'void ImageToPOT(Image image, Color fill)',
+      'ImageCrop': 'void ImageCrop(Image image, Rectangle crop)',
+      'ImageAlphaCrop': 'void ImageAlphaCrop(Image image, double threshold)',
+      'ImageAlphaClear':
+          'void ImageAlphaClear(Image image, Color color, double threshold)',
+      'ImageAlphaMask': 'void ImageAlphaMask(Image image, Image alphaMask)',
+      'ImageAlphaPremultiply': 'void ImageAlphaPremultiply(Image image)',
+      'ImageBlurGaussian': 'void ImageBlurGaussian(Image image, int blurSize)',
+      'ImageKernelConvolution':
+          'void ImageKernelConvolution(Image image, List<double> kernel)',
+      'ImageResize':
+          'void ImageResize(Image image, int newWidth, int newHeight)',
+      'ImageResizeNN':
+          'void ImageResizeNN(Image image, int newWidth, int newHeight)',
+      'ImageResizeCanvas':
+          'void ImageResizeCanvas(Image image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill)',
+      'ImageMipmaps': 'void ImageMipmaps(Image image)',
+      'ImageDither':
+          'void ImageDither(Image image, int rBpp, int gBpp, int bBpp, int aBpp)',
+      'ImageFlipVertical': 'void ImageFlipVertical(Image image)',
+      'ImageFlipHorizontal': 'void ImageFlipHorizontal(Image image)',
+      'ImageRotate': 'void ImageRotate(Image image, int degrees)',
+      'ImageRotateCW': 'void ImageRotateCW(Image image)',
+      'ImageRotateCCW': 'void ImageRotateCCW(Image image)',
+      'ImageColorTint': 'void ImageColorTint(Image image, Color color)',
+      'ImageColorInvert': 'void ImageColorInvert(Image image)',
+      'ImageColorGrayscale': 'void ImageColorGrayscale(Image image)',
+      'ImageColorContrast':
+          'void ImageColorContrast(Image image, double contrast)',
+      'ImageColorBrightness':
+          'void ImageColorBrightness(Image image, int brightness)',
+      'ImageColorReplace':
+          'void ImageColorReplace(Image image, Color color, Color replace)',
+      'LoadImagePalette':
+          'List<Color> LoadImagePalette(Image image, int maxPaletteSize)',
+      'ImageClearBackground':
+          'void ImageClearBackground(Image dst, Color color)',
+      'ImageDrawPixel':
+          'void ImageDrawPixel(Image dst, int posX, int posY, Color color)',
+      'ImageDrawPixelV':
+          'void ImageDrawPixelV(Image dst, Vector2 position, Color color)',
+      'ImageDrawLine':
+          'void ImageDrawLine(Image dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color)',
+      'ImageDrawLineV':
+          'void ImageDrawLineV(Image dst, Vector2 start, Vector2 end, Color color)',
+      'ImageDrawLineEx':
+          'void ImageDrawLineEx(Image dst, Vector2 start, Vector2 end, int thick, Color color)',
+      'ImageDrawCircle':
+          'void ImageDrawCircle(Image dst, int centerX, int centerY, int radius, Color color)',
+      'ImageDrawCircleV':
+          'void ImageDrawCircleV(Image dst, Vector2 center, int radius, Color color)',
+      'ImageDrawCircleLines':
+          'void ImageDrawCircleLines(Image dst, int centerX, int centerY, int radius, Color color)',
+      'ImageDrawCircleLinesV':
+          'void ImageDrawCircleLinesV(Image dst, Vector2 center, int radius, Color color)',
+      'ImageDrawRectangle':
+          'void ImageDrawRectangle(Image dst, int posX, int posY, int width, int height, Color color)',
+      'ImageDrawRectangleV':
+          'void ImageDrawRectangleV(Image dst, Vector2 position, Vector2 size, Color color)',
+      'ImageDrawRectangleRec':
+          'void ImageDrawRectangleRec(Image dst, Rectangle rec, Color color)',
+      'ImageDrawRectangleLines':
+          'void ImageDrawRectangleLines(Image dst, Rectangle rec, int thick, Color color)',
+      'ImageDrawTriangle':
+          'void ImageDrawTriangle(Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color)',
+      'ImageDrawTriangleEx':
+          'void ImageDrawTriangleEx(Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3)',
+      'ImageDrawTriangleLines':
+          'void ImageDrawTriangleLines(Image dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color)',
+      'ImageDrawTriangleFan':
+          'void ImageDrawTriangleFan(Image dst, List<Vector2> points, Color color)',
+      'ImageDrawTriangleStrip':
+          'void ImageDrawTriangleStrip(Image dst, List<Vector2> points, Color color)',
+      'ImageDraw':
+          'void ImageDraw(Image dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)',
+      'ImageDrawText':
+          'void ImageDrawText(Image dst, String text, int posX, int posY, int fontSize, Color color)',
+      'ImageDrawTextEx':
+          'void ImageDrawTextEx(Image dst, Font font, String text, Vector2 position, double fontSize, double spacing, Color tint)',
+      'LoadTextureCubemap':
+          'TextureCubemap LoadTextureCubemap(Image image, CubemapLayout layout)',
+      'UpdateTexture':
+          'void UpdateTexture(Texture2D texture, Uint8List pixels)',
+      'UpdateTextureRec':
+          'void UpdateTextureRec(Texture2D texture, Rectangle rec, Uint8List pixels)',
+      'GenTextureMipmaps': 'Texture2D GenTextureMipmaps(Texture2D texture)',
+      'SetTextureFilter':
+          'void SetTextureFilter(Texture2D texture, TextureFilter filter)',
+      'SetTextureWrap':
+          'void SetTextureWrap(Texture2D texture, TextureWrap wrap)',
+      'GetPixelColor': 'Color GetPixelColor(Uint8List src, PixelFormat format)',
+      'SetPixelColor':
+          'void SetPixelColor(Uint8List dst, Color color, PixelFormat format)',
+      'GetPixelDataSize':
+          'int GetPixelDataSize(int width, int height, PixelFormat format)',
+    },
   ),
 };
 
