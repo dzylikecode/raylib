@@ -215,6 +215,80 @@ import 'structs.dart';
           'int GetPixelDataSize(int width, int height, PixelFormat format)',
     },
   ),
+  'text': (
+    deps: """
+import 'dart:typed_data';
+import 'structs.dart';
+""",
+    customInterfaces: {
+      'LoadFontEx':
+          'Font LoadFontEx(String fileName, int fontSize, List<int> codepoints)',
+      'LoadFontFromMemory':
+          'Font LoadFontFromMemory(String fileType, Uint8List fileData, int fontSize, List<int> codepoints)',
+      'LoadFontData':
+          'List<GlyphInfo> LoadFontData(Uint8List fileData, int fontSize, List<int> codepoints, int type)',
+      'DrawTextCodepoints':
+          'void DrawTextCodepoints(Font font, List<int> codepoints, Vector2 position, double fontSize, double spacing, Color tint)',
+      'MeasureTextCodepoints':
+          'Vector2 MeasureTextCodepoints(Font font, List<int> codepoints, double fontSize, double spacing)',
+      'LoadUTF8': 'String LoadUTF8(List<int> codepoints)',
+      'LoadCodepoints': 'List<int> LoadCodepoints(String text)',
+      'GetCodepoint': '(int, int) GetCodepoint(String text)',
+      'GetCodepointNext': '(int, int) GetCodepointNext(String text)',
+      'GetCodepointPrevious': '(int, int) GetCodepointPrevious(String text)',
+      'CodepointToUTF8': 'String CodepointToUTF8(int codepoint)',
+      'LoadTextLines': 'List<String> LoadTextLines(String text)',
+      'TextCopy': 'String TextCopy(String src)',
+      'TextFormat': 'String TextFormat(String text, List<Object> args)',
+      'TextJoin': 'String TextJoin(List<String> textList, String delimiter)',
+      'TextSplit': 'List<String> TextSplit(String text, String delimiter)',
+      'TextAppend': 'String TextAppend(String text, String append)',
+    },
+  ),
+  'models': (
+    deps: """
+import 'dart:typed_data';
+import 'raylib_const.dart';
+import 'structs.dart';
+""",
+    customInterfaces: {
+      'DrawTriangleStrip3D':
+          'void DrawTriangleStrip3D(List<Vector3> points, Color color)',
+      'UpdateMeshBuffer':
+          'void UpdateMeshBuffer(Mesh mesh, int index, Uint8List data, int offset)',
+      'DrawMeshInstanced':
+          'void DrawMeshInstanced(Mesh mesh, Material material, List<Matrix4> transforms)',
+      'LoadMaterials': 'List<Material> LoadMaterials(String fileName)',
+      'SetMaterialTexture':
+          'void SetMaterialTexture(Material material, int mapType, Texture2D texture)',
+      'SetModelMeshMaterial':
+          'void SetModelMeshMaterial(Model model, int meshId, int materialId)',
+      'LoadModelAnimations':
+          'List<ModelAnimation> LoadModelAnimations(String fileName)',
+      'UnloadModelAnimations':
+          'void UnloadModelAnimations(List<ModelAnimation> animations)',
+    },
+  ),
+  'audio': (
+    deps: """
+import 'dart:typed_data';
+import 'structs.dart';
+""",
+    customInterfaces: {
+      'LoadWaveFromMemory':
+          'Wave LoadWaveFromMemory(String fileType, Uint8List fileData)',
+      'UpdateSound':
+          'void UpdateSound(Sound sound, Uint8List data, int sampleCount)',
+      'WaveCrop': 'void WaveCrop(Wave wave, int initFrame, int finalFrame)',
+      'WaveFormat':
+          'void WaveFormat(Wave wave, int sampleRate, int sampleSize, int channels)',
+      'LoadWaveSamples': 'Float32List LoadWaveSamples(Wave wave)',
+      'LoadMusicStreamFromMemory':
+          'Music LoadMusicStreamFromMemory(String fileType, Uint8List data)',
+      'UpdateAudioStream':
+          'void UpdateAudioStream(AudioStream stream, Uint8List data, int frameCount)',
+    },
+  ),
 };
 
 String toDartType(CType type) {
@@ -299,21 +373,21 @@ class ApiMapRule {
   ApiMapRule(this.customInterfaces, this.proxyFunctions);
 
   String call(String api) {
-    var function = parseCFunctionPrototype(api);
+    final function = parseCFunctionPrototype(api);
+    final customInterface = customInterfaces[function.name];
     // 用来改变调用，比如两个参数变成了一个
-    if (customInterfaces.containsKey(function.name)) {
-      function = parseCFunctionPrototype(customInterfaces[function.name]!);
-    }
     final returnType = toDartType(function.returnType);
     final interfaceFunc =
-        customInterfaces[function.name] ??
+        customInterface ??
         '$returnType ${function.name}(${funcParamList(function.params)})';
     final needProxy =
-        customInterfaces[function.name] != null ||
-        proxyFunctions.contains(function.name);
+        customInterface != null || proxyFunctions.contains(function.name);
+    final callArgs = customInterface != null
+        ? dartParamNames(customInterface)
+        : funcCall(function.params);
 
     return '$interfaceFunc => '
-        '${needProxy ? 'proxy' : 'raw'}.${function.name}(${funcCall(function.params)});';
+        '${needProxy ? 'proxy' : 'raw'}.${function.name}($callArgs);';
   }
 
   String funcCall(List<CParam> params) {
@@ -324,6 +398,18 @@ class ApiMapRule {
   }
 
   String paramName(String name) => name == '...' ? 'args' : name;
+
+  String dartParamNames(String interface) {
+    final result = parseString(
+      content: 'external $interface;',
+      throwIfDiagnostics: false,
+    );
+    final declaration = result.unit.declarations
+        .whereType<FunctionDeclaration>()
+        .single;
+    final params = declaration.functionExpression.parameters?.parameters ?? [];
+    return params.map((p) => p.name?.lexeme).whereType<String>().join(', ');
+  }
 
   String funcParamList(List<CParam> params) {
     if (params.length == 1 && params[0].type.isVoid) {
