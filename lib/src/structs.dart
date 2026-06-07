@@ -869,7 +869,16 @@ class MaterialMap {
   });
 }
 
-
+extension RaylibMaterialMapToDart on raw.MaterialMap {
+  MaterialMap toDart() => MaterialMap(
+    texture: texture.toDart(),
+    colorR: color.r,
+    colorG: color.g,
+    colorB: color.b,
+    colorA: color.a,
+    value: value,
+  );
+}
 
 class Material {
   final Pointer<raw.Material> ptr;
@@ -885,26 +894,14 @@ class Material {
     _finalizer.attach(this, ptr, detach: this);
   }
 
-  /// Access a material map by index (use MATERIAL_MAP_* constants).
-  MaterialMap operator [](int index) {
-    final m = (ptr.ref.maps + index).ref;
-    return MaterialMap(
-      texture: m.texture.toDart(),
-      colorR: m.color.r,
-      colorG: m.color.g,
-      colorB: m.color.b,
-      colorA: m.color.a,
-      value: m.value,
-    );
-  }
+  MaterialMap operator [](int index) => (ptr.ref.maps + index).ref.toDart();
 
-  /// User-defined float parameters [0..3].
-  Float32List get params => Float32List.fromList([
+  (double, double, double, double) get params => (
     ptr.ref.params[0],
     ptr.ref.params[1],
     ptr.ref.params[2],
     ptr.ref.params[3],
-  ]);
+  );
 
   @mustCallSuper
   void dispose() {
@@ -925,9 +922,12 @@ extension RaylibMaterialToDart on raw.Material {
     for (var i = 0; i < 4; i++) {
       p.ref.params[i] = params[i];
     }
-    return Material._(p);
+    return ._(p);
   }
 }
+
+
+
 
 class Model {
   final Pointer<raw.Model> ptr;
