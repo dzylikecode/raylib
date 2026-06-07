@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart' as ffi;
@@ -926,109 +927,6 @@ extension RaylibMaterialToDart on raw.Material {
   }
 }
 
-
-
-
-class Model {
-  final Pointer<raw.Model> ptr;
-  bool _disposed = false;
-
-  static final _finalizer = Finalizer<Pointer<raw.Model>>(_free);
-  static void _free(Pointer<raw.Model> ptr) {
-    raw.UnloadModel(ptr.ref);
-    ffi.malloc.free(ptr);
-  }
-
-  Model._(this.ptr) {
-    _finalizer.attach(this, ptr, detach: this);
-  }
-
-  Matrix4 get transform => ptr.ref.transform.toDart();
-  set transform(Matrix4 value) => _copyMatrix4(ptr.ref.transform, value);
-
-  int get meshCount => ptr.ref.meshCount;
-  int get materialCount => ptr.ref.materialCount;
-  int get boneCount => ptr.ref.boneCount;
-
-  @mustCallSuper
-  void dispose() {
-    if (_disposed) return;
-    _finalizer.detach(this);
-    _free(ptr);
-    _disposed = true;
-  }
-}
-
-extension RaylibModelToDart on raw.Model {
-  Model toDart() {
-    final p = ffi.malloc<raw.Model>();
-    _copyMatrix(p.ref.transform, transform);
-    p.ref
-      ..meshCount = meshCount
-      ..materialCount = materialCount
-      ..meshes = meshes
-      ..materials = materials
-      ..meshMaterial = meshMaterial
-      ..boneCount = boneCount
-      ..bones = bones
-      ..bindPose = bindPose;
-    return Model._(p);
-  }
-}
-
-class ModelAnimation {
-  final Pointer<raw.ModelAnimation> ptr;
-  bool _disposed = false;
-
-  static final _finalizer = Finalizer<Pointer<raw.ModelAnimation>>(_free);
-  static void _free(Pointer<raw.ModelAnimation> ptr) {
-    raw.UnloadModelAnimation(ptr.ref);
-    ffi.malloc.free(ptr);
-  }
-
-  ModelAnimation._(this.ptr) {
-    _finalizer.attach(this, ptr, detach: this);
-  }
-
-  int get boneCount => ptr.ref.boneCount;
-  int get keyframeCount => ptr.ref.keyframeCount;
-
-  String get name {
-    final sb = StringBuffer();
-    for (var i = 0; i < 32; i++) {
-      final c = ptr.ref.name[i];
-      if (c == 0) break;
-      sb.writeCharCode(c);
-    }
-    return sb.toString();
-  }
-
-  BoneInfo boneInfo(int index) => (ptr.ref.bones + index).ref.toDart();
-
-  @mustCallSuper
-  void dispose() {
-    if (_disposed) return;
-    _finalizer.detach(this);
-    _free(ptr);
-    _disposed = true;
-  }
-}
-
-extension RaylibModelAnimationToDart on raw.ModelAnimation {
-  ModelAnimation toDart() {
-    final p = ffi.malloc<raw.ModelAnimation>();
-    p.ref
-      ..boneCount = boneCount
-      ..keyframeCount = keyframeCount
-      ..bones = bones
-      ..framePoses = framePoses;
-    for (var i = 0; i < 32; i++) {
-      p.ref.name[i] = name[i];
-    }
-    return ._(p);
-  }
-}
-
 @immutable
 class Transform {
   final Vector3 translation;
@@ -1072,6 +970,132 @@ extension BoneInfoExt on raw.BoneInfo {
       sb.writeCharCode(c);
     }
     return BoneInfo(name: sb.toString(), parent: parent);
+  }
+}
+
+@immutable
+class ModelSkeleton {
+  final int boneCount;
+  final List<BoneInfo> bones;
+  final List<Transform> bindPose;
+
+  const ModelSkeleton({
+    required this.boneCount,
+    required this.bones,
+    required this.bindPose,
+  });
+}
+
+extension ModelSkeletonExt on raw.ModelSkeleton {
+  ModelSkeleton toDart() => ModelSkeleton(
+    boneCount: boneCount,
+    bones: bones == nullptr
+        ? []
+        : [for (var i = 0; i < boneCount; i++) (bones + i).ref.toDart()],
+    bindPose: bindPose == nullptr
+        ? []
+        : [for (var i = 0; i < boneCount; i++) (bindPose + i).ref.toDart()],
+  );
+}
+
+class Model {
+  final Pointer<raw.Model> ptr;
+  bool _disposed = false;
+
+  static final _finalizer = Finalizer<Pointer<raw.Model>>(_free);
+  static void _free(Pointer<raw.Model> ptr) {
+    raw.UnloadModel(ptr.ref);
+    ffi.malloc.free(ptr);
+  }
+
+  Model._(this.ptr) {
+    _finalizer.attach(this, ptr, detach: this);
+  }
+
+  Matrix4 get transform => ptr.ref.transform.toDart();
+  set transform(Matrix4 value) => _copyMatrix4(ptr.ref.transform, value);
+
+  int get meshCount => ptr.ref.meshCount;
+  int get materialCount => ptr.ref.materialCount;
+  int get boneCount => ptr.ref.skeleton.boneCount;
+  ModelSkeleton get skeleton => ptr.ref.skeleton.toDart();
+
+  List<Transform> get currentPose => ptr.ref.currentPose == nullptr
+      ? []
+      : [for (var i = 0; i < boneCount; i++) ptr.ref.currentPose[i].toDart()];
+
+  List<Matrix4> get boneMatrices => ptr.ref.boneMatrices == nullptr
+      ? []
+      : [for (var i = 0; i < boneCount; i++) ptr.ref.boneMatrices[i].toDart()];
+
+  @mustCallSuper
+  void dispose() {
+    if (_disposed) return;
+    _finalizer.detach(this);
+    _free(ptr);
+    _disposed = true;
+  }
+}
+
+extension RaylibModelToDart on raw.Model {
+  Model toDart() {
+    final p = ffi.malloc<raw.Model>();
+    _copyMatrix(p.ref.transform, transform);
+    p.ref
+      ..meshCount = meshCount
+      ..materialCount = materialCount
+      ..meshes = meshes
+      ..materials = materials
+      ..meshMaterial = meshMaterial
+      ..currentPose = currentPose
+      ..boneMatrices = boneMatrices;
+    p.ref.skeleton
+      ..boneCount = skeleton.boneCount
+      ..bones = skeleton.bones
+      ..bindPose = skeleton.bindPose;
+    return Model._(p);
+  }
+}
+
+typedef ModelAnimPose = List<Transform>;
+
+class ModelAnimation {
+  final String name;
+  final int boneCount;
+  final int keyframeCount;
+  final List<ModelAnimPose> keyframePoses;
+
+  const ModelAnimation({
+    required this.name,
+    required this.boneCount,
+    required this.keyframeCount,
+    required this.keyframePoses,
+  });
+}
+
+extension RaylibModelAnimationToDart on raw.ModelAnimation {
+  ModelAnimation toDart() {
+    final p = ffi.malloc<raw.ModelAnimation>();
+    final namePtr = p.ref.name;
+    return ModelAnimation(
+      name: utf8.decode(
+        Uint8List.fromList([
+          for (int index = 0; namePtr[index] != 0 && index < 32; index++)
+            namePtr[index],
+        ]),
+      ),
+      boneCount: boneCount,
+      keyframeCount: keyframeCount,
+      keyframePoses: keyframePoses == nullptr
+          ? []
+          : [
+              for (var i = 0; i < keyframeCount; i++)
+                [
+                  for (var j = 0; j < boneCount; j++)
+                    keyframePoses[i][j].toDart(),
+                ],
+            ],
+    );
   }
 }
 
@@ -1401,6 +1425,18 @@ extension RaylibVrStereoConfigToDart on raw.VrStereoConfig {
     }
     return VrStereoConfig._(p);
   }
+}
+
+class FilePathList {
+  final List<String> paths;
+
+  const FilePathList(this.paths);
+}
+
+extension RaylibFilePathListToDart on raw.FilePathList {
+  FilePathList toDart() => FilePathList([
+    for (var i = 0; i < count; i++) paths[i].cast<ffi.Utf8>().toDartString(),
+  ]);
 }
 
 @immutable
