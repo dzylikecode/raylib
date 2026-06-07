@@ -30,18 +30,8 @@ void DrawLine(
 ) => raw.DrawLine(startPosX, startPosY, endPosX, endPosY, color.ptr.ref);
 
 // TODO: 完全是 c 遗留的问题，想想怎么 modern 的同时又不破坏 API 的一致性
-int _pointCount(List<Vector2> points, int pointCount) {
-  if (pointCount < 0) return 0;
-  if (pointCount > points.length) return points.length;
-  return pointCount;
-}
-
-Pointer<raw.Vector2> _vector2s(
-  ffi.Arena arena,
-  List<Vector2> points,
-  int pointCount,
-) {
-  final count = _pointCount(points, pointCount);
+Pointer<raw.Vector2> _vector2s(ffi.Arena arena, List<Vector2> points) {
+  final count = points.length;
   final ptr = arena<raw.Vector2>(count);
   for (var i = 0; i < count; i++) {
     ptr[i]
@@ -70,14 +60,9 @@ void DrawLineEx(Vector2 startPos, Vector2 endPos, double thick, Color color) =>
       );
     });
 
-void DrawLineStrip(List<Vector2> points, int pointCount, Color color) =>
-    ffi.using((arena) {
-      raw.DrawLineStrip(
-        _vector2s(arena, points, pointCount),
-        _pointCount(points, pointCount),
-        color.ptr.ref,
-      );
-    });
+void DrawLineStrip(List<Vector2> points, Color color) => ffi.using((arena) {
+  raw.DrawLineStrip(_vector2s(arena, points), points.length, color.ptr.ref);
+});
 
 void DrawLineBezier(
   Vector2 startPos,
@@ -393,23 +378,13 @@ void DrawTriangleLines(Vector2 v1, Vector2 v2, Vector2 v3, Color color) =>
       );
     });
 
-void DrawTriangleFan(List<Vector2> points, int pointCount, Color color) =>
-    ffi.using((arena) {
-      raw.DrawTriangleFan(
-        _vector2s(arena, points, pointCount),
-        _pointCount(points, pointCount),
-        color.ptr.ref,
-      );
-    });
+void DrawTriangleFan(List<Vector2> points, Color color) => ffi.using((arena) {
+  raw.DrawTriangleFan(_vector2s(arena, points), points.length, color.ptr.ref);
+});
 
-void DrawTriangleStrip(List<Vector2> points, int pointCount, Color color) =>
-    ffi.using((arena) {
-      raw.DrawTriangleStrip(
-        _vector2s(arena, points, pointCount),
-        _pointCount(points, pointCount),
-        color.ptr.ref,
-      );
-    });
+void DrawTriangleStrip(List<Vector2> points, Color color) => ffi.using((arena) {
+  raw.DrawTriangleStrip(_vector2s(arena, points), points.length, color.ptr.ref);
+});
 
 void DrawPoly(
   Vector2 center,
@@ -461,75 +436,58 @@ void DrawPolyLinesEx(
   );
 });
 
-void DrawSplineLinear(
-  List<Vector2> points,
-  int pointCount,
-  double thick,
-  Color color,
-) => ffi.using((arena) {
-  raw.DrawSplineLinear(
-    _vector2s(arena, points, pointCount),
-    _pointCount(points, pointCount),
-    thick,
-    color.ptr.ref,
-  );
-});
+void DrawSplineLinear(List<Vector2> points, double thick, Color color) =>
+    ffi.using((arena) {
+      raw.DrawSplineLinear(
+        _vector2s(arena, points),
+        points.length,
+        thick,
+        color.ptr.ref,
+      );
+    });
 
-void DrawSplineBasis(
-  List<Vector2> points,
-  int pointCount,
-  double thick,
-  Color color,
-) => ffi.using((arena) {
-  raw.DrawSplineBasis(
-    _vector2s(arena, points, pointCount),
-    _pointCount(points, pointCount),
-    thick,
-    color.ptr.ref,
-  );
-});
+void DrawSplineBasis(List<Vector2> points, double thick, Color color) =>
+    ffi.using((arena) {
+      raw.DrawSplineBasis(
+        _vector2s(arena, points),
+        points.length,
+        thick,
+        color.ptr.ref,
+      );
+    });
 
-void DrawSplineCatmullRom(
-  List<Vector2> points,
-  int pointCount,
-  double thick,
-  Color color,
-) => ffi.using((arena) {
-  raw.DrawSplineCatmullRom(
-    _vector2s(arena, points, pointCount),
-    _pointCount(points, pointCount),
-    thick,
-    color.ptr.ref,
-  );
-});
+void DrawSplineCatmullRom(List<Vector2> points, double thick, Color color) =>
+    ffi.using((arena) {
+      raw.DrawSplineCatmullRom(
+        _vector2s(arena, points),
+        points.length,
+        thick,
+        color.ptr.ref,
+      );
+    });
 
 void DrawSplineBezierQuadratic(
   List<Vector2> points,
-  int pointCount,
   double thick,
   Color color,
 ) => ffi.using((arena) {
   raw.DrawSplineBezierQuadratic(
-    _vector2s(arena, points, pointCount),
-    _pointCount(points, pointCount),
+    _vector2s(arena, points),
+    points.length,
     thick,
     color.ptr.ref,
   );
 });
 
-void DrawSplineBezierCubic(
-  List<Vector2> points,
-  int pointCount,
-  double thick,
-  Color color,
-) => ffi.using((arena) {
-  raw.DrawSplineBezierCubic(
-    _vector2s(arena, points, pointCount),
-    _pointCount(points, pointCount),
-    thick,
-    color.ptr.ref,
-  );
-});
+void DrawSplineBezierCubic(List<Vector2> points, double thick, Color color) =>
+    ffi.using((arena) {
+      raw.DrawSplineBezierCubic(
+        _vector2s(arena, points),
+        points.length,
+        thick,
+        color.ptr.ref,
+      );
+    });
 
 void DrawSplineSegmentLinear(
   Vector2 p1,
@@ -767,17 +725,14 @@ bool CheckCollisionPointLine(
   );
 });
 
-bool CheckCollisionPointPoly(
-  Vector2 point,
-  List<Vector2> points,
-  int pointCount,
-) => ffi.using((arena) {
-  return raw.CheckCollisionPointPoly(
-    arena.vector2(point).ref,
-    _vector2s(arena, points, pointCount),
-    _pointCount(points, pointCount),
-  );
-});
+bool CheckCollisionPointPoly(Vector2 point, List<Vector2> points) =>
+    ffi.using((arena) {
+      return raw.CheckCollisionPointPoly(
+        arena.vector2(point).ref,
+        _vector2s(arena, points),
+        points.length,
+      );
+    });
 
 bool CheckCollisionLines(
   Vector2 startPos1,

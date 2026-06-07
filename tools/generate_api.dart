@@ -82,7 +82,25 @@ import 'dart:typed_data';
     deps: """
 import 'structs.dart';
 """,
-    customInterfaces: {},
+    customInterfaces: {
+      'DrawLineStrip': 'void DrawLineStrip(List<Vector2> points, Color color)',
+      'DrawTriangleFan':
+          'void DrawTriangleFan(List<Vector2> points, Color color)',
+      'DrawTriangleStrip':
+          'void DrawTriangleStrip(List<Vector2> points, Color color)',
+      'DrawSplineLinear':
+          'void DrawSplineLinear(List<Vector2> points, double thick, Color color)',
+      'DrawSplineBasis':
+          'void DrawSplineBasis(List<Vector2> points, double thick, Color color)',
+      'DrawSplineCatmullRom':
+          'void DrawSplineCatmullRom(List<Vector2> points, double thick, Color color)',
+      'DrawSplineBezierQuadratic':
+          'void DrawSplineBezierQuadratic(List<Vector2> points, double thick, Color color)',
+      'DrawSplineBezierCubic':
+          'void DrawSplineBezierCubic(List<Vector2> points, double thick, Color color)',
+      'CheckCollisionPointPoly':
+          'bool CheckCollisionPointPoly(Vector2 point, List<Vector2> points)',
+    },
   ),
   'textures': (
     deps: """

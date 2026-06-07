@@ -25,7 +25,7 @@ void DrawLineV(Vector2 startPos, Vector2 endPos, Color color) => proxy.DrawLineV
 /// Draw a line (using triangles/quads)
 void DrawLineEx(Vector2 startPos, Vector2 endPos, double thick, Color color) => proxy.DrawLineEx(startPos, endPos, thick, color);
 /// Draw lines sequence (using gl lines)
-void DrawLineStrip(List<Vector2> points, int pointCount, Color color) => proxy.DrawLineStrip(points, pointCount, color);
+void DrawLineStrip(List<Vector2> points, Color color) => proxy.DrawLineStrip(points, color);
 /// Draw line segment cubic-bezier in-out interpolation
 void DrawLineBezier(Vector2 startPos, Vector2 endPos, double thick, Color color) => proxy.DrawLineBezier(startPos, endPos, thick, color);
 /// Draw a dashed line
@@ -85,9 +85,9 @@ void DrawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color) => proxy.Draw
 /// Draw triangle outline (vertex in counter-clockwise order!)
 void DrawTriangleLines(Vector2 v1, Vector2 v2, Vector2 v3, Color color) => proxy.DrawTriangleLines(v1, v2, v3, color);
 /// Draw a triangle fan defined by points (first vertex is the center)
-void DrawTriangleFan(List<Vector2> points, int pointCount, Color color) => proxy.DrawTriangleFan(points, pointCount, color);
+void DrawTriangleFan(List<Vector2> points, Color color) => proxy.DrawTriangleFan(points, color);
 /// Draw a triangle strip defined by points
-void DrawTriangleStrip(List<Vector2> points, int pointCount, Color color) => proxy.DrawTriangleStrip(points, pointCount, color);
+void DrawTriangleStrip(List<Vector2> points, Color color) => proxy.DrawTriangleStrip(points, color);
 /// Draw a regular polygon (Vector version)
 void DrawPoly(Vector2 center, int sides, double radius, double rotation, Color color) => proxy.DrawPoly(center, sides, radius, rotation, color);
 /// Draw a polygon outline of n sides
@@ -97,15 +97,15 @@ void DrawPolyLinesEx(Vector2 center, int sides, double radius, double rotation, 
 
 // Splines drawing functions
 /// Draw spline: Linear, minimum 2 points
-void DrawSplineLinear(List<Vector2> points, int pointCount, double thick, Color color) => proxy.DrawSplineLinear(points, pointCount, thick, color);
+void DrawSplineLinear(List<Vector2> points, double thick, Color color) => proxy.DrawSplineLinear(points, thick, color);
 /// Draw spline: B-Spline, minimum 4 points
-void DrawSplineBasis(List<Vector2> points, int pointCount, double thick, Color color) => proxy.DrawSplineBasis(points, pointCount, thick, color);
+void DrawSplineBasis(List<Vector2> points, double thick, Color color) => proxy.DrawSplineBasis(points, thick, color);
 /// Draw spline: Catmull-Rom, minimum 4 points
-void DrawSplineCatmullRom(List<Vector2> points, int pointCount, double thick, Color color) => proxy.DrawSplineCatmullRom(points, pointCount, thick, color);
+void DrawSplineCatmullRom(List<Vector2> points, double thick, Color color) => proxy.DrawSplineCatmullRom(points, thick, color);
 /// Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
-void DrawSplineBezierQuadratic(List<Vector2> points, int pointCount, double thick, Color color) => proxy.DrawSplineBezierQuadratic(points, pointCount, thick, color);
+void DrawSplineBezierQuadratic(List<Vector2> points, double thick, Color color) => proxy.DrawSplineBezierQuadratic(points, thick, color);
 /// Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
-void DrawSplineBezierCubic(List<Vector2> points, int pointCount, double thick, Color color) => proxy.DrawSplineBezierCubic(points, pointCount, thick, color);
+void DrawSplineBezierCubic(List<Vector2> points, double thick, Color color) => proxy.DrawSplineBezierCubic(points, thick, color);
 /// Draw spline segment: Linear, 2 points
 void DrawSplineSegmentLinear(Vector2 p1, Vector2 p2, double thick, Color color) => proxy.DrawSplineSegmentLinear(p1, p2, thick, color);
 /// Draw spline segment: B-Spline, 4 points
@@ -147,7 +147,7 @@ bool CheckCollisionPointTriangle(Vector2 point, Vector2 p1, Vector2 p2, Vector2 
 /// Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
 bool CheckCollisionPointLine(Vector2 point, Vector2 p1, Vector2 p2, int threshold) => proxy.CheckCollisionPointLine(point, p1, p2, threshold);
 /// Check if point is within a polygon described by array of vertices
-bool CheckCollisionPointPoly(Vector2 point, List<Vector2> points, int pointCount) => proxy.CheckCollisionPointPoly(point, points, pointCount);
+bool CheckCollisionPointPoly(Vector2 point, List<Vector2> points) => proxy.CheckCollisionPointPoly(point, points);
 /// Check the collision between two lines defined by two points each, returns collision point by reference
 bool CheckCollisionLines(Vector2 startPos1, Vector2 endPos1, Vector2 startPos2, Vector2 endPos2, List<Vector2> collisionPoint) => proxy.CheckCollisionLines(startPos1, endPos1, startPos2, endPos2, collisionPoint);
 /// Get collision rectangle for two rectangles collision
