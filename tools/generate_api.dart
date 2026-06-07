@@ -36,6 +36,14 @@ import 'dart:typed_data';
       'SaveFileData': 'bool SaveFileData(String fileName, Uint8List data)',
       'ExportDataAsCode':
           'bool ExportDataAsCode(Uint8List data, String fileName)',
+      'CompressData': 'Uint8List CompressData(Uint8List data)',
+      'DecompressData': 'Uint8List DecompressData(Uint8List compData)',
+      'EncodeDataBase64': 'String EncodeDataBase64(Uint8List data)',
+      'DecodeDataBase64': 'Uint8List DecodeDataBase64(Uint8List data)',
+      'ComputeCRC32': 'int ComputeCRC32(Uint8List data)',
+      'ComputeMD5': 'Uint8List ComputeMD5(Uint8List data)',
+      'ComputeSHA1': 'Uint8List ComputeSHA1(Uint8List data)',
+      'ComputeSHA256': 'Uint8List ComputeSHA256(Uint8List data)',
     },
   ),
 };

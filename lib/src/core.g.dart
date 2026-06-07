@@ -349,21 +349,21 @@ int GetDirectoryFileCountEx(String basePath, String filter, bool scanSubdirs) =>
 
 // Compression/Encoding functionality
 /// Compress data (DEFLATE algorithm), memory must be MemFree()
-String CompressData(String data, int dataSize, List<int> compDataSize) => proxy.CompressData(data, dataSize, compDataSize);
+Uint8List CompressData(Uint8List data) => proxy.CompressData(data);
 /// Decompress data (DEFLATE algorithm), memory must be MemFree()
-String DecompressData(String compData, int compDataSize, List<int> dataSize) => proxy.DecompressData(compData, compDataSize, dataSize);
+Uint8List DecompressData(Uint8List compData) => proxy.DecompressData(compData);
 /// Encode data to Base64 string (includes NULL terminator), memory must be MemFree()
-String EncodeDataBase64(String data, int dataSize, List<int> outputSize) => proxy.EncodeDataBase64(data, dataSize, outputSize);
+String EncodeDataBase64(Uint8List data) => proxy.EncodeDataBase64(data);
 /// Decode Base64 string (expected NULL terminated), memory must be MemFree()
-String DecodeDataBase64(String text, List<int> outputSize) => proxy.DecodeDataBase64(text, outputSize);
+Uint8List DecodeDataBase64(Uint8List data) => proxy.DecodeDataBase64(data);
 /// Compute CRC32 hash code
-int ComputeCRC32(String data, int dataSize) => proxy.ComputeCRC32(data, dataSize);
+int ComputeCRC32(Uint8List data) => proxy.ComputeCRC32(data);
 /// Compute MD5 hash code, returns static int[4] (16 bytes)
-List<int> ComputeMD5(String data, int dataSize) => proxy.ComputeMD5(data, dataSize);
+Uint8List ComputeMD5(Uint8List data) => proxy.ComputeMD5(data);
 /// Compute SHA1 hash code, returns static int[5] (20 bytes)
-List<int> ComputeSHA1(String data, int dataSize) => proxy.ComputeSHA1(data, dataSize);
+Uint8List ComputeSHA1(Uint8List data) => proxy.ComputeSHA1(data);
 /// Compute SHA256 hash code, returns static int[8] (32 bytes)
-List<int> ComputeSHA256(String data, int dataSize) => proxy.ComputeSHA256(data, dataSize);
+Uint8List ComputeSHA256(Uint8List data) => proxy.ComputeSHA256(data);
 
 // Automation events functionality
 /// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
