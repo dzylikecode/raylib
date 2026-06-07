@@ -263,11 +263,11 @@ void MemFree(int ptr) => proxy.MemFree(ptr);
 /// Load file data as byte array (read)
 Uint8List LoadFileData(String fileName) => proxy.LoadFileData(fileName);
 /// Unload file data allocated by LoadFileData()
-void UnloadFileData(String data) => raw.UnloadFileData(data);
+void UnloadFileData(Uint8List data) => proxy.UnloadFileData(data);
 /// Save data to file from byte array (write), returns true on success
-bool SaveFileData(String fileName, int data, int dataSize) => proxy.SaveFileData(fileName, data, dataSize);
+bool SaveFileData(String fileName, Uint8List data) => proxy.SaveFileData(fileName, data);
 /// Export data to code (.h), returns true on success
-bool ExportDataAsCode(String data, int dataSize, String fileName) => proxy.ExportDataAsCode(data, dataSize, fileName);
+bool ExportDataAsCode(Uint8List data, String fileName) => proxy.ExportDataAsCode(data, fileName);
 /// Load text data from file (read), returns a '\0' terminated string
 String LoadFileText(String fileName) => proxy.LoadFileText(fileName);
 /// Unload file text data allocated by LoadFileText()
@@ -287,17 +287,17 @@ void SetLoadFileTextCallback(LoadFileTextCallback callback) => proxy.SetLoadFile
 void SetSaveFileTextCallback(SaveFileTextCallback callback) => proxy.SetSaveFileTextCallback(callback);
 
 /// Rename file (if exists)
-int FileRename(String fileName, String fileRename) => raw.FileRename(fileName, fileRename);
+int FileRename(String fileName, String fileRename) => proxy.FileRename(fileName, fileRename);
 /// Remove file (if exists)
-int FileRemove(String fileName) => raw.FileRemove(fileName);
+int FileRemove(String fileName) => proxy.FileRemove(fileName);
 /// Copy file from one path to another, dstPath created if it doesn't exist
-int FileCopy(String srcPath, String dstPath) => raw.FileCopy(srcPath, dstPath);
+int FileCopy(String srcPath, String dstPath) => proxy.FileCopy(srcPath, dstPath);
 /// Move file from one directory to another, dstPath created if it doesn't exist
-int FileMove(String srcPath, String dstPath) => raw.FileMove(srcPath, dstPath);
+int FileMove(String srcPath, String dstPath) => proxy.FileMove(srcPath, dstPath);
 /// Replace text in an existing file
-int FileTextReplace(String fileName, String search, String replacement) => raw.FileTextReplace(fileName, search, replacement);
+int FileTextReplace(String fileName, String search, String replacement) => proxy.FileTextReplace(fileName, search, replacement);
 /// Find text in existing file
-int FileTextFindIndex(String fileName, String search) => raw.FileTextFindIndex(fileName, search);
+int FileTextFindIndex(String fileName, String search) => proxy.FileTextFindIndex(fileName, search);
 /// Check if file exists
 bool FileExists(String fileName) => proxy.FileExists(fileName);
 /// Check if a directory path exists
@@ -335,17 +335,17 @@ FilePathList LoadDirectoryFiles(String dirPath) => proxy.LoadDirectoryFiles(dirP
 /// Load directory filepaths with extension filtering and subdir scan; some filters available: "*.*", "FILES*", "DIRS*"
 FilePathList LoadDirectoryFilesEx(String basePath, String filter, bool scanSubdirs) => proxy.LoadDirectoryFilesEx(basePath, filter, scanSubdirs);
 /// Unload filepaths
-void UnloadDirectoryFiles(FilePathList files) => raw.UnloadDirectoryFiles(files);
+void UnloadDirectoryFiles(FilePathList files) => proxy.UnloadDirectoryFiles(files);
 /// Check if a file has been dropped into window
 bool IsFileDropped() => raw.IsFileDropped();
 /// Load dropped filepaths
 FilePathList LoadDroppedFiles() => proxy.LoadDroppedFiles();
 /// Unload dropped filepaths
-void UnloadDroppedFiles(FilePathList files) => raw.UnloadDroppedFiles(files);
+void UnloadDroppedFiles(FilePathList files) => proxy.UnloadDroppedFiles(files);
 /// Get the file count in a directory
-int GetDirectoryFileCount(String dirPath) => raw.GetDirectoryFileCount(dirPath);
+int GetDirectoryFileCount(String dirPath) => proxy.GetDirectoryFileCount(dirPath);
 /// Get the file count in a directory with extension filtering and recursive directory scan. Use 'DIR' in the filter string to include directories in the result
-int GetDirectoryFileCountEx(String basePath, String filter, bool scanSubdirs) => raw.GetDirectoryFileCountEx(basePath, filter, scanSubdirs);
+int GetDirectoryFileCountEx(String basePath, String filter, bool scanSubdirs) => proxy.GetDirectoryFileCountEx(basePath, filter, scanSubdirs);
 
 // Compression/Encoding functionality
 /// Compress data (DEFLATE algorithm), memory must be MemFree()
@@ -363,7 +363,7 @@ List<int> ComputeMD5(String data, int dataSize) => proxy.ComputeMD5(data, dataSi
 /// Compute SHA1 hash code, returns static int[5] (20 bytes)
 List<int> ComputeSHA1(String data, int dataSize) => proxy.ComputeSHA1(data, dataSize);
 /// Compute SHA256 hash code, returns static int[8] (32 bytes)
-List<int> ComputeSHA256(String data, int dataSize) => raw.ComputeSHA256(data, dataSize);
+List<int> ComputeSHA256(String data, int dataSize) => proxy.ComputeSHA256(data, dataSize);
 
 // Automation events functionality
 /// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS

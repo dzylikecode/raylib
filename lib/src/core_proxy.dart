@@ -560,6 +560,47 @@ void SetSaveFileTextCallback([SaveFileTextCallback? callback]) {
   }
 }
 
+int FileRename(String fileName, String fileRename) => ffi.using((arena) {
+  return raw.FileRename(
+    fileName.toNativeUtf8(allocator: arena).cast(),
+    fileRename.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+int FileRemove(String fileName) => ffi.using((arena) {
+  return raw.FileRemove(fileName.toNativeUtf8(allocator: arena).cast());
+});
+
+int FileCopy(String srcPath, String dstPath) => ffi.using((arena) {
+  return raw.FileCopy(
+    srcPath.toNativeUtf8(allocator: arena).cast(),
+    dstPath.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+int FileMove(String srcPath, String dstPath) => ffi.using((arena) {
+  return raw.FileMove(
+    srcPath.toNativeUtf8(allocator: arena).cast(),
+    dstPath.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+int FileTextReplace(String fileName, String search, String replacement) =>
+    ffi.using((arena) {
+      return raw.FileTextReplace(
+        fileName.toNativeUtf8(allocator: arena).cast(),
+        search.toNativeUtf8(allocator: arena).cast(),
+        replacement.toNativeUtf8(allocator: arena).cast(),
+      );
+    });
+
+int FileTextFindIndex(String fileName, String search) => ffi.using((arena) {
+  return raw.FileTextFindIndex(
+    fileName.toNativeUtf8(allocator: arena).cast(),
+    search.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
 bool FileExists(String fileName) => ffi.using((arena) {
   return raw.FileExists(fileName.toNativeUtf8(allocator: arena).cast());
 });
@@ -661,6 +702,8 @@ List<String> LoadDirectoryFilesEx(
   return result;
 });
 
+void UnloadDirectoryFiles(FilePathList files) => 0;
+
 List<String> LoadDroppedFiles() {
   final list = raw.LoadDroppedFiles();
   final result = List<String>.generate(
@@ -670,6 +713,23 @@ List<String> LoadDroppedFiles() {
   raw.UnloadDroppedFiles(list);
   return result;
 }
+
+void UnloadDroppedFiles(FilePathList files) => 0;
+
+int GetDirectoryFileCount(String dirPath) => ffi.using((arena) {
+  return raw.GetDirectoryFileCount(
+    dirPath.toNativeUtf8(allocator: arena).cast(),
+  );
+});
+
+int GetDirectoryFileCountEx(String basePath, String filter, bool scanSubdirs) =>
+    ffi.using((arena) {
+      return raw.GetDirectoryFileCountEx(
+        basePath.toNativeUtf8(allocator: arena).cast(),
+        filter.toNativeUtf8(allocator: arena).cast(),
+        scanSubdirs,
+      );
+    });
 
 int GetFileModTime(String fileName) => ffi.using((arena) {
   return raw.GetFileModTime(fileName.toNativeUtf8(allocator: arena).cast());
@@ -747,6 +807,13 @@ Uint8List ComputeSHA1(Uint8List data) => ffi.using((arena) {
   ptr.asTypedList(data.length).setAll(0, data);
   final result = raw.ComputeSHA1(ptr.cast(), data.length);
   return .fromList(result.cast<Uint8>().asTypedList(20));
+});
+
+Uint8List ComputeSHA256(Uint8List data) => ffi.using((arena) {
+  final ptr = arena<Uint8>(data.length);
+  ptr.asTypedList(data.length).setAll(0, data);
+  final result = raw.ComputeSHA256(ptr.cast(), data.length);
+  return .fromList(result.cast<Uint8>().asTypedList(32));
 });
 
 // ── Automation ─────────────────────────────────────────────────────────

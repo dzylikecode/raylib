@@ -23,7 +23,6 @@ typedef SaveFileDataCallback = bool Function(String, Uint8List);
 typedef LoadFileTextCallback = String Function(String);
 typedef SaveFileTextCallback = bool Function(String, String);
 
-
 typedef Matrix = Matrix4;
 
 @Deprecated('Use Camera3D instead')
@@ -1436,16 +1435,12 @@ extension RaylibVrStereoConfigToDart on raw.VrStereoConfig {
   }
 }
 
-class FilePathList {
-  final List<String> paths;
-
-  const FilePathList(this.paths);
-}
+typedef FilePathList = List<String>;
 
 extension RaylibFilePathListToDart on raw.FilePathList {
-  FilePathList toDart() => FilePathList([
+  FilePathList toDart() => [
     for (var i = 0; i < count; i++) paths[i].cast<ffi.Utf8>().toDartString(),
-  ]);
+  ];
 }
 
 @immutable

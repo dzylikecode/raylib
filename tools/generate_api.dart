@@ -33,6 +33,9 @@ import 'dart:typed_data';
           'void TraceLog(TraceLogLevel logLevel, String text, List<Object> args)',
       'LoadFileData': 'Uint8List LoadFileData(String fileName)',
       'UnloadFileData': 'void UnloadFileData(Uint8List data)',
+      'SaveFileData': 'bool SaveFileData(String fileName, Uint8List data)',
+      'ExportDataAsCode':
+          'bool ExportDataAsCode(Uint8List data, String fileName)',
     },
   ),
 };
