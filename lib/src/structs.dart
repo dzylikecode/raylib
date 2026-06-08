@@ -1539,6 +1539,31 @@ extension ArenaExt on ffi.Arena {
     return ptrs;
   }
 
+  Pointer<Int> codepoints(List<int> value) {
+    if (value.isEmpty) return nullptr;
+    final ptr = this<Int>(value.length);
+    ptr.cast<Int32>().asTypedList(value.length).setAll(0, value);
+    return ptr;
+  }
+
+  Pointer<UnsignedChar> bytes(Uint8List value) {
+    final ptr = this<UnsignedChar>(value.length);
+    ptr.cast<Uint8>().asTypedList(value.length).setAll(0, value);
+    return ptr;
+  }
+
+  Pointer<raw.GlyphInfo> glyphInfos(List<GlyphInfo> value) {
+    final ptr = this<raw.GlyphInfo>(value.length);
+    for (var i = 0; i < value.length; i++) {
+      ptr[i]
+        ..value = value[i].value
+        ..offsetX = value[i].offsetX
+        ..offsetY = value[i].offsetY
+        ..advanceX = value[i].advanceX;
+    }
+    return ptr;
+  }
+
   Pointer<raw.Vector3> vector3(Vector3 value) {
     final ptr = this<raw.Vector3>();
     ptr.ref

@@ -8,31 +8,6 @@ import 'package:ffi/ffi.dart' as ffi;
 import 'raylib.g.dart' as raw;
 import 'structs.dart';
 
-Pointer<Int> _codepoints(ffi.Arena arena, List<int> codepoints) {
-  if (codepoints.isEmpty) return nullptr;
-  final ptr = arena<Int>(codepoints.length);
-  ptr.cast<Int32>().asTypedList(codepoints.length).setAll(0, codepoints);
-  return ptr;
-}
-
-Pointer<UnsignedChar> _bytes(ffi.Arena arena, Uint8List data) {
-  final ptr = arena<UnsignedChar>(data.length);
-  ptr.cast<Uint8>().asTypedList(data.length).setAll(0, data);
-  return ptr;
-}
-
-Pointer<raw.GlyphInfo> _glyphs(ffi.Arena arena, List<GlyphInfo> glyphs) {
-  final ptr = arena<raw.GlyphInfo>(glyphs.length);
-  for (var i = 0; i < glyphs.length; i++) {
-    ptr[i]
-      ..value = glyphs[i].value
-      ..offsetX = glyphs[i].offsetX
-      ..offsetY = glyphs[i].offsetY
-      ..advanceX = glyphs[i].advanceX;
-  }
-  return ptr;
-}
-
 String _string(Pointer<Char> ptr) => ptr.cast<ffi.Utf8>().toDartString();
 
 String _allocatedString(Pointer<Char> ptr) {
@@ -52,7 +27,7 @@ Font LoadFontEx(String fileName, int fontSize, List<int> codepoints) =>
       return raw.LoadFontEx(
         fileName.toNativeUtf8(allocator: arena).cast(),
         fontSize,
-        _codepoints(arena, codepoints),
+        arena.codepoints(codepoints),
         codepoints.length,
       ).toDart();
     });
@@ -68,10 +43,10 @@ Font LoadFontFromMemory(
 ) => ffi.using((arena) {
   return raw.LoadFontFromMemory(
     fileType.toNativeUtf8(allocator: arena).cast(),
-    _bytes(arena, fileData),
+    arena.bytes(fileData),
     fileData.length,
     fontSize,
-    _codepoints(arena, codepoints),
+    arena.codepoints(codepoints),
     codepoints.length,
   ).toDart();
 });
@@ -84,10 +59,10 @@ List<GlyphInfo> LoadFontData(
 ) => ffi.using((arena) {
   final glyphCount = arena<Int>();
   final ptr = raw.LoadFontData(
-    _bytes(arena, fileData),
+    arena.bytes(fileData),
     fileData.length,
     fontSize,
-    _codepoints(arena, codepoints),
+    arena.codepoints(codepoints),
     codepoints.length,
     type,
     glyphCount,
@@ -105,7 +80,7 @@ List<GlyphInfo> LoadFontData(
 ) => ffi.using((arena) {
   final glyphRecs = arena<Pointer<raw.Rectangle>>();
   final image = raw.GenImageFontAtlas(
-    _glyphs(arena, glyphs),
+    arena.glyphInfos(glyphs),
     glyphRecs.cast(),
     glyphs.length,
     fontSize,
@@ -208,7 +183,7 @@ void DrawTextCodepoints(
 ) => ffi.using((arena) {
   raw.DrawTextCodepoints(
     font.ptr.ref,
-    _codepoints(arena, codepoints),
+    arena.codepoints(codepoints),
     codepoints.length,
     arena.vector2(position).ref,
     fontSize,
@@ -243,7 +218,7 @@ Vector2 MeasureTextCodepoints(
 ) => ffi.using((arena) {
   return raw.MeasureTextCodepoints(
     font.ptr.ref,
-    _codepoints(arena, codepoints),
+    arena.codepoints(codepoints),
     codepoints.length,
     fontSize,
     spacing,
@@ -260,7 +235,7 @@ Rectangle GetGlyphAtlasRec(Font font, int codepoint) =>
     raw.GetGlyphAtlasRec(font.ptr.ref, codepoint).toDart();
 
 String LoadUTF8(List<int> codepoints) => ffi.using((arena) {
-  final ptr = raw.LoadUTF8(_codepoints(arena, codepoints), codepoints.length);
+  final ptr = raw.LoadUTF8(arena.codepoints(codepoints), codepoints.length);
   final result = ptr.cast<ffi.Utf8>().toDartString();
   raw.UnloadUTF8(ptr);
   return result;

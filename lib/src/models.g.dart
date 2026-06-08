@@ -8,45 +8,45 @@ import 'structs.dart';
 
 // Basic geometric 3D shapes drawing functions
 /// Draw a line in 3D world space
-void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color) => raw.DrawLine3D(startPos, endPos, color);
+void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color) => proxy.DrawLine3D(startPos, endPos, color);
 /// Draw a point in 3D space, actually a small line
-void DrawPoint3D(Vector3 position, Color color) => raw.DrawPoint3D(position, color);
+void DrawPoint3D(Vector3 position, Color color) => proxy.DrawPoint3D(position, color);
 /// Draw a circle in 3D world space
-void DrawCircle3D(Vector3 center, double radius, Vector3 rotationAxis, double rotationAngle, Color color) => raw.DrawCircle3D(center, radius, rotationAxis, rotationAngle, color);
+void DrawCircle3D(Vector3 center, double radius, Vector3 rotationAxis, double rotationAngle, Color color) => proxy.DrawCircle3D(center, radius, rotationAxis, rotationAngle, color);
 /// Draw a color-filled triangle (vertex in counter-clockwise order!)
-void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color) => raw.DrawTriangle3D(v1, v2, v3, color);
+void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color) => proxy.DrawTriangle3D(v1, v2, v3, color);
 /// Draw a triangle strip defined by points
 void DrawTriangleStrip3D(List<Vector3> points, Color color) => proxy.DrawTriangleStrip3D(points, color);
 /// Draw cube
-void DrawCube(Vector3 position, double width, double height, double length, Color color) => raw.DrawCube(position, width, height, length, color);
+void DrawCube(Vector3 position, double width, double height, double length, Color color) => proxy.DrawCube(position, width, height, length, color);
 /// Draw cube (Vector version)
-void DrawCubeV(Vector3 position, Vector3 size, Color color) => raw.DrawCubeV(position, size, color);
+void DrawCubeV(Vector3 position, Vector3 size, Color color) => proxy.DrawCubeV(position, size, color);
 /// Draw cube wires
-void DrawCubeWires(Vector3 position, double width, double height, double length, Color color) => raw.DrawCubeWires(position, width, height, length, color);
+void DrawCubeWires(Vector3 position, double width, double height, double length, Color color) => proxy.DrawCubeWires(position, width, height, length, color);
 /// Draw cube wires (Vector version)
-void DrawCubeWiresV(Vector3 position, Vector3 size, Color color) => raw.DrawCubeWiresV(position, size, color);
+void DrawCubeWiresV(Vector3 position, Vector3 size, Color color) => proxy.DrawCubeWiresV(position, size, color);
 /// Draw sphere
-void DrawSphere(Vector3 centerPos, double radius, Color color) => raw.DrawSphere(centerPos, radius, color);
+void DrawSphere(Vector3 centerPos, double radius, Color color) => proxy.DrawSphere(centerPos, radius, color);
 /// Draw sphere with extended parameters
-void DrawSphereEx(Vector3 centerPos, double radius, int rings, int slices, Color color) => raw.DrawSphereEx(centerPos, radius, rings, slices, color);
+void DrawSphereEx(Vector3 centerPos, double radius, int rings, int slices, Color color) => proxy.DrawSphereEx(centerPos, radius, rings, slices, color);
 /// Draw sphere wires
-void DrawSphereWires(Vector3 centerPos, double radius, int rings, int slices, Color color) => raw.DrawSphereWires(centerPos, radius, rings, slices, color);
+void DrawSphereWires(Vector3 centerPos, double radius, int rings, int slices, Color color) => proxy.DrawSphereWires(centerPos, radius, rings, slices, color);
 /// Draw a cylinder/cone
-void DrawCylinder(Vector3 position, double radiusTop, double radiusBottom, double height, int slices, Color color) => raw.DrawCylinder(position, radiusTop, radiusBottom, height, slices, color);
+void DrawCylinder(Vector3 position, double radiusTop, double radiusBottom, double height, int slices, Color color) => proxy.DrawCylinder(position, radiusTop, radiusBottom, height, slices, color);
 /// Draw a cylinder with base at startPos and top at endPos
-void DrawCylinderEx(Vector3 startPos, Vector3 endPos, double startRadius, double endRadius, int sides, Color color) => raw.DrawCylinderEx(startPos, endPos, startRadius, endRadius, sides, color);
+void DrawCylinderEx(Vector3 startPos, Vector3 endPos, double startRadius, double endRadius, int sides, Color color) => proxy.DrawCylinderEx(startPos, endPos, startRadius, endRadius, sides, color);
 /// Draw a cylinder/cone wires
-void DrawCylinderWires(Vector3 position, double radiusTop, double radiusBottom, double height, int slices, Color color) => raw.DrawCylinderWires(position, radiusTop, radiusBottom, height, slices, color);
+void DrawCylinderWires(Vector3 position, double radiusTop, double radiusBottom, double height, int slices, Color color) => proxy.DrawCylinderWires(position, radiusTop, radiusBottom, height, slices, color);
 /// Draw a cylinder wires with base at startPos and top at endPos
-void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, double startRadius, double endRadius, int sides, Color color) => raw.DrawCylinderWiresEx(startPos, endPos, startRadius, endRadius, sides, color);
+void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, double startRadius, double endRadius, int sides, Color color) => proxy.DrawCylinderWiresEx(startPos, endPos, startRadius, endRadius, sides, color);
 /// Draw a capsule with the center of its sphere caps at startPos and endPos
-void DrawCapsule(Vector3 startPos, Vector3 endPos, double radius, int slices, int rings, Color color) => raw.DrawCapsule(startPos, endPos, radius, slices, rings, color);
+void DrawCapsule(Vector3 startPos, Vector3 endPos, double radius, int slices, int rings, Color color) => proxy.DrawCapsule(startPos, endPos, radius, slices, rings, color);
 /// Draw capsule wireframe with the center of its sphere caps at startPos and endPos
-void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, double radius, int slices, int rings, Color color) => raw.DrawCapsuleWires(startPos, endPos, radius, slices, rings, color);
+void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, double radius, int slices, int rings, Color color) => proxy.DrawCapsuleWires(startPos, endPos, radius, slices, rings, color);
 /// Draw a plane XZ
-void DrawPlane(Vector3 centerPos, Vector2 size, Color color) => raw.DrawPlane(centerPos, size, color);
+void DrawPlane(Vector3 centerPos, Vector2 size, Color color) => proxy.DrawPlane(centerPos, size, color);
 /// Draw a ray line
-void DrawRay(Ray ray, Color color) => raw.DrawRay(ray, color);
+void DrawRay(Ray ray, Color color) => proxy.DrawRay(ray, color);
 /// Draw a grid (centered at (0, 0, 0))
 void DrawGrid(int slices, double spacing) => raw.DrawGrid(slices, spacing);
 
@@ -56,87 +56,87 @@ void DrawGrid(int slices, double spacing) => raw.DrawGrid(slices, spacing);
 
 // Model management functions
 /// Load model from files (meshes and materials)
-Model LoadModel(String fileName) => raw.LoadModel(fileName);
+Model LoadModel(String fileName) => proxy.LoadModel(fileName);
 /// Load model from generated mesh (default material)
-Model LoadModelFromMesh(Mesh mesh) => raw.LoadModelFromMesh(mesh);
+Model LoadModelFromMesh(Mesh mesh) => proxy.LoadModelFromMesh(mesh);
 /// Check if a model is valid (loaded in GPU, VAO/VBOs)
-bool IsModelValid(Model model) => raw.IsModelValid(model);
+bool IsModelValid(Model model) => proxy.IsModelValid(model);
 /// Unload model (including meshes) from memory (RAM and/or VRAM)
-void UnloadModel(Model model) => raw.UnloadModel(model);
+void UnloadModel(Model model) => proxy.UnloadModel(model);
 /// Compute model bounding box limits (considers all meshes)
-BoundingBox GetModelBoundingBox(Model model) => raw.GetModelBoundingBox(model);
+BoundingBox GetModelBoundingBox(Model model) => proxy.GetModelBoundingBox(model);
 
 // Model drawing functions
 /// Draw a model (with texture if set)
-void DrawModel(Model model, Vector3 position, double scale, Color tint) => raw.DrawModel(model, position, scale, tint);
+void DrawModel(Model model, Vector3 position, double scale, Color tint) => proxy.DrawModel(model, position, scale, tint);
 /// Draw a model with extended parameters
-void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, double rotationAngle, Vector3 scale, Color tint) => raw.DrawModelEx(model, position, rotationAxis, rotationAngle, scale, tint);
+void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, double rotationAngle, Vector3 scale, Color tint) => proxy.DrawModelEx(model, position, rotationAxis, rotationAngle, scale, tint);
 /// Draw a model wires (with texture if set)
-void DrawModelWires(Model model, Vector3 position, double scale, Color tint) => raw.DrawModelWires(model, position, scale, tint);
+void DrawModelWires(Model model, Vector3 position, double scale, Color tint) => proxy.DrawModelWires(model, position, scale, tint);
 /// Draw a model wires (with texture if set) with extended parameters
-void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, double rotationAngle, Vector3 scale, Color tint) => raw.DrawModelWiresEx(model, position, rotationAxis, rotationAngle, scale, tint);
+void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, double rotationAngle, Vector3 scale, Color tint) => proxy.DrawModelWiresEx(model, position, rotationAxis, rotationAngle, scale, tint);
 /// Draw bounding box (wires)
-void DrawBoundingBox(BoundingBox box, Color color) => raw.DrawBoundingBox(box, color);
+void DrawBoundingBox(BoundingBox box, Color color) => proxy.DrawBoundingBox(box, color);
 /// Draw a billboard texture
-void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, double scale, Color tint) => raw.DrawBillboard(camera, texture, position, scale, tint);
+void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, double scale, Color tint) => proxy.DrawBillboard(camera, texture, position, scale, tint);
 /// Draw a billboard texture defined by source
-void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint) => raw.DrawBillboardRec(camera, texture, source, position, size, tint);
+void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint) => proxy.DrawBillboardRec(camera, texture, source, position, size, tint);
 /// Draw a billboard texture defined by source and rotation
-void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, double rotation, Color tint) => raw.DrawBillboardPro(camera, texture, source, position, up, size, origin, rotation, tint);
+void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, double rotation, Color tint) => proxy.DrawBillboardPro(camera, texture, source, position, up, size, origin, rotation, tint);
 
 // Mesh management functions
 /// Upload mesh vertex data in GPU and provide VAO/VBO ids
-void UploadMesh(List<Mesh> mesh, bool dynamic) => raw.UploadMesh(mesh, dynamic);
+void UploadMesh(Mesh mesh, bool dynamic) => proxy.UploadMesh(mesh, dynamic);
 /// Update mesh vertex data in GPU for a specific buffer index
 void UpdateMeshBuffer(Mesh mesh, int index, Uint8List data, int offset) => proxy.UpdateMeshBuffer(mesh, index, data, offset);
 /// Unload mesh data from CPU and GPU
-void UnloadMesh(Mesh mesh) => raw.UnloadMesh(mesh);
+void UnloadMesh(Mesh mesh) => proxy.UnloadMesh(mesh);
 /// Draw a 3d mesh with material and transform
-void DrawMesh(Mesh mesh, Material material, Matrix transform) => raw.DrawMesh(mesh, material, transform);
+void DrawMesh(Mesh mesh, Material material, Matrix transform) => proxy.DrawMesh(mesh, material, transform);
 /// Draw multiple mesh instances with material and different transforms
 void DrawMeshInstanced(Mesh mesh, Material material, List<Matrix4> transforms) => proxy.DrawMeshInstanced(mesh, material, transforms);
 /// Compute mesh bounding box limits
-BoundingBox GetMeshBoundingBox(Mesh mesh) => raw.GetMeshBoundingBox(mesh);
+BoundingBox GetMeshBoundingBox(Mesh mesh) => proxy.GetMeshBoundingBox(mesh);
 /// Compute mesh tangents
-void GenMeshTangents(List<Mesh> mesh) => raw.GenMeshTangents(mesh);
+void GenMeshTangents(Mesh mesh) => proxy.GenMeshTangents(mesh);
 /// Export mesh data to file, returns true on success
-bool ExportMesh(Mesh mesh, String fileName) => raw.ExportMesh(mesh, fileName);
+bool ExportMesh(Mesh mesh, String fileName) => proxy.ExportMesh(mesh, fileName);
 /// Export mesh as code file (.h) defining multiple arrays of vertex attributes
-bool ExportMeshAsCode(Mesh mesh, String fileName) => raw.ExportMeshAsCode(mesh, fileName);
+bool ExportMeshAsCode(Mesh mesh, String fileName) => proxy.ExportMeshAsCode(mesh, fileName);
 
 // Mesh generation functions
 /// Generate polygonal mesh
-Mesh GenMeshPoly(int sides, double radius) => raw.GenMeshPoly(sides, radius);
+Mesh GenMeshPoly(int sides, double radius) => proxy.GenMeshPoly(sides, radius);
 /// Generate plane mesh (with subdivisions)
-Mesh GenMeshPlane(double width, double length, int resX, int resZ) => raw.GenMeshPlane(width, length, resX, resZ);
+Mesh GenMeshPlane(double width, double length, int resX, int resZ) => proxy.GenMeshPlane(width, length, resX, resZ);
 /// Generate cuboid mesh
-Mesh GenMeshCube(double width, double height, double length) => raw.GenMeshCube(width, height, length);
+Mesh GenMeshCube(double width, double height, double length) => proxy.GenMeshCube(width, height, length);
 /// Generate sphere mesh (standard sphere)
-Mesh GenMeshSphere(double radius, int rings, int slices) => raw.GenMeshSphere(radius, rings, slices);
+Mesh GenMeshSphere(double radius, int rings, int slices) => proxy.GenMeshSphere(radius, rings, slices);
 /// Generate half-sphere mesh (no bottom cap)
-Mesh GenMeshHemiSphere(double radius, int rings, int slices) => raw.GenMeshHemiSphere(radius, rings, slices);
+Mesh GenMeshHemiSphere(double radius, int rings, int slices) => proxy.GenMeshHemiSphere(radius, rings, slices);
 /// Generate cylinder mesh
-Mesh GenMeshCylinder(double radius, double height, int slices) => raw.GenMeshCylinder(radius, height, slices);
+Mesh GenMeshCylinder(double radius, double height, int slices) => proxy.GenMeshCylinder(radius, height, slices);
 /// Generate cone/pyramid mesh
-Mesh GenMeshCone(double radius, double height, int slices) => raw.GenMeshCone(radius, height, slices);
+Mesh GenMeshCone(double radius, double height, int slices) => proxy.GenMeshCone(radius, height, slices);
 /// Generate torus mesh
-Mesh GenMeshTorus(double radius, double size, int radSeg, int sides) => raw.GenMeshTorus(radius, size, radSeg, sides);
+Mesh GenMeshTorus(double radius, double size, int radSeg, int sides) => proxy.GenMeshTorus(radius, size, radSeg, sides);
 /// Generate trefoil knot mesh
-Mesh GenMeshKnot(double radius, double size, int radSeg, int sides) => raw.GenMeshKnot(radius, size, radSeg, sides);
+Mesh GenMeshKnot(double radius, double size, int radSeg, int sides) => proxy.GenMeshKnot(radius, size, radSeg, sides);
 /// Generate heightmap mesh from image data
-Mesh GenMeshHeightmap(Image heightmap, Vector3 size) => raw.GenMeshHeightmap(heightmap, size);
+Mesh GenMeshHeightmap(Image heightmap, Vector3 size) => proxy.GenMeshHeightmap(heightmap, size);
 /// Generate cubes-based map mesh from image data
-Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize) => raw.GenMeshCubicmap(cubicmap, cubeSize);
+Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize) => proxy.GenMeshCubicmap(cubicmap, cubeSize);
 
 // Material loading/unloading functions
 /// Load materials from model file
 List<Material> LoadMaterials(String fileName) => proxy.LoadMaterials(fileName);
 /// Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
-Material LoadMaterialDefault() => raw.LoadMaterialDefault();
+Material LoadMaterialDefault() => proxy.LoadMaterialDefault();
 /// Check if a material is valid (shader assigned, map textures loaded in GPU)
-bool IsMaterialValid(Material material) => raw.IsMaterialValid(material);
+bool IsMaterialValid(Material material) => proxy.IsMaterialValid(material);
 /// Unload material from GPU memory (VRAM)
-void UnloadMaterial(Material material) => raw.UnloadMaterial(material);
+void UnloadMaterial(Material material) => proxy.UnloadMaterial(material);
 /// Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
 void SetMaterialTexture(Material material, int mapType, Texture2D texture) => proxy.SetMaterialTexture(material, mapType, texture);
 /// Set material for a mesh
@@ -146,30 +146,30 @@ void SetModelMeshMaterial(Model model, int meshId, int materialId) => proxy.SetM
 /// Load model animations from file
 List<ModelAnimation> LoadModelAnimations(String fileName) => proxy.LoadModelAnimations(fileName);
 /// Update model animation pose (vertex buffers and bone matrices)
-void UpdateModelAnimation(Model model, ModelAnimation anim, double frame) => raw.UpdateModelAnimation(model, anim, frame);
+void UpdateModelAnimation(Model model, ModelAnimation anim, double frame) => proxy.UpdateModelAnimation(model, anim, frame);
 /// Update model animation pose, blending two animations
-void UpdateModelAnimationEx(Model model, ModelAnimation animA, double frameA, ModelAnimation animB, double frameB, double blend) => raw.UpdateModelAnimationEx(model, animA, frameA, animB, frameB, blend);
+void UpdateModelAnimationEx(Model model, ModelAnimation animA, double frameA, ModelAnimation animB, double frameB, double blend) => proxy.UpdateModelAnimationEx(model, animA, frameA, animB, frameB, blend);
 /// Unload animation array data
 void UnloadModelAnimations(List<ModelAnimation> animations) => proxy.UnloadModelAnimations(animations);
 /// Check model animation skeleton match
-bool IsModelAnimationValid(Model model, ModelAnimation anim) => raw.IsModelAnimationValid(model, anim);
+bool IsModelAnimationValid(Model model, ModelAnimation anim) => proxy.IsModelAnimationValid(model, anim);
 
 // Collision detection functions
 /// Check collision between two spheres
-bool CheckCollisionSpheres(Vector3 center1, double radius1, Vector3 center2, double radius2) => raw.CheckCollisionSpheres(center1, radius1, center2, radius2);
+bool CheckCollisionSpheres(Vector3 center1, double radius1, Vector3 center2, double radius2) => proxy.CheckCollisionSpheres(center1, radius1, center2, radius2);
 /// Check collision between two bounding boxes
-bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2) => raw.CheckCollisionBoxes(box1, box2);
+bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2) => proxy.CheckCollisionBoxes(box1, box2);
 /// Check collision between box and sphere
-bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, double radius) => raw.CheckCollisionBoxSphere(box, center, radius);
+bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, double radius) => proxy.CheckCollisionBoxSphere(box, center, radius);
 /// Get collision info between ray and sphere
-RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, double radius) => raw.GetRayCollisionSphere(ray, center, radius);
+RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, double radius) => proxy.GetRayCollisionSphere(ray, center, radius);
 /// Get collision info between ray and box
-RayCollision GetRayCollisionBox(Ray ray, BoundingBox box) => raw.GetRayCollisionBox(ray, box);
+RayCollision GetRayCollisionBox(Ray ray, BoundingBox box) => proxy.GetRayCollisionBox(ray, box);
 /// Get collision info between ray and mesh
-RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform) => raw.GetRayCollisionMesh(ray, mesh, transform);
+RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform) => proxy.GetRayCollisionMesh(ray, mesh, transform);
 /// Get collision info between ray and triangle
-RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3) => raw.GetRayCollisionTriangle(ray, p1, p2, p3);
+RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3) => proxy.GetRayCollisionTriangle(ray, p1, p2, p3);
 /// Get collision info between ray and quad
-RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4) => raw.GetRayCollisionQuad(ray, p1, p2, p3, p4);
+RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4) => proxy.GetRayCollisionQuad(ray, p1, p2, p3, p4);
 
 
