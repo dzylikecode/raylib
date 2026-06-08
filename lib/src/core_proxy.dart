@@ -67,10 +67,9 @@ Vector2 GetWindowScaleDPI() => raw.GetWindowScaleDPI().toDart();
 String GetMonitorName(int monitor) =>
     raw.GetMonitorName(monitor).cast<ffi.Utf8>().toDartString();
 
-void SetClipboardText(String text) => ffi.using(
-  (arena) =>
-      raw.SetClipboardText(text.toNativeUtf8(allocator: arena).cast<Char>()),
-);
+void SetClipboardText(String text) => ffi.using((arena) {
+  return raw.SetClipboardText(text.toNativeUtf8(allocator: arena).cast<Char>());
+});
 
 String GetClipboardText() =>
     raw.GetClipboardText().cast<ffi.Utf8>().toDartString();
@@ -100,23 +99,18 @@ void BeginVrStereoMode(VrStereoConfig config) =>
 
 // ── Shader ─────────────────────────────────────────────────────────────
 
-Shader LoadShader(String? vsFileName, String? fsFileName) {
-  return ffi.using((arena) {
-    final vs =
-        vsFileName?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
-    final fs =
-        fsFileName?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
-    return raw.LoadShader(vs, fs).toDart();
-  });
-}
+Shader LoadShader(String? vsFileName, String? fsFileName) => ffi.using((arena) {
+  final vs = vsFileName?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
+  final fs = fsFileName?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
+  return raw.LoadShader(vs, fs).toDart();
+});
 
-Shader LoadShaderFromMemory(String? vsCode, String? fsCode) {
-  return ffi.using((arena) {
-    final vs = vsCode?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
-    final fs = fsCode?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
-    return raw.LoadShaderFromMemory(vs, fs).toDart();
-  });
-}
+Shader LoadShaderFromMemory(String? vsCode, String? fsCode) =>
+    ffi.using((arena) {
+      final vs = vsCode?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
+      final fs = fsCode?.toNativeUtf8(allocator: arena).cast<Char>() ?? nullptr;
+      return raw.LoadShaderFromMemory(vs, fs).toDart();
+    });
 
 bool IsShaderValid(Shader shader) => raw.IsShaderValid(shader.ptr.ref);
 

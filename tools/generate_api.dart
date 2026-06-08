@@ -310,8 +310,9 @@ String toDartType(CType type) {
   if (type.isVoid) return 'void';
   if (type.base == 'void' && type.pointerDepth == 1) return 'int';
   if (type.base.contains('char') && type.pointerDepth == 1) return 'String';
-  if (type.pointerDepth > 0)
+  if (type.pointerDepth > 0) {
     return 'List<${toDartType(type.copyWith(pointerDepth: type.pointerDepth - 1))}>';
+  }
 
   return switch (type.base) {
     'int' || 'unsigned int' || 'short' || 'long' => 'int',
