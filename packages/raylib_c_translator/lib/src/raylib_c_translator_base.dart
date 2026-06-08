@@ -1,6 +1,6 @@
-// TODO: Put public facing types in this file.
+class RaylibTranslator {
+  final String content;
+  final List<String> lines;
 
-/// Checks if you are awesome. Spoiler: you are.
-class Awesome {
-  bool get isAwesome => true;
+  RaylibTranslator(this.content) : lines = content.split('\n');
 }

@@ -27,12 +27,12 @@ target("basic")
 ---------------------------------------------------------
 --- Examples
 ---------------------------------------------------------
--- for _, file in ipairs(os.files("example/*.c")) do
---     local name = path.basename(file)
---     target(name)
---       set_kind("binary")
---       add_files(file)
---       add_packages("raylib")
---       add_packages("raygui")
---       add_includedirs("example/others")
--- end
+for _, file in ipairs(os.files("example/c/*.c")) do
+    local name = path.basename(file)
+    target(name)
+      set_kind("binary")
+      add_files(file)
+      add_packages("raylib")
+      add_packages("raygui")
+      -- add_includedirs("example/others")
+end

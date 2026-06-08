@@ -3,8 +3,9 @@
 //
 // Usage: dart run tools/extract_examples.dart
 
-import 'dart:convert';
 import 'dart:io';
+
+const range = 15;
 
 const skips = [
   'core_loading_thread', // not cross-platform
@@ -17,17 +18,22 @@ const skips = [
   'rlgl_standalone',
   'raylib_opengl_interop',
   'embedded_files_loading',
+  'core_screen_recording',
+  'shapes_easings_ball',
 ];
 
-const readmePath =
-    'https://raw.githubusercontent.com/raysan5/raylib/refs/heads/master/examples/README.md';
-const srcBase = 'ref_code/raylib/examples';
-const destDir = 'example';
+
+const raylibRepoUrl = 'https://github.com/raysan5/raylib.git';
+const refCodeDir = 'ref_code';
+const raylibRefDir = '$refCodeDir/raylib';
+const srcBase = '$raylibRefDir/examples';
+const destDir = 'example/c';
+const readmePath = '$srcBase/README.md';
 
 class ExampleInfo {
-  // Matches lines like: | 01 | [core_basic_window](core/core_basic_window.c)
+  // Matches lines like: | [core_basic_window](core/core_basic_window.c) | ...
   static final pattern = RegExp(
-    r'^\|\s*(\d+)\s*\|\s*\[(\w+)\]\(([^)]+\.c)\)',
+    r'^\|\s*\[(\w+)\]\(([^)]+\.c)\)',
     multiLine: true,
   );
 
@@ -38,31 +44,33 @@ class ExampleInfo {
   ExampleInfo(this.num, this.name, this.relPath);
 
   static List<ExampleInfo> parseAll(String readme) {
-    return pattern.allMatches(readme).map((m) {
-      final num = int.parse(m.group(1)!);
-      final name = m.group(2)!;
-      final relPath = m.group(3)!;
+    return pattern.allMatches(readme).indexed.map((entry) {
+      final (index, m) = entry;
+      final num = index + 1;
+      final name = m.group(1)!;
+      final relPath = m.group(2)!;
       return ExampleInfo(num, name, relPath);
     }).toList();
   }
 }
 
-
 void main() async {
-  final readme = await () async {
-    final uri = Uri.parse(readmePath);
-    final response = await HttpClient().getUrl(uri).then((req) => req.close());
-    if (response.statusCode == 200) {
-      return await response.transform(utf8.decoder).join();
-    } else {
-      throw Exception('Failed to load README.md: ${response.statusCode}');
-    }
-  }();
+  await ensureRaylibRepo();
+
+  final readme = await File(readmePath).readAsString();
 
   var copied = 0;
   var skipped = 0;
 
-  for (final example in ExampleInfo.parseAll(readme)) {
+  final examplesDir = Directory(destDir);
+  if (examplesDir.existsSync()) {
+    print('Clearing existing examples in $destDir...');
+    examplesDir.deleteSync(recursive: true);
+  }
+  Directory(destDir).createSync(recursive: true);
+
+
+  for (final example in ExampleInfo.parseAll(readme).take(range)) {
     final num = example.num;
     final name = example.name;
     final relPath = example.relPath;
@@ -82,4 +90,28 @@ void main() async {
   }
 
   print('\nDone: $copied copied, $skipped skipped → $destDir/');
+}
+
+Future<void> ensureRaylibRepo() async {
+  final raylibDir = Directory(raylibRefDir);
+  if (raylibDir.existsSync()) return;
+
+  Directory(refCodeDir).createSync(recursive: true);
+  print('Cloning raylib into $raylibRefDir...');
+
+  final result = await Process.run('git', [
+    'clone',
+    raylibRepoUrl,
+    raylibRefDir,
+  ]);
+
+  if (result.exitCode != 0) {
+    stderr.write(result.stderr);
+    throw ProcessException(
+      'git',
+      ['clone', raylibRepoUrl, raylibRefDir],
+      'Failed to clone raylib',
+      result.exitCode,
+    );
+  }
 }
