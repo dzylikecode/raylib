@@ -227,17 +227,23 @@ import 'structs.dart';
           'Font LoadFontFromMemory(String fileType, Uint8List fileData, int fontSize, List<int> codepoints)',
       'LoadFontData':
           'List<GlyphInfo> LoadFontData(Uint8List fileData, int fontSize, List<int> codepoints, int type)',
+      'GenImageFontAtlas':
+          '(Image, List<Rectangle>) GenImageFontAtlas(List<GlyphInfo> glyphs, int fontSize, int padding, int packMethod)',
+      'UnloadFontData': 'void UnloadFontData(List<GlyphInfo> glyphs)',
       'DrawTextCodepoints':
           'void DrawTextCodepoints(Font font, List<int> codepoints, Vector2 position, double fontSize, double spacing, Color tint)',
       'MeasureTextCodepoints':
           'Vector2 MeasureTextCodepoints(Font font, List<int> codepoints, double fontSize, double spacing)',
       'LoadUTF8': 'String LoadUTF8(List<int> codepoints)',
+      'UnloadUTF8': 'void UnloadUTF8(String text)',
       'LoadCodepoints': 'List<int> LoadCodepoints(String text)',
+      'UnloadCodepoints': 'void UnloadCodepoints(List<int> codepoints)',
       'GetCodepoint': '(int, int) GetCodepoint(String text)',
       'GetCodepointNext': '(int, int) GetCodepointNext(String text)',
       'GetCodepointPrevious': '(int, int) GetCodepointPrevious(String text)',
       'CodepointToUTF8': 'String CodepointToUTF8(int codepoint)',
       'LoadTextLines': 'List<String> LoadTextLines(String text)',
+      'UnloadTextLines': 'void UnloadTextLines(List<String> text)',
       'TextCopy': 'String TextCopy(String src)',
       'TextFormat': 'String TextFormat(String text, List<Object> args)',
       'TextJoin': 'String TextJoin(List<String> textList, String delimiter)',
@@ -375,7 +381,6 @@ class ApiMapRule {
   String call(String api) {
     final function = parseCFunctionPrototype(api);
     final customInterface = customInterfaces[function.name];
-    // 用来改变调用，比如两个参数变成了一个
     final returnType = toDartType(function.returnType);
     final interfaceFunc =
         customInterface ??
@@ -383,7 +388,7 @@ class ApiMapRule {
     final needProxy =
         customInterface != null || proxyFunctions.contains(function.name);
     final callArgs = customInterface != null
-        ? dartParamNames(customInterface)
+        ? dartParamNames(customInterface) // 用来改变调用，比如两个参数变成了一个
         : funcCall(function.params);
 
     return '$interfaceFunc => '

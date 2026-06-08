@@ -7,39 +7,39 @@ import 'structs.dart';
 
 // Font loading/unloading functions
 /// Get the default Font
-Font GetFontDefault() => raw.GetFontDefault();
+Font GetFontDefault() => proxy.GetFontDefault();
 /// Load font from file into GPU memory (VRAM)
-Font LoadFont(String fileName) => raw.LoadFont(fileName);
+Font LoadFont(String fileName) => proxy.LoadFont(fileName);
 /// Load font from file with extended parameters, use NULL for codepoints and 0 for codepointCount to load the default character set, font size is provided in pixels height
 Font LoadFontEx(String fileName, int fontSize, List<int> codepoints) => proxy.LoadFontEx(fileName, fontSize, codepoints);
 /// Load font from Image (XNA style)
-Font LoadFontFromImage(Image image, Color key, int firstChar) => raw.LoadFontFromImage(image, key, firstChar);
+Font LoadFontFromImage(Image image, Color key, int firstChar) => proxy.LoadFontFromImage(image, key, firstChar);
 /// Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
 Font LoadFontFromMemory(String fileType, Uint8List fileData, int fontSize, List<int> codepoints) => proxy.LoadFontFromMemory(fileType, fileData, fontSize, codepoints);
 /// Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
-bool IsFontValid(Font font) => raw.IsFontValid(font);
+bool IsFontValid(Font font) => proxy.IsFontValid(font);
 /// Load font data for further use
 List<GlyphInfo> LoadFontData(Uint8List fileData, int fontSize, List<int> codepoints, int type) => proxy.LoadFontData(fileData, fontSize, codepoints, type);
 /// Generate image font atlas using chars info
-Image GenImageFontAtlas(List<GlyphInfo> glyphs, List<List<Rectangle>> glyphRecs, int glyphCount, int fontSize, int padding, int packMethod) => raw.GenImageFontAtlas(glyphs, glyphRecs, glyphCount, fontSize, padding, packMethod);
+(Image, List<Rectangle>) GenImageFontAtlas(List<GlyphInfo> glyphs, int fontSize, int padding, int packMethod) => proxy.GenImageFontAtlas(glyphs, fontSize, padding, packMethod);
 /// Unload font chars info data (RAM)
-void UnloadFontData(List<GlyphInfo> glyphs, int glyphCount) => raw.UnloadFontData(glyphs, glyphCount);
+void UnloadFontData(List<GlyphInfo> glyphs) => proxy.UnloadFontData(glyphs);
 /// Unload font from GPU memory (VRAM)
-void UnloadFont(Font font) => raw.UnloadFont(font);
+void UnloadFont(Font font) => proxy.UnloadFont(font);
 /// Export font as code file, returns true on success
-bool ExportFontAsCode(Font font, String fileName) => raw.ExportFontAsCode(font, fileName);
+bool ExportFontAsCode(Font font, String fileName) => proxy.ExportFontAsCode(font, fileName);
 
 // Text drawing functions
 /// Draw current FPS
 void DrawFPS(int posX, int posY) => raw.DrawFPS(posX, posY);
 /// Draw text (using default font)
-void DrawText(String text, int posX, int posY, int fontSize, Color color) => raw.DrawText(text, posX, posY, fontSize, color);
+void DrawText(String text, int posX, int posY, int fontSize, Color color) => proxy.DrawText(text, posX, posY, fontSize, color);
 /// Draw text using font and additional parameters
-void DrawTextEx(Font font, String text, Vector2 position, double fontSize, double spacing, Color tint) => raw.DrawTextEx(font, text, position, fontSize, spacing, tint);
+void DrawTextEx(Font font, String text, Vector2 position, double fontSize, double spacing, Color tint) => proxy.DrawTextEx(font, text, position, fontSize, spacing, tint);
 /// Draw text using Font and pro parameters (rotation)
-void DrawTextPro(Font font, String text, Vector2 position, Vector2 origin, double rotation, double fontSize, double spacing, Color tint) => raw.DrawTextPro(font, text, position, origin, rotation, fontSize, spacing, tint);
+void DrawTextPro(Font font, String text, Vector2 position, Vector2 origin, double rotation, double fontSize, double spacing, Color tint) => proxy.DrawTextPro(font, text, position, origin, rotation, fontSize, spacing, tint);
 /// Draw one character (codepoint)
-void DrawTextCodepoint(Font font, int codepoint, Vector2 position, double fontSize, Color tint) => raw.DrawTextCodepoint(font, codepoint, position, fontSize, tint);
+void DrawTextCodepoint(Font font, int codepoint, Vector2 position, double fontSize, Color tint) => proxy.DrawTextCodepoint(font, codepoint, position, fontSize, tint);
 /// Draw multiple character (codepoint)
 void DrawTextCodepoints(Font font, List<int> codepoints, Vector2 position, double fontSize, double spacing, Color tint) => proxy.DrawTextCodepoints(font, codepoints, position, fontSize, spacing, tint);
 
@@ -47,29 +47,29 @@ void DrawTextCodepoints(Font font, List<int> codepoints, Vector2 position, doubl
 /// Set vertical line spacing when drawing with line-breaks
 void SetTextLineSpacing(int spacing) => raw.SetTextLineSpacing(spacing);
 /// Measure string width for default font
-int MeasureText(String text, int fontSize) => raw.MeasureText(text, fontSize);
+int MeasureText(String text, int fontSize) => proxy.MeasureText(text, fontSize);
 /// Measure string size for Font
-Vector2 MeasureTextEx(Font font, String text, double fontSize, double spacing) => raw.MeasureTextEx(font, text, fontSize, spacing);
+Vector2 MeasureTextEx(Font font, String text, double fontSize, double spacing) => proxy.MeasureTextEx(font, text, fontSize, spacing);
 /// Measure string size for an existing array of codepoints for Font
 Vector2 MeasureTextCodepoints(Font font, List<int> codepoints, double fontSize, double spacing) => proxy.MeasureTextCodepoints(font, codepoints, fontSize, spacing);
 /// Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
-int GetGlyphIndex(Font font, int codepoint) => raw.GetGlyphIndex(font, codepoint);
+int GetGlyphIndex(Font font, int codepoint) => proxy.GetGlyphIndex(font, codepoint);
 /// Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
-GlyphInfo GetGlyphInfo(Font font, int codepoint) => raw.GetGlyphInfo(font, codepoint);
+GlyphInfo GetGlyphInfo(Font font, int codepoint) => proxy.GetGlyphInfo(font, codepoint);
 /// Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
-Rectangle GetGlyphAtlasRec(Font font, int codepoint) => raw.GetGlyphAtlasRec(font, codepoint);
+Rectangle GetGlyphAtlasRec(Font font, int codepoint) => proxy.GetGlyphAtlasRec(font, codepoint);
 
 // Text codepoints management functions (unicode characters)
 /// Load UTF-8 text encoded from codepoints array
 String LoadUTF8(List<int> codepoints) => proxy.LoadUTF8(codepoints);
 /// Unload UTF-8 text encoded from codepoints array
-void UnloadUTF8(String text) => raw.UnloadUTF8(text);
+void UnloadUTF8(String text) => proxy.UnloadUTF8(text);
 /// Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
 List<int> LoadCodepoints(String text) => proxy.LoadCodepoints(text);
 /// Unload codepoints data from memory
-void UnloadCodepoints(List<int> codepoints) => raw.UnloadCodepoints(codepoints);
+void UnloadCodepoints(List<int> codepoints) => proxy.UnloadCodepoints(codepoints);
 /// Get total number of codepoints in a UTF-8 encoded string
-int GetCodepointCount(String text) => raw.GetCodepointCount(text);
+int GetCodepointCount(String text) => proxy.GetCodepointCount(text);
 /// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
 (int, int) GetCodepoint(String text) => proxy.GetCodepoint(text);
 /// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
@@ -85,33 +85,33 @@ String CodepointToUTF8(int codepoint) => proxy.CodepointToUTF8(codepoint);
 /// Load text as separate lines ('\n')
 List<String> LoadTextLines(String text) => proxy.LoadTextLines(text);
 /// Unload text lines
-void UnloadTextLines(List<String> text, int lineCount) => raw.UnloadTextLines(text, lineCount);
+void UnloadTextLines(List<String> text) => proxy.UnloadTextLines(text);
 /// Copy one string to another, returns bytes copied
 String TextCopy(String src) => proxy.TextCopy(src);
 /// Check if two text string are equal
-bool TextIsEqual(String text1, String text2) => raw.TextIsEqual(text1, text2);
+bool TextIsEqual(String text1, String text2) => proxy.TextIsEqual(text1, text2);
 /// Get text length, checks for '\0' ending
-int TextLength(String text) => raw.TextLength(text);
+int TextLength(String text) => proxy.TextLength(text);
 /// Text formatting with variables (sprintf() style)
 String TextFormat(String text, List<Object> args) => proxy.TextFormat(text, args);
 /// Get a piece of a text string
-String TextSubtext(String text, int position, int length) => raw.TextSubtext(text, position, length);
+String TextSubtext(String text, int position, int length) => proxy.TextSubtext(text, position, length);
 /// Remove text spaces, concat words
-String TextRemoveSpaces(String text) => raw.TextRemoveSpaces(text);
+String TextRemoveSpaces(String text) => proxy.TextRemoveSpaces(text);
 /// Get text between two strings
-String GetTextBetween(String text, String begin, String end) => raw.GetTextBetween(text, begin, end);
+String GetTextBetween(String text, String begin, String end) => proxy.GetTextBetween(text, begin, end);
 /// Replace text string with new string
-String TextReplace(String text, String search, String replacement) => raw.TextReplace(text, search, replacement);
+String TextReplace(String text, String search, String replacement) => proxy.TextReplace(text, search, replacement);
 /// Replace text string with new string, memory must be MemFree()
-String TextReplaceAlloc(String text, String search, String replacement) => raw.TextReplaceAlloc(text, search, replacement);
+String TextReplaceAlloc(String text, String search, String replacement) => proxy.TextReplaceAlloc(text, search, replacement);
 /// Replace text between two specific strings
-String TextReplaceBetween(String text, String begin, String end, String replacement) => raw.TextReplaceBetween(text, begin, end, replacement);
+String TextReplaceBetween(String text, String begin, String end, String replacement) => proxy.TextReplaceBetween(text, begin, end, replacement);
 /// Replace text between two specific strings, memory must be MemFree()
-String TextReplaceBetweenAlloc(String text, String begin, String end, String replacement) => raw.TextReplaceBetweenAlloc(text, begin, end, replacement);
+String TextReplaceBetweenAlloc(String text, String begin, String end, String replacement) => proxy.TextReplaceBetweenAlloc(text, begin, end, replacement);
 /// Insert text in a defined byte position
-String TextInsert(String text, String insert, int position) => raw.TextInsert(text, insert, position);
+String TextInsert(String text, String insert, int position) => proxy.TextInsert(text, insert, position);
 /// Insert text in a defined byte position, memory must be MemFree()
-String TextInsertAlloc(String text, String insert, int position) => raw.TextInsertAlloc(text, insert, position);
+String TextInsertAlloc(String text, String insert, int position) => proxy.TextInsertAlloc(text, insert, position);
 /// Join text strings with delimiter
 String TextJoin(List<String> textList, String delimiter) => proxy.TextJoin(textList, delimiter);
 /// Split text into multiple strings, using MAX_TEXTSPLIT_COUNT static strings
@@ -119,20 +119,20 @@ List<String> TextSplit(String text, String delimiter) => proxy.TextSplit(text, d
 /// Append text at specific position and move cursor
 String TextAppend(String text, String append) => proxy.TextAppend(text, append);
 /// Find first text occurrence within a string, -1 if not found
-int TextFindIndex(String text, String search) => raw.TextFindIndex(text, search);
+int TextFindIndex(String text, String search) => proxy.TextFindIndex(text, search);
 /// Get upper case version of provided string
-String TextToUpper(String text) => raw.TextToUpper(text);
+String TextToUpper(String text) => proxy.TextToUpper(text);
 /// Get lower case version of provided string
-String TextToLower(String text) => raw.TextToLower(text);
+String TextToLower(String text) => proxy.TextToLower(text);
 /// Get Pascal case notation version of provided string
-String TextToPascal(String text) => raw.TextToPascal(text);
+String TextToPascal(String text) => proxy.TextToPascal(text);
 /// Get Snake case notation version of provided string
-String TextToSnake(String text) => raw.TextToSnake(text);
+String TextToSnake(String text) => proxy.TextToSnake(text);
 /// Get Camel case notation version of provided string
-String TextToCamel(String text) => raw.TextToCamel(text);
+String TextToCamel(String text) => proxy.TextToCamel(text);
 /// Get integer value from text
-int TextToInteger(String text) => raw.TextToInteger(text);
+int TextToInteger(String text) => proxy.TextToInteger(text);
 /// Get float value from text
-double TextToFloat(String text) => raw.TextToFloat(text);
+double TextToFloat(String text) => proxy.TextToFloat(text);
 
 
