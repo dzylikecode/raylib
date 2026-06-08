@@ -1083,8 +1083,7 @@ class ModelAnimation {
 
 extension RaylibModelAnimationToDart on raw.ModelAnimation {
   ModelAnimation toDart() {
-    final p = ffi.malloc<raw.ModelAnimation>();
-    final namePtr = p.ref.name;
+    final namePtr = name;
     return ModelAnimation(
       name: utf8.decode(
         Uint8List.fromList([
@@ -1416,6 +1415,22 @@ void _copyMatrix4(raw.Matrix dst, Matrix4 src) {
     ..m15 = s[15];
 }
 
+void _copyTransform(raw.Transform dst, Transform src) {
+  dst.translation
+    ..x = src.translation.x
+    ..y = src.translation.y
+    ..z = src.translation.z;
+  dst.rotation
+    ..x = src.rotation.x
+    ..y = src.rotation.y
+    ..z = src.rotation.z
+    ..w = src.rotation.w;
+  dst.scale
+    ..x = src.scale.x
+    ..y = src.scale.y
+    ..z = src.scale.z;
+}
+
 extension RaylibVrStereoConfigToDart on raw.VrStereoConfig {
   VrStereoConfig toDart() {
     final p = ffi.malloc<raw.VrStereoConfig>();
@@ -1624,6 +1639,37 @@ extension ArenaExt on ffi.Arena {
       _copyMatrix4(ptr[i], values[i]);
     }
     return ptr;
+  }
+
+  Pointer<raw.ModelAnimation> modelAnimation(ModelAnimation value) {
+    final ptr = this<raw.ModelAnimation>();
+    final nameBytes = utf8.encode(value.name);
+    final nameLimit = nameBytes.length < 31 ? nameBytes.length : 31;
+    for (var i = 0; i < nameLimit; i++) {
+      ptr.ref.name[i] = nameBytes[i];
+    }
+    ptr.ref.name[nameLimit] = 0;
+    ptr.ref
+      ..boneCount = value.boneCount
+      ..keyframeCount = value.keyframeCount
+      ..keyframePoses = modelAnimPoses(value);
+    return ptr;
+  }
+
+  Pointer<raw.ModelAnimPose> modelAnimPoses(ModelAnimation value) {
+    final poses = this<raw.ModelAnimPose>(value.keyframeCount);
+    for (var frame = 0; frame < value.keyframeCount; frame++) {
+      final source = frame < value.keyframePoses.length
+          ? value.keyframePoses[frame]
+          : const <Transform>[];
+      final transforms = this<raw.Transform>(value.boneCount);
+      for (var bone = 0; bone < value.boneCount; bone++) {
+        if (bone >= source.length) continue;
+        _copyTransform(transforms[bone], source[bone]);
+      }
+      poses[frame] = transforms;
+    }
+    return poses;
   }
 
   Pointer<raw.Shader> shader(Shader value) => value.ptr;

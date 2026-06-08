@@ -260,10 +260,12 @@ import 'structs.dart';
     customInterfaces: {
       'DrawTriangleStrip3D':
           'void DrawTriangleStrip3D(List<Vector3> points, Color color)',
+      'UploadMesh': 'void UploadMesh(Mesh mesh, bool dynamic)',
       'UpdateMeshBuffer':
           'void UpdateMeshBuffer(Mesh mesh, int index, Uint8List data, int offset)',
       'DrawMeshInstanced':
           'void DrawMeshInstanced(Mesh mesh, Material material, List<Matrix4> transforms)',
+      'GenMeshTangents': 'void GenMeshTangents(Mesh mesh)',
       'LoadMaterials': 'List<Material> LoadMaterials(String fileName)',
       'SetMaterialTexture':
           'void SetMaterialTexture(Material material, int mapType, Texture2D texture)',
@@ -273,6 +275,12 @@ import 'structs.dart';
           'List<ModelAnimation> LoadModelAnimations(String fileName)',
       'UnloadModelAnimations':
           'void UnloadModelAnimations(List<ModelAnimation> animations)',
+      'UpdateModelAnimation':
+          'void UpdateModelAnimation(Model model, ModelAnimation anim, double frame)',
+      'UpdateModelAnimationEx':
+          'void UpdateModelAnimationEx(Model model, ModelAnimation animA, double frameA, ModelAnimation animB, double frameB, double blend)',
+      'IsModelAnimationValid':
+          'bool IsModelAnimationValid(Model model, ModelAnimation anim)',
     },
   ),
   'audio': (
