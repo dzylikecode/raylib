@@ -7,6 +7,7 @@ import 'package:raylib_c_translator/raylib_c_translator.dart';
 void main() {
   Directory('example/generated').createSync(recursive: true);
   translate('001_core_basic_window', {Include.raylib, MatchCode.main});
+  translate('002_core_delta_time', {Include.raylib, MatchCode.main});
 }
 
 @isTest
@@ -20,5 +21,17 @@ void translate(String target, Set<TranslateRule> rules) {
     final outputFile = File(outputPath);
     outputFile.createSync(recursive: true);
     outputFile.writeAsStringSync(translated);
+    expect(analyze(outputPath), isTrue, reason: 'Translated code should pass analysis');
   });
+}
+
+bool analyze(String filePath) {
+  ProcessResult result = Process.runSync('dart', ['analyze', filePath]);
+  if (result.exitCode != 0) {
+    print('Analysis failed for $filePath:');
+    print(result.stdout);
+    print(result.stderr);
+    return false;
+  }
+  return true;
 }

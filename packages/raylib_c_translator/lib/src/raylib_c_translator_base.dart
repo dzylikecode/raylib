@@ -96,13 +96,10 @@ class RaylibTranslator {
         case .other:
           var translatedLine = line;
           for (final matchCode in matchCodes) {
-            if (RegExp(matchCode.pattern).hasMatch(translatedLine)) {
-              translatedLine = translatedLine.replaceAll(
-                RegExp(matchCode.pattern),
-                matchCode.replacement,
-              );
-              break;
-            }
+            translatedLine = translatedLine.replaceAll(
+              RegExp(matchCode.pattern),
+              matchCode.replacement,
+            );
           }
           translatedLines.add(translatedLine);
       }
