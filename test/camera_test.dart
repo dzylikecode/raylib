@@ -1,5 +1,5 @@
 import 'package:logging/logging.dart';
-import 'package:raylib_dart/raylib_dart.dart';
+import 'package:raylib_dart/src/structs.dart';
 import 'package:test/test.dart';
 
 void main() {

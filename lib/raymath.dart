@@ -3,8 +3,6 @@
 import 'dart:math' as math;
 import 'package:vector_math/vector_math.dart';
 
-export 'package:cdart/math.dart';
-
 @Deprecated('Use value.clamp(min, max) instead')
 double Clamp(double value, double min, double max) => value.clamp(min, max);
 

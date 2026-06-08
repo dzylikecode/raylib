@@ -29,7 +29,6 @@ void DrawLine(
   Color color,
 ) => raw.DrawLine(startPosX, startPosY, endPosX, endPosY, color.ptr.ref);
 
-// TODO: 完全是 c 遗留的问题，想想怎么 modern 的同时又不破坏 API 的一致性
 Pointer<raw.Vector2> _vector2s(ffi.Arena arena, List<Vector2> points) {
   final count = points.length;
   final ptr = arena<raw.Vector2>(count);

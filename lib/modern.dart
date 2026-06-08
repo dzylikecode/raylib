@@ -1,5 +1,5 @@
-import 'structs.dart';
-import 'rcore.dart';
+import 'src/structs.dart';
+import 'src/core.g.dart';
 import 'src/raylib_const.dart';
 
 extension Camera2DExt on Camera2D {
