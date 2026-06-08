@@ -22,6 +22,7 @@ typedef LoadFileDataCallback = Uint8List Function(String);
 typedef SaveFileDataCallback = bool Function(String, Uint8List);
 typedef LoadFileTextCallback = String Function(String);
 typedef SaveFileTextCallback = bool Function(String, String);
+typedef AudioCallback = raw.AudioCallback;
 
 typedef Matrix = Matrix4;
 

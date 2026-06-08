@@ -19,51 +19,51 @@ double GetMasterVolume() => raw.GetMasterVolume();
 
 // Wave/Sound loading/unloading functions
 /// Load wave data from file
-Wave LoadWave(String fileName) => raw.LoadWave(fileName);
+Wave LoadWave(String fileName) => proxy.LoadWave(fileName);
 /// Load wave from memory buffer, fileType refers to extension: i.e. '.wav'
 Wave LoadWaveFromMemory(String fileType, Uint8List fileData) => proxy.LoadWaveFromMemory(fileType, fileData);
 /// Checks if wave data is valid (data loaded and parameters)
-bool IsWaveValid(Wave wave) => raw.IsWaveValid(wave);
+bool IsWaveValid(Wave wave) => proxy.IsWaveValid(wave);
 /// Load sound from file
-Sound LoadSound(String fileName) => raw.LoadSound(fileName);
+Sound LoadSound(String fileName) => proxy.LoadSound(fileName);
 /// Load sound from wave data
-Sound LoadSoundFromWave(Wave wave) => raw.LoadSoundFromWave(wave);
+Sound LoadSoundFromWave(Wave wave) => proxy.LoadSoundFromWave(wave);
 /// Create a new sound that shares the same sample data as the source sound, does not own the sound data
-Sound LoadSoundAlias(Sound source) => raw.LoadSoundAlias(source);
+Sound LoadSoundAlias(Sound source) => proxy.LoadSoundAlias(source);
 /// Checks if a sound is valid (data loaded and buffers initialized)
-bool IsSoundValid(Sound sound) => raw.IsSoundValid(sound);
+bool IsSoundValid(Sound sound) => proxy.IsSoundValid(sound);
 /// Update sound buffer with new data (default data format: 32 bit float, stereo)
 void UpdateSound(Sound sound, Uint8List data, int sampleCount) => proxy.UpdateSound(sound, data, sampleCount);
 /// Unload wave data
-void UnloadWave(Wave wave) => raw.UnloadWave(wave);
+void UnloadWave(Wave wave) => proxy.UnloadWave(wave);
 /// Unload sound
-void UnloadSound(Sound sound) => raw.UnloadSound(sound);
+void UnloadSound(Sound sound) => proxy.UnloadSound(sound);
 /// Unload a sound alias (does not deallocate sample data)
-void UnloadSoundAlias(Sound alias) => raw.UnloadSoundAlias(alias);
+void UnloadSoundAlias(Sound alias) => proxy.UnloadSoundAlias(alias);
 /// Export wave data to file, returns true on success
-bool ExportWave(Wave wave, String fileName) => raw.ExportWave(wave, fileName);
+bool ExportWave(Wave wave, String fileName) => proxy.ExportWave(wave, fileName);
 /// Export wave sample data to code (.h), returns true on success
-bool ExportWaveAsCode(Wave wave, String fileName) => raw.ExportWaveAsCode(wave, fileName);
+bool ExportWaveAsCode(Wave wave, String fileName) => proxy.ExportWaveAsCode(wave, fileName);
 
 // Wave/Sound management functions
 /// Play a sound
-void PlaySound(Sound sound) => raw.PlaySound(sound);
+void PlaySound(Sound sound) => proxy.PlaySound(sound);
 /// Stop playing a sound
-void StopSound(Sound sound) => raw.StopSound(sound);
+void StopSound(Sound sound) => proxy.StopSound(sound);
 /// Pause a sound
-void PauseSound(Sound sound) => raw.PauseSound(sound);
+void PauseSound(Sound sound) => proxy.PauseSound(sound);
 /// Resume a paused sound
-void ResumeSound(Sound sound) => raw.ResumeSound(sound);
+void ResumeSound(Sound sound) => proxy.ResumeSound(sound);
 /// Check if a sound is currently playing
-bool IsSoundPlaying(Sound sound) => raw.IsSoundPlaying(sound);
+bool IsSoundPlaying(Sound sound) => proxy.IsSoundPlaying(sound);
 /// Set volume for a sound (1.0 is max level)
-void SetSoundVolume(Sound sound, double volume) => raw.SetSoundVolume(sound, volume);
+void SetSoundVolume(Sound sound, double volume) => proxy.SetSoundVolume(sound, volume);
 /// Set pitch for a sound (1.0 is base level)
-void SetSoundPitch(Sound sound, double pitch) => raw.SetSoundPitch(sound, pitch);
+void SetSoundPitch(Sound sound, double pitch) => proxy.SetSoundPitch(sound, pitch);
 /// Set pan for a sound (-1.0 left, 0.0 center, 1.0 right)
-void SetSoundPan(Sound sound, double pan) => raw.SetSoundPan(sound, pan);
+void SetSoundPan(Sound sound, double pan) => proxy.SetSoundPan(sound, pan);
 /// Copy a wave to a new wave
-Wave WaveCopy(Wave wave) => raw.WaveCopy(wave);
+Wave WaveCopy(Wave wave) => proxy.WaveCopy(wave);
 /// Crop a wave to defined frames range
 void WaveCrop(Wave wave, int initFrame, int finalFrame) => proxy.WaveCrop(wave, initFrame, finalFrame);
 /// Convert wave data to desired format
@@ -71,82 +71,82 @@ void WaveFormat(Wave wave, int sampleRate, int sampleSize, int channels) => prox
 /// Load samples data from wave as a 32bit float data array
 Float32List LoadWaveSamples(Wave wave) => proxy.LoadWaveSamples(wave);
 /// Unload samples data loaded with LoadWaveSamples()
-void UnloadWaveSamples(List<double> samples) => raw.UnloadWaveSamples(samples);
+void UnloadWaveSamples(Float32List samples) => proxy.UnloadWaveSamples(samples);
 
 // Music management functions
 /// Load music stream from file
-Music LoadMusicStream(String fileName) => raw.LoadMusicStream(fileName);
+Music LoadMusicStream(String fileName) => proxy.LoadMusicStream(fileName);
 /// Load music stream from data
 Music LoadMusicStreamFromMemory(String fileType, Uint8List data) => proxy.LoadMusicStreamFromMemory(fileType, data);
 /// Checks if a music stream is valid (context and buffers initialized)
-bool IsMusicValid(Music music) => raw.IsMusicValid(music);
+bool IsMusicValid(Music music) => proxy.IsMusicValid(music);
 /// Unload music stream
-void UnloadMusicStream(Music music) => raw.UnloadMusicStream(music);
+void UnloadMusicStream(Music music) => proxy.UnloadMusicStream(music);
 /// Start music playing
-void PlayMusicStream(Music music) => raw.PlayMusicStream(music);
+void PlayMusicStream(Music music) => proxy.PlayMusicStream(music);
 /// Check if music is playing
-bool IsMusicStreamPlaying(Music music) => raw.IsMusicStreamPlaying(music);
+bool IsMusicStreamPlaying(Music music) => proxy.IsMusicStreamPlaying(music);
 /// Updates buffers for music streaming
-void UpdateMusicStream(Music music) => raw.UpdateMusicStream(music);
+void UpdateMusicStream(Music music) => proxy.UpdateMusicStream(music);
 /// Stop music playing
-void StopMusicStream(Music music) => raw.StopMusicStream(music);
+void StopMusicStream(Music music) => proxy.StopMusicStream(music);
 /// Pause music playing
-void PauseMusicStream(Music music) => raw.PauseMusicStream(music);
+void PauseMusicStream(Music music) => proxy.PauseMusicStream(music);
 /// Resume playing paused music
-void ResumeMusicStream(Music music) => raw.ResumeMusicStream(music);
+void ResumeMusicStream(Music music) => proxy.ResumeMusicStream(music);
 /// Seek music to a position (in seconds)
-void SeekMusicStream(Music music, double position) => raw.SeekMusicStream(music, position);
+void SeekMusicStream(Music music, double position) => proxy.SeekMusicStream(music, position);
 /// Set volume for music (1.0 is max level)
-void SetMusicVolume(Music music, double volume) => raw.SetMusicVolume(music, volume);
+void SetMusicVolume(Music music, double volume) => proxy.SetMusicVolume(music, volume);
 /// Set pitch for a music (1.0 is base level)
-void SetMusicPitch(Music music, double pitch) => raw.SetMusicPitch(music, pitch);
+void SetMusicPitch(Music music, double pitch) => proxy.SetMusicPitch(music, pitch);
 /// Set pan for a music (-1.0 left, 0.0 center, 1.0 right)
-void SetMusicPan(Music music, double pan) => raw.SetMusicPan(music, pan);
+void SetMusicPan(Music music, double pan) => proxy.SetMusicPan(music, pan);
 /// Get music time length (in seconds)
-double GetMusicTimeLength(Music music) => raw.GetMusicTimeLength(music);
+double GetMusicTimeLength(Music music) => proxy.GetMusicTimeLength(music);
 /// Get current music time played (in seconds)
-double GetMusicTimePlayed(Music music) => raw.GetMusicTimePlayed(music);
+double GetMusicTimePlayed(Music music) => proxy.GetMusicTimePlayed(music);
 
 // AudioStream management functions
 /// Load audio stream (to stream raw audio pcm data)
-AudioStream LoadAudioStream(int sampleRate, int sampleSize, int channels) => raw.LoadAudioStream(sampleRate, sampleSize, channels);
+AudioStream LoadAudioStream(int sampleRate, int sampleSize, int channels) => proxy.LoadAudioStream(sampleRate, sampleSize, channels);
 /// Checks if an audio stream is valid (buffers initialized)
-bool IsAudioStreamValid(AudioStream stream) => raw.IsAudioStreamValid(stream);
+bool IsAudioStreamValid(AudioStream stream) => proxy.IsAudioStreamValid(stream);
 /// Unload audio stream and free memory
-void UnloadAudioStream(AudioStream stream) => raw.UnloadAudioStream(stream);
+void UnloadAudioStream(AudioStream stream) => proxy.UnloadAudioStream(stream);
 /// Update audio stream buffers with data
 void UpdateAudioStream(AudioStream stream, Uint8List data, int frameCount) => proxy.UpdateAudioStream(stream, data, frameCount);
 /// Check if any audio stream buffers requires refill
-bool IsAudioStreamProcessed(AudioStream stream) => raw.IsAudioStreamProcessed(stream);
+bool IsAudioStreamProcessed(AudioStream stream) => proxy.IsAudioStreamProcessed(stream);
 /// Play audio stream
-void PlayAudioStream(AudioStream stream) => raw.PlayAudioStream(stream);
+void PlayAudioStream(AudioStream stream) => proxy.PlayAudioStream(stream);
 /// Pause audio stream
-void PauseAudioStream(AudioStream stream) => raw.PauseAudioStream(stream);
+void PauseAudioStream(AudioStream stream) => proxy.PauseAudioStream(stream);
 /// Resume audio stream
-void ResumeAudioStream(AudioStream stream) => raw.ResumeAudioStream(stream);
+void ResumeAudioStream(AudioStream stream) => proxy.ResumeAudioStream(stream);
 /// Check if audio stream is playing
-bool IsAudioStreamPlaying(AudioStream stream) => raw.IsAudioStreamPlaying(stream);
+bool IsAudioStreamPlaying(AudioStream stream) => proxy.IsAudioStreamPlaying(stream);
 /// Stop audio stream
-void StopAudioStream(AudioStream stream) => raw.StopAudioStream(stream);
+void StopAudioStream(AudioStream stream) => proxy.StopAudioStream(stream);
 /// Set volume for audio stream (1.0 is max level)
-void SetAudioStreamVolume(AudioStream stream, double volume) => raw.SetAudioStreamVolume(stream, volume);
+void SetAudioStreamVolume(AudioStream stream, double volume) => proxy.SetAudioStreamVolume(stream, volume);
 /// Set pitch for audio stream (1.0 is base level)
-void SetAudioStreamPitch(AudioStream stream, double pitch) => raw.SetAudioStreamPitch(stream, pitch);
+void SetAudioStreamPitch(AudioStream stream, double pitch) => proxy.SetAudioStreamPitch(stream, pitch);
 /// Set pan for audio stream (-1.0 to 1.0 range, 0.0 is centered)
-void SetAudioStreamPan(AudioStream stream, double pan) => raw.SetAudioStreamPan(stream, pan);
+void SetAudioStreamPan(AudioStream stream, double pan) => proxy.SetAudioStreamPan(stream, pan);
 /// Default size for new audio streams
 void SetAudioStreamBufferSizeDefault(int size) => raw.SetAudioStreamBufferSizeDefault(size);
 /// Audio thread callback to request new data
-void SetAudioStreamCallback(AudioStream stream, AudioCallback callback) => raw.SetAudioStreamCallback(stream, callback);
+void SetAudioStreamCallback(AudioStream stream, AudioCallback callback) => proxy.SetAudioStreamCallback(stream, callback);
 
 /// Attach audio stream processor to stream, receives frames x 2 samples as 'float' (stereo)
-void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor) => raw.AttachAudioStreamProcessor(stream, processor);
+void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor) => proxy.AttachAudioStreamProcessor(stream, processor);
 /// Detach audio stream processor from stream
-void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor) => raw.DetachAudioStreamProcessor(stream, processor);
+void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor) => proxy.DetachAudioStreamProcessor(stream, processor);
 
 /// Attach audio stream processor to the entire audio pipeline, receives frames x 2 samples as 'float' (stereo)
-void AttachAudioMixedProcessor(AudioCallback processor) => raw.AttachAudioMixedProcessor(processor);
+void AttachAudioMixedProcessor(AudioCallback processor) => proxy.AttachAudioMixedProcessor(processor);
 /// Detach audio stream processor from the entire audio pipeline
-void DetachAudioMixedProcessor(AudioCallback processor) => raw.DetachAudioMixedProcessor(processor);
+void DetachAudioMixedProcessor(AudioCallback processor) => proxy.DetachAudioMixedProcessor(processor);
 
 

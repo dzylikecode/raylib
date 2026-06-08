@@ -297,6 +297,7 @@ import 'structs.dart';
       'WaveFormat':
           'void WaveFormat(Wave wave, int sampleRate, int sampleSize, int channels)',
       'LoadWaveSamples': 'Float32List LoadWaveSamples(Wave wave)',
+      'UnloadWaveSamples': 'void UnloadWaveSamples(Float32List samples)',
       'LoadMusicStreamFromMemory':
           'Music LoadMusicStreamFromMemory(String fileType, Uint8List data)',
       'UpdateAudioStream':
