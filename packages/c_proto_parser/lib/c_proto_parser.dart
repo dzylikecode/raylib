@@ -2,3 +2,4 @@
 library;
 
 export 'src/func.dart';
+export 'src/include.dart';
