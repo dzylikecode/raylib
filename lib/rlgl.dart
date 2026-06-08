@@ -15,7 +15,7 @@ import 'src/raylib.g.dart' as raylib;
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
 import 'dart:typed_data';
-import 'structs.dart';
+import 'src/structs.dart';
 
 // ── Matrix operations ────────────────────────────────────────────────────
 export 'src/raylib.g.dart' show rlMatrixMode;
@@ -353,18 +353,18 @@ Uint8List rlReadScreenPixels(int width, int height) {
 
 // ── Shaders management ──────────────────────────────────────────────────
 
-int rlLoadShaderCode(String? vsCode, String? fsCode) => ffi.using((arena) {
-  return raylib.rlLoadShaderCode(
-    vsCode?.toNativeUtf8(allocator: arena).cast() ?? nullptr,
-    fsCode?.toNativeUtf8(allocator: arena).cast() ?? nullptr,
-  );
-});
+// int rlLoadShaderCode(String? vsCode, String? fsCode) => ffi.using((arena) {
+//   return raylib.rlLoadShaderCode(
+//     vsCode?.toNativeUtf8(allocator: arena).cast() ?? nullptr,
+//     fsCode?.toNativeUtf8(allocator: arena).cast() ?? nullptr,
+//   );
+// });
 
-int rlCompileShader(String shaderCode, int type) => ffi.using((arena) {
-  return raylib.rlCompileShader(
-    shaderCode.toNativeUtf8(allocator: arena).cast(), type,
-  );
-});
+// int rlCompileShader(String shaderCode, int type) => ffi.using((arena) {
+//   return raylib.rlCompileShader(
+//     shaderCode.toNativeUtf8(allocator: arena).cast(), type,
+//   );
+// });
 
 int rlGetLocationUniform(int shaderId, String uniformName) =>
     ffi.using((arena) {

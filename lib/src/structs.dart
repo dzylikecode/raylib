@@ -124,11 +124,6 @@ class Color {
   String toString() => 'r: $r, g: $g, b: $b, a: $a';
 }
 
-Color Fade(Color color, double alpha) {
-  final c = raw.Fade(color.ptr.ref, alpha);
-  return .fromRGBA(c.r, c.g, c.b, c.a);
-}
-
 @Deprecated('Use .lightGray instead')
 final Color LIGHTGRAY = .lightGray;
 @Deprecated('Use .gray instead')
