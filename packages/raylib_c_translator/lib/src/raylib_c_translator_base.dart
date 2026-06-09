@@ -139,39 +139,18 @@ class StructInitializer extends TranslateRule {
   int get hashCode => type.hashCode;
 }
 
-class VariadicFunction extends TranslateRule {
-  const VariadicFunction(this.name, this.fixedArgumentCount);
-
-  static const textFormat = VariadicFunction('TextFormat', 1);
-
-  final String name;
-  final int fixedArgumentCount;
-
-  @override
-  bool operator ==(Object other) => switch (other) {
-    VariadicFunction(:final name, :final fixedArgumentCount) =>
-      this.name == name && this.fixedArgumentCount == fixedArgumentCount,
-    _ => false,
-  };
-
-  @override
-  int get hashCode => Object.hash(name, fixedArgumentCount);
-}
-
 class RaylibTranslator {
   final Set<TranslateRule> rules;
   final Set<Include> includes;
   final Set<MatchCode> matchCodes;
   final Set<CastCode> castCodes;
   final Set<StructInitializer> structInitializers;
-  final Set<VariadicFunction> variadicFunctions;
 
   RaylibTranslator(this.rules)
     : includes = rules.whereType<Include>().toSet(),
       matchCodes = rules.whereType<MatchCode>().toSet(),
       castCodes = rules.whereType<CastCode>().toSet(),
-      structInitializers = rules.whereType<StructInitializer>().toSet(),
-      variadicFunctions = rules.whereType<VariadicFunction>().toSet();
+      structInitializers = rules.whereType<StructInitializer>().toSet();
 
   String call(String content) {
     final lines = content.split('\n');
@@ -212,12 +191,6 @@ class RaylibTranslator {
             translatedLine = _replaceStructInitializer(
               translatedLine,
               structInitializer,
-            );
-          }
-          for (final variadicFunction in variadicFunctions) {
-            translatedLine = _replaceVariadicFunction(
-              translatedLine,
-              variadicFunction,
             );
           }
           translatedLines.add(translatedLine);
@@ -273,141 +246,6 @@ String _replaceStructInitializer(
     (match) => '${structInitializer.type}(${match.group(1)!.trim()})',
   );
   return translated;
-}
-
-String _replaceVariadicFunction(
-  String source,
-  VariadicFunction variadicFunction,
-) {
-  final buffer = StringBuffer();
-  var start = 0;
-  var searchFrom = 0;
-  final namePattern = RegExp(
-    r'\b' + RegExp.escape(variadicFunction.name) + r'\s*\(',
-  );
-
-  while (true) {
-    final match = namePattern.firstMatch(source.substring(searchFrom));
-    if (match == null) break;
-
-    final callStart = searchFrom + match.start;
-    final openParen = searchFrom + match.end - 1;
-    final closeParen = _findClosingParen(source, openParen);
-    if (closeParen == -1) break;
-
-    final arguments = _splitArguments(
-      source.substring(openParen + 1, closeParen),
-    );
-    if (arguments.length <= variadicFunction.fixedArgumentCount) {
-      searchFrom = closeParen + 1;
-      continue;
-    }
-
-    final fixed = arguments
-        .take(variadicFunction.fixedArgumentCount)
-        .join(', ');
-    final variadic = arguments
-        .skip(variadicFunction.fixedArgumentCount)
-        .join(', ');
-    buffer
-      ..write(source.substring(start, callStart))
-      ..write(variadicFunction.name)
-      ..write('(')
-      ..write(fixed)
-      ..write(', [')
-      ..write(variadic)
-      ..write('])');
-    start = closeParen + 1;
-    searchFrom = closeParen + 1;
-  }
-
-  if (start == 0) return source;
-  buffer.write(source.substring(start));
-  return buffer.toString();
-}
-
-int _findClosingParen(String source, int openParen) {
-  var depth = 0;
-  var inString = false;
-  var quote = '';
-  var escaped = false;
-  for (var i = openParen; i < source.length; i++) {
-    final char = source[i];
-    if (inString) {
-      if (escaped) {
-        escaped = false;
-      } else if (char == r'\') {
-        escaped = true;
-      } else if (char == quote) {
-        inString = false;
-      }
-      continue;
-    }
-    if (char == '"' || char == "'") {
-      inString = true;
-      quote = char;
-      continue;
-    }
-    if (char == '(') depth++;
-    if (char == ')') {
-      depth--;
-      if (depth == 0) return i;
-    }
-  }
-  return -1;
-}
-
-List<String> _splitArguments(String source) {
-  final arguments = <String>[];
-  var start = 0;
-  var parenDepth = 0;
-  var bracketDepth = 0;
-  var braceDepth = 0;
-  var inString = false;
-  var quote = '';
-  var escaped = false;
-
-  for (var i = 0; i < source.length; i++) {
-    final char = source[i];
-    if (inString) {
-      if (escaped) {
-        escaped = false;
-      } else if (char == r'\') {
-        escaped = true;
-      } else if (char == quote) {
-        inString = false;
-      }
-      continue;
-    }
-    if (char == '"' || char == "'") {
-      inString = true;
-      quote = char;
-      continue;
-    }
-    switch (char) {
-      case '(':
-        parenDepth++;
-      case ')':
-        parenDepth--;
-      case '[':
-        bracketDepth++;
-      case ']':
-        bracketDepth--;
-      case '{':
-        braceDepth++;
-      case '}':
-        braceDepth--;
-      case ',':
-        if (parenDepth == 0 && bracketDepth == 0 && braceDepth == 0) {
-          arguments.add(source.substring(start, i).trim());
-          start = i + 1;
-        }
-    }
-  }
-
-  final last = source.substring(start).trim();
-  if (last.isNotEmpty) arguments.add(last);
-  return arguments;
 }
 
 String _replacePattern(String source, MatchCode matchCode) {

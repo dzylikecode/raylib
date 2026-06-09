@@ -50,18 +50,4 @@ void main() {
       'DrawLineV(Vector2(0, y), Vector2(width, y), RED);',
     );
   });
-
-  test('wraps variadic function arguments in a list when enabled', () {
-    final translator = RaylibTranslator({VariadicFunction.textFormat});
-
-    expect(
-      translator('TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps)'),
-      'TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps])',
-    );
-
-    expect(
-      translator('TextFormat("%i", Clamp(GetFPS(), 0, 60), currentFps)'),
-      'TextFormat("%i", [Clamp(GetFPS(), 0, 60), currentFps])',
-    );
-  });
 }

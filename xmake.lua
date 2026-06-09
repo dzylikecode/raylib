@@ -21,7 +21,7 @@ target("interface")
 
 target("basic")
   set_kind("binary")
-  add_files("example/001_core_basic_window.c")
+  add_files("example/core_basic_window.c")
   add_packages("raylib")
 
 ---------------------------------------------------------

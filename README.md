@@ -33,36 +33,19 @@ int main()
 }
 ```
 
-第一次执行以下命令会编译 raylib 的并生成动态库，会需要消耗比较久的时间
-
-```bash
-dart run example/main.dart
-```
-
 ## example
 
+对于 c 的 example
 
+```bash
+xmake
+xmake run 001_core_basic_window
+```
+
+对于 dart 的 example，直接点击运行
 
 
 ## 渔法
-
-> "授人以渔". 不仅是人，还包括 AI.
-
-根据 [api](https://www.raylib.com/cheatsheet/cheatsheet.html) 导出 C API 到 docs/ 目录下，分别对应 rcore.dart、rshapes.dart、rtextures.dart、rtext.dart、rmodels.dart、raudio.dart。
-
-以 rcore.dart 为例，先把所有 API 以注释形式列出，然后逐个判断封装策略：
-
-```dart
-// 直接导出（无需封装）
-export 'src/raylib.g.dart' show CloseWindow;
-
-// 需要封装（注释原始导出，在后面写 Dart 版本）
-// export 'src/raylib.g.dart' show InitWindow;
-
-void InitWindow(int width, int height, String title) {
-  // ...
-}
-```
 
 每个函数的封装策略见下方各小节。
 
@@ -321,3 +304,7 @@ Color color = .red; // Recommended
 KeyboardKey key = KEY_A; // Deprecated
 KeyboardKey key = .a; // Recommended
 ```
+
+## issue
+
+- [ ] [函数转发](https://github.com/Dart-Code/Dart-Code/issues/6081)

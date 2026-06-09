@@ -322,7 +322,28 @@ int TextLength(String text) => ffi.using((arena) {
   return raw.TextLength(text.toNativeUtf8(allocator: arena).cast());
 });
 
-String TextFormat(String text, List<Object> args) => sprintf(text, args)!;
+String TextFormat(
+  String text, [
+  Object? arg1,
+  Object? arg2,
+  Object? arg3,
+  Object? arg4,
+  Object? arg5,
+  Object? arg6,
+  Object? arg7,
+  Object? arg8,
+  Object? arg9,
+]) => sprintf(text, [
+  ?arg1,
+  ?arg2,
+  ?arg3,
+  ?arg4,
+  ?arg5,
+  ?arg6,
+  ?arg7,
+  ?arg8,
+  ?arg9,
+])!;
 
 String TextSubtext(String text, int position, int length) => ffi.using((arena) {
   return _string(
@@ -441,13 +462,9 @@ int TextFindIndex(String text, String search) => ffi.using((arena) {
   );
 });
 
-String TextToUpper(String text) => ffi.using((arena) {
-  return _string(raw.TextToUpper(text.toNativeUtf8(allocator: arena).cast()));
-});
+String TextToUpper(String text) => text.toUpperCase();
 
-String TextToLower(String text) => ffi.using((arena) {
-  return _string(raw.TextToLower(text.toNativeUtf8(allocator: arena).cast()));
-});
+String TextToLower(String text) => text.toLowerCase();
 
 String TextToPascal(String text) => ffi.using((arena) {
   return _string(raw.TextToPascal(text.toNativeUtf8(allocator: arena).cast()));
