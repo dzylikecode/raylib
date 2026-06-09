@@ -75,7 +75,10 @@ class RaylibTranslator {
     final translatedLines = <String>[];
     for (final line in lines) {
       final lineType = _LineType.fromLine(line);
-      if (inBlockComment && lineType != .commentEnd) continue;
+      if (inBlockComment && lineType != .commentEnd) {
+        translatedLines.add(line);
+        continue;
+      }
       switch (lineType) {
         case .commentStart:
           inBlockComment = true;
