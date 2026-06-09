@@ -7,132 +7,132 @@ import 'structs.dart';
 
 // Font loading/unloading functions
 /// Get the default Font
-Font GetFontDefault() => proxy.GetFontDefault();
+const GetFontDefault = proxy.GetFontDefault;
 /// Load font from file into GPU memory (VRAM)
-Font LoadFont(String fileName) => proxy.LoadFont(fileName);
+const LoadFont = proxy.LoadFont;
 /// Load font from file with extended parameters, use NULL for codepoints and 0 for codepointCount to load the default character set, font size is provided in pixels height
-Font LoadFontEx(String fileName, int fontSize, List<int> codepoints) => proxy.LoadFontEx(fileName, fontSize, codepoints);
+const LoadFontEx = proxy.LoadFontEx;
 /// Load font from Image (XNA style)
-Font LoadFontFromImage(Image image, Color key, int firstChar) => proxy.LoadFontFromImage(image, key, firstChar);
+const LoadFontFromImage = proxy.LoadFontFromImage;
 /// Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
-Font LoadFontFromMemory(String fileType, Uint8List fileData, int fontSize, List<int> codepoints) => proxy.LoadFontFromMemory(fileType, fileData, fontSize, codepoints);
+const LoadFontFromMemory = proxy.LoadFontFromMemory;
 /// Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
-bool IsFontValid(Font font) => proxy.IsFontValid(font);
+const IsFontValid = proxy.IsFontValid;
 /// Load font data for further use
-List<GlyphInfo> LoadFontData(Uint8List fileData, int fontSize, List<int> codepoints, int type) => proxy.LoadFontData(fileData, fontSize, codepoints, type);
+const LoadFontData = proxy.LoadFontData;
 /// Generate image font atlas using chars info
-(Image, List<Rectangle>) GenImageFontAtlas(List<GlyphInfo> glyphs, int fontSize, int padding, int packMethod) => proxy.GenImageFontAtlas(glyphs, fontSize, padding, packMethod);
+const GenImageFontAtlas = proxy.GenImageFontAtlas;
 /// Unload font chars info data (RAM)
-void UnloadFontData(List<GlyphInfo> glyphs) => proxy.UnloadFontData(glyphs);
+const UnloadFontData = proxy.UnloadFontData;
 /// Unload font from GPU memory (VRAM)
-void UnloadFont(Font font) => proxy.UnloadFont(font);
+const UnloadFont = proxy.UnloadFont;
 /// Export font as code file, returns true on success
-bool ExportFontAsCode(Font font, String fileName) => proxy.ExportFontAsCode(font, fileName);
+const ExportFontAsCode = proxy.ExportFontAsCode;
 
 // Text drawing functions
 /// Draw current FPS
 void DrawFPS(int posX, int posY) => raw.DrawFPS(posX, posY);
 /// Draw text (using default font)
-void DrawText(String text, int posX, int posY, int fontSize, Color color) => proxy.DrawText(text, posX, posY, fontSize, color);
+const DrawText = proxy.DrawText;
 /// Draw text using font and additional parameters
-void DrawTextEx(Font font, String text, Vector2 position, double fontSize, double spacing, Color tint) => proxy.DrawTextEx(font, text, position, fontSize, spacing, tint);
+const DrawTextEx = proxy.DrawTextEx;
 /// Draw text using Font and pro parameters (rotation)
-void DrawTextPro(Font font, String text, Vector2 position, Vector2 origin, double rotation, double fontSize, double spacing, Color tint) => proxy.DrawTextPro(font, text, position, origin, rotation, fontSize, spacing, tint);
+const DrawTextPro = proxy.DrawTextPro;
 /// Draw one character (codepoint)
-void DrawTextCodepoint(Font font, int codepoint, Vector2 position, double fontSize, Color tint) => proxy.DrawTextCodepoint(font, codepoint, position, fontSize, tint);
+const DrawTextCodepoint = proxy.DrawTextCodepoint;
 /// Draw multiple character (codepoint)
-void DrawTextCodepoints(Font font, List<int> codepoints, Vector2 position, double fontSize, double spacing, Color tint) => proxy.DrawTextCodepoints(font, codepoints, position, fontSize, spacing, tint);
+const DrawTextCodepoints = proxy.DrawTextCodepoints;
 
 // Text font info functions
 /// Set vertical line spacing when drawing with line-breaks
 void SetTextLineSpacing(int spacing) => raw.SetTextLineSpacing(spacing);
 /// Measure string width for default font
-int MeasureText(String text, int fontSize) => proxy.MeasureText(text, fontSize);
+const MeasureText = proxy.MeasureText;
 /// Measure string size for Font
-Vector2 MeasureTextEx(Font font, String text, double fontSize, double spacing) => proxy.MeasureTextEx(font, text, fontSize, spacing);
+const MeasureTextEx = proxy.MeasureTextEx;
 /// Measure string size for an existing array of codepoints for Font
-Vector2 MeasureTextCodepoints(Font font, List<int> codepoints, double fontSize, double spacing) => proxy.MeasureTextCodepoints(font, codepoints, fontSize, spacing);
+const MeasureTextCodepoints = proxy.MeasureTextCodepoints;
 /// Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
-int GetGlyphIndex(Font font, int codepoint) => proxy.GetGlyphIndex(font, codepoint);
+const GetGlyphIndex = proxy.GetGlyphIndex;
 /// Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
-GlyphInfo GetGlyphInfo(Font font, int codepoint) => proxy.GetGlyphInfo(font, codepoint);
+const GetGlyphInfo = proxy.GetGlyphInfo;
 /// Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
-Rectangle GetGlyphAtlasRec(Font font, int codepoint) => proxy.GetGlyphAtlasRec(font, codepoint);
+const GetGlyphAtlasRec = proxy.GetGlyphAtlasRec;
 
 // Text codepoints management functions (unicode characters)
 /// Load UTF-8 text encoded from codepoints array
-String LoadUTF8(List<int> codepoints) => proxy.LoadUTF8(codepoints);
+const LoadUTF8 = proxy.LoadUTF8;
 /// Unload UTF-8 text encoded from codepoints array
-void UnloadUTF8(String text) => proxy.UnloadUTF8(text);
+const UnloadUTF8 = proxy.UnloadUTF8;
 /// Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
-List<int> LoadCodepoints(String text) => proxy.LoadCodepoints(text);
+const LoadCodepoints = proxy.LoadCodepoints;
 /// Unload codepoints data from memory
-void UnloadCodepoints(List<int> codepoints) => proxy.UnloadCodepoints(codepoints);
+const UnloadCodepoints = proxy.UnloadCodepoints;
 /// Get total number of codepoints in a UTF-8 encoded string
-int GetCodepointCount(String text) => proxy.GetCodepointCount(text);
+const GetCodepointCount = proxy.GetCodepointCount;
 /// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-(int, int) GetCodepoint(String text) => proxy.GetCodepoint(text);
+const GetCodepoint = proxy.GetCodepoint;
 /// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-(int, int) GetCodepointNext(String text) => proxy.GetCodepointNext(text);
+const GetCodepointNext = proxy.GetCodepointNext;
 /// Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-(int, int) GetCodepointPrevious(String text) => proxy.GetCodepointPrevious(text);
+const GetCodepointPrevious = proxy.GetCodepointPrevious;
 /// Encode one codepoint into UTF-8 byte array (array length returned as parameter)
-String CodepointToUTF8(int codepoint) => proxy.CodepointToUTF8(codepoint);
+const CodepointToUTF8 = proxy.CodepointToUTF8;
 
 // Text strings management functions (no UTF-8 strings, only byte chars)
 // WARNING 1: Most of these functions use internal static buffers[], it's recommended to store returned data on user-side for re-use
 // WARNING 2: Some functions allocate memory internally for the returned strings, those strings must be freed by user using MemFree()
 /// Load text as separate lines ('\n')
-List<String> LoadTextLines(String text) => proxy.LoadTextLines(text);
+const LoadTextLines = proxy.LoadTextLines;
 /// Unload text lines
-void UnloadTextLines(List<String> text) => proxy.UnloadTextLines(text);
+const UnloadTextLines = proxy.UnloadTextLines;
 /// Copy one string to another, returns bytes copied
-String TextCopy(String src) => proxy.TextCopy(src);
+const TextCopy = proxy.TextCopy;
 /// Check if two text string are equal
-bool TextIsEqual(String text1, String text2) => proxy.TextIsEqual(text1, text2);
+const TextIsEqual = proxy.TextIsEqual;
 /// Get text length, checks for '\0' ending
-int TextLength(String text) => proxy.TextLength(text);
+const TextLength = proxy.TextLength;
 /// Text formatting with variables (sprintf() style)
-String TextFormat(String text, List<Object> args) => proxy.TextFormat(text, args);
+const TextFormat = proxy.TextFormat;
 /// Get a piece of a text string
-String TextSubtext(String text, int position, int length) => proxy.TextSubtext(text, position, length);
+const TextSubtext = proxy.TextSubtext;
 /// Remove text spaces, concat words
-String TextRemoveSpaces(String text) => proxy.TextRemoveSpaces(text);
+const TextRemoveSpaces = proxy.TextRemoveSpaces;
 /// Get text between two strings
-String GetTextBetween(String text, String begin, String end) => proxy.GetTextBetween(text, begin, end);
+const GetTextBetween = proxy.GetTextBetween;
 /// Replace text string with new string
-String TextReplace(String text, String search, String replacement) => proxy.TextReplace(text, search, replacement);
+const TextReplace = proxy.TextReplace;
 /// Replace text string with new string, memory must be MemFree()
-String TextReplaceAlloc(String text, String search, String replacement) => proxy.TextReplaceAlloc(text, search, replacement);
+const TextReplaceAlloc = proxy.TextReplaceAlloc;
 /// Replace text between two specific strings
-String TextReplaceBetween(String text, String begin, String end, String replacement) => proxy.TextReplaceBetween(text, begin, end, replacement);
+const TextReplaceBetween = proxy.TextReplaceBetween;
 /// Replace text between two specific strings, memory must be MemFree()
-String TextReplaceBetweenAlloc(String text, String begin, String end, String replacement) => proxy.TextReplaceBetweenAlloc(text, begin, end, replacement);
+const TextReplaceBetweenAlloc = proxy.TextReplaceBetweenAlloc;
 /// Insert text in a defined byte position
-String TextInsert(String text, String insert, int position) => proxy.TextInsert(text, insert, position);
+const TextInsert = proxy.TextInsert;
 /// Insert text in a defined byte position, memory must be MemFree()
-String TextInsertAlloc(String text, String insert, int position) => proxy.TextInsertAlloc(text, insert, position);
+const TextInsertAlloc = proxy.TextInsertAlloc;
 /// Join text strings with delimiter
-String TextJoin(List<String> textList, String delimiter) => proxy.TextJoin(textList, delimiter);
+const TextJoin = proxy.TextJoin;
 /// Split text into multiple strings, using MAX_TEXTSPLIT_COUNT static strings
-List<String> TextSplit(String text, String delimiter) => proxy.TextSplit(text, delimiter);
+const TextSplit = proxy.TextSplit;
 /// Append text at specific position and move cursor
-String TextAppend(String text, String append) => proxy.TextAppend(text, append);
+const TextAppend = proxy.TextAppend;
 /// Find first text occurrence within a string, -1 if not found
-int TextFindIndex(String text, String search) => proxy.TextFindIndex(text, search);
+const TextFindIndex = proxy.TextFindIndex;
 /// Get upper case version of provided string
-String TextToUpper(String text) => proxy.TextToUpper(text);
+const TextToUpper = proxy.TextToUpper;
 /// Get lower case version of provided string
-String TextToLower(String text) => proxy.TextToLower(text);
+const TextToLower = proxy.TextToLower;
 /// Get Pascal case notation version of provided string
-String TextToPascal(String text) => proxy.TextToPascal(text);
+const TextToPascal = proxy.TextToPascal;
 /// Get Snake case notation version of provided string
-String TextToSnake(String text) => proxy.TextToSnake(text);
+const TextToSnake = proxy.TextToSnake;
 /// Get Camel case notation version of provided string
-String TextToCamel(String text) => proxy.TextToCamel(text);
+const TextToCamel = proxy.TextToCamel;
 /// Get integer value from text
-int TextToInteger(String text) => proxy.TextToInteger(text);
+const TextToInteger = proxy.TextToInteger;
 /// Get float value from text
-double TextToFloat(String text) => proxy.TextToFloat(text);
+const TextToFloat = proxy.TextToFloat;
 
 

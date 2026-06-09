@@ -7,150 +7,150 @@ import 'structs.dart';
 // NOTE: It can be useful when using basic shapes and one single font,
 // defining a font char white rectangle would allow drawing everything in a single draw call
 /// Set texture and rectangle to be used on shapes drawing
-void SetShapesTexture(Texture2D texture, Rectangle source) => proxy.SetShapesTexture(texture, source);
+const SetShapesTexture = proxy.SetShapesTexture;
 /// Get texture that is used for shapes drawing
-Texture2D GetShapesTexture() => proxy.GetShapesTexture();
+const GetShapesTexture = proxy.GetShapesTexture;
 /// Get texture source rectangle that is used for shapes drawing
-Rectangle GetShapesTextureRectangle() => proxy.GetShapesTextureRectangle();
+const GetShapesTextureRectangle = proxy.GetShapesTextureRectangle;
 
 // Basic shapes drawing functions
 /// Draw a pixel using geometry [Can be slow, use with care]
-void DrawPixel(int posX, int posY, Color color) => proxy.DrawPixel(posX, posY, color);
+const DrawPixel = proxy.DrawPixel;
 /// Draw a pixel using geometry (Vector version) [Can be slow, use with care]
-void DrawPixelV(Vector2 position, Color color) => proxy.DrawPixelV(position, color);
+const DrawPixelV = proxy.DrawPixelV;
 /// Draw a line
-void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, Color color) => proxy.DrawLine(startPosX, startPosY, endPosX, endPosY, color);
+const DrawLine = proxy.DrawLine;
 /// Draw a line (using gl lines)
-void DrawLineV(Vector2 startPos, Vector2 endPos, Color color) => proxy.DrawLineV(startPos, endPos, color);
+const DrawLineV = proxy.DrawLineV;
 /// Draw a line (using triangles/quads)
-void DrawLineEx(Vector2 startPos, Vector2 endPos, double thick, Color color) => proxy.DrawLineEx(startPos, endPos, thick, color);
+const DrawLineEx = proxy.DrawLineEx;
 /// Draw lines sequence (using gl lines)
-void DrawLineStrip(List<Vector2> points, Color color) => proxy.DrawLineStrip(points, color);
+const DrawLineStrip = proxy.DrawLineStrip;
 /// Draw line segment cubic-bezier in-out interpolation
-void DrawLineBezier(Vector2 startPos, Vector2 endPos, double thick, Color color) => proxy.DrawLineBezier(startPos, endPos, thick, color);
+const DrawLineBezier = proxy.DrawLineBezier;
 /// Draw a dashed line
-void DrawLineDashed(Vector2 startPos, Vector2 endPos, int dashSize, int spaceSize, Color color) => proxy.DrawLineDashed(startPos, endPos, dashSize, spaceSize, color);
+const DrawLineDashed = proxy.DrawLineDashed;
 /// Draw a color-filled circle
-void DrawCircle(int centerX, int centerY, double radius, Color color) => proxy.DrawCircle(centerX, centerY, radius, color);
+const DrawCircle = proxy.DrawCircle;
 /// Draw a color-filled circle (Vector version)
-void DrawCircleV(Vector2 center, double radius, Color color) => proxy.DrawCircleV(center, radius, color);
+const DrawCircleV = proxy.DrawCircleV;
 /// Draw a gradient-filled circle
-void DrawCircleGradient(Vector2 center, double radius, Color inner, Color outer) => proxy.DrawCircleGradient(center, radius, inner, outer);
+const DrawCircleGradient = proxy.DrawCircleGradient;
 /// Draw a piece of a circle
-void DrawCircleSector(Vector2 center, double radius, double startAngle, double endAngle, int segments, Color color) => proxy.DrawCircleSector(center, radius, startAngle, endAngle, segments, color);
+const DrawCircleSector = proxy.DrawCircleSector;
 /// Draw circle sector outline
-void DrawCircleSectorLines(Vector2 center, double radius, double startAngle, double endAngle, int segments, Color color) => proxy.DrawCircleSectorLines(center, radius, startAngle, endAngle, segments, color);
+const DrawCircleSectorLines = proxy.DrawCircleSectorLines;
 /// Draw circle outline
-void DrawCircleLines(int centerX, int centerY, double radius, Color color) => proxy.DrawCircleLines(centerX, centerY, radius, color);
+const DrawCircleLines = proxy.DrawCircleLines;
 /// Draw circle outline (Vector version)
-void DrawCircleLinesV(Vector2 center, double radius, Color color) => proxy.DrawCircleLinesV(center, radius, color);
+const DrawCircleLinesV = proxy.DrawCircleLinesV;
 /// Draw ellipse
-void DrawEllipse(int centerX, int centerY, double radiusH, double radiusV, Color color) => proxy.DrawEllipse(centerX, centerY, radiusH, radiusV, color);
+const DrawEllipse = proxy.DrawEllipse;
 /// Draw ellipse (Vector version)
-void DrawEllipseV(Vector2 center, double radiusH, double radiusV, Color color) => proxy.DrawEllipseV(center, radiusH, radiusV, color);
+const DrawEllipseV = proxy.DrawEllipseV;
 /// Draw ellipse outline
-void DrawEllipseLines(int centerX, int centerY, double radiusH, double radiusV, Color color) => proxy.DrawEllipseLines(centerX, centerY, radiusH, radiusV, color);
+const DrawEllipseLines = proxy.DrawEllipseLines;
 /// Draw ellipse outline (Vector version)
-void DrawEllipseLinesV(Vector2 center, double radiusH, double radiusV, Color color) => proxy.DrawEllipseLinesV(center, radiusH, radiusV, color);
+const DrawEllipseLinesV = proxy.DrawEllipseLinesV;
 /// Draw ring
-void DrawRing(Vector2 center, double innerRadius, double outerRadius, double startAngle, double endAngle, int segments, Color color) => proxy.DrawRing(center, innerRadius, outerRadius, startAngle, endAngle, segments, color);
+const DrawRing = proxy.DrawRing;
 /// Draw ring outline
-void DrawRingLines(Vector2 center, double innerRadius, double outerRadius, double startAngle, double endAngle, int segments, Color color) => proxy.DrawRingLines(center, innerRadius, outerRadius, startAngle, endAngle, segments, color);
+const DrawRingLines = proxy.DrawRingLines;
 /// Draw a color-filled rectangle
-void DrawRectangle(int posX, int posY, int width, int height, Color color) => proxy.DrawRectangle(posX, posY, width, height, color);
+const DrawRectangle = proxy.DrawRectangle;
 /// Draw a color-filled rectangle (Vector version)
-void DrawRectangleV(Vector2 position, Vector2 size, Color color) => proxy.DrawRectangleV(position, size, color);
+const DrawRectangleV = proxy.DrawRectangleV;
 /// Draw a color-filled rectangle
-void DrawRectangleRec(Rectangle rec, Color color) => proxy.DrawRectangleRec(rec, color);
+const DrawRectangleRec = proxy.DrawRectangleRec;
 /// Draw a color-filled rectangle with pro parameters
-void DrawRectanglePro(Rectangle rec, Vector2 origin, double rotation, Color color) => proxy.DrawRectanglePro(rec, origin, rotation, color);
+const DrawRectanglePro = proxy.DrawRectanglePro;
 /// Draw a vertical-gradient-filled rectangle
-void DrawRectangleGradientV(int posX, int posY, int width, int height, Color top, Color bottom) => proxy.DrawRectangleGradientV(posX, posY, width, height, top, bottom);
+const DrawRectangleGradientV = proxy.DrawRectangleGradientV;
 /// Draw a horizontal-gradient-filled rectangle
-void DrawRectangleGradientH(int posX, int posY, int width, int height, Color left, Color right) => proxy.DrawRectangleGradientH(posX, posY, width, height, left, right);
+const DrawRectangleGradientH = proxy.DrawRectangleGradientH;
 /// Draw a gradient-filled rectangle with custom vertex colors
-void DrawRectangleGradientEx(Rectangle rec, Color topLeft, Color bottomLeft, Color bottomRight, Color topRight) => proxy.DrawRectangleGradientEx(rec, topLeft, bottomLeft, bottomRight, topRight);
+const DrawRectangleGradientEx = proxy.DrawRectangleGradientEx;
 /// Draw rectangle outline
-void DrawRectangleLines(int posX, int posY, int width, int height, Color color) => proxy.DrawRectangleLines(posX, posY, width, height, color);
+const DrawRectangleLines = proxy.DrawRectangleLines;
 /// Draw rectangle outline with extended parameters
-void DrawRectangleLinesEx(Rectangle rec, double lineThick, Color color) => proxy.DrawRectangleLinesEx(rec, lineThick, color);
+const DrawRectangleLinesEx = proxy.DrawRectangleLinesEx;
 /// Draw rectangle with rounded edges
-void DrawRectangleRounded(Rectangle rec, double roundness, int segments, Color color) => proxy.DrawRectangleRounded(rec, roundness, segments, color);
+const DrawRectangleRounded = proxy.DrawRectangleRounded;
 /// Draw rectangle lines with rounded edges
-void DrawRectangleRoundedLines(Rectangle rec, double roundness, int segments, Color color) => proxy.DrawRectangleRoundedLines(rec, roundness, segments, color);
+const DrawRectangleRoundedLines = proxy.DrawRectangleRoundedLines;
 /// Draw rectangle with rounded edges outline
-void DrawRectangleRoundedLinesEx(Rectangle rec, double roundness, int segments, double lineThick, Color color) => proxy.DrawRectangleRoundedLinesEx(rec, roundness, segments, lineThick, color);
+const DrawRectangleRoundedLinesEx = proxy.DrawRectangleRoundedLinesEx;
 /// Draw a color-filled triangle (vertex in counter-clockwise order!)
-void DrawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color) => proxy.DrawTriangle(v1, v2, v3, color);
+const DrawTriangle = proxy.DrawTriangle;
 /// Draw triangle outline (vertex in counter-clockwise order!)
-void DrawTriangleLines(Vector2 v1, Vector2 v2, Vector2 v3, Color color) => proxy.DrawTriangleLines(v1, v2, v3, color);
+const DrawTriangleLines = proxy.DrawTriangleLines;
 /// Draw a triangle fan defined by points (first vertex is the center)
-void DrawTriangleFan(List<Vector2> points, Color color) => proxy.DrawTriangleFan(points, color);
+const DrawTriangleFan = proxy.DrawTriangleFan;
 /// Draw a triangle strip defined by points
-void DrawTriangleStrip(List<Vector2> points, Color color) => proxy.DrawTriangleStrip(points, color);
+const DrawTriangleStrip = proxy.DrawTriangleStrip;
 /// Draw a regular polygon (Vector version)
-void DrawPoly(Vector2 center, int sides, double radius, double rotation, Color color) => proxy.DrawPoly(center, sides, radius, rotation, color);
+const DrawPoly = proxy.DrawPoly;
 /// Draw a polygon outline of n sides
-void DrawPolyLines(Vector2 center, int sides, double radius, double rotation, Color color) => proxy.DrawPolyLines(center, sides, radius, rotation, color);
+const DrawPolyLines = proxy.DrawPolyLines;
 /// Draw a polygon outline of n sides with extended parameters
-void DrawPolyLinesEx(Vector2 center, int sides, double radius, double rotation, double lineThick, Color color) => proxy.DrawPolyLinesEx(center, sides, radius, rotation, lineThick, color);
+const DrawPolyLinesEx = proxy.DrawPolyLinesEx;
 
 // Splines drawing functions
 /// Draw spline: Linear, minimum 2 points
-void DrawSplineLinear(List<Vector2> points, double thick, Color color) => proxy.DrawSplineLinear(points, thick, color);
+const DrawSplineLinear = proxy.DrawSplineLinear;
 /// Draw spline: B-Spline, minimum 4 points
-void DrawSplineBasis(List<Vector2> points, double thick, Color color) => proxy.DrawSplineBasis(points, thick, color);
+const DrawSplineBasis = proxy.DrawSplineBasis;
 /// Draw spline: Catmull-Rom, minimum 4 points
-void DrawSplineCatmullRom(List<Vector2> points, double thick, Color color) => proxy.DrawSplineCatmullRom(points, thick, color);
+const DrawSplineCatmullRom = proxy.DrawSplineCatmullRom;
 /// Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
-void DrawSplineBezierQuadratic(List<Vector2> points, double thick, Color color) => proxy.DrawSplineBezierQuadratic(points, thick, color);
+const DrawSplineBezierQuadratic = proxy.DrawSplineBezierQuadratic;
 /// Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
-void DrawSplineBezierCubic(List<Vector2> points, double thick, Color color) => proxy.DrawSplineBezierCubic(points, thick, color);
+const DrawSplineBezierCubic = proxy.DrawSplineBezierCubic;
 /// Draw spline segment: Linear, 2 points
-void DrawSplineSegmentLinear(Vector2 p1, Vector2 p2, double thick, Color color) => proxy.DrawSplineSegmentLinear(p1, p2, thick, color);
+const DrawSplineSegmentLinear = proxy.DrawSplineSegmentLinear;
 /// Draw spline segment: B-Spline, 4 points
-void DrawSplineSegmentBasis(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double thick, Color color) => proxy.DrawSplineSegmentBasis(p1, p2, p3, p4, thick, color);
+const DrawSplineSegmentBasis = proxy.DrawSplineSegmentBasis;
 /// Draw spline segment: Catmull-Rom, 4 points
-void DrawSplineSegmentCatmullRom(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double thick, Color color) => proxy.DrawSplineSegmentCatmullRom(p1, p2, p3, p4, thick, color);
+const DrawSplineSegmentCatmullRom = proxy.DrawSplineSegmentCatmullRom;
 /// Draw spline segment: Quadratic Bezier, 2 points, 1 control point
-void DrawSplineSegmentBezierQuadratic(Vector2 p1, Vector2 c2, Vector2 p3, double thick, Color color) => proxy.DrawSplineSegmentBezierQuadratic(p1, c2, p3, thick, color);
+const DrawSplineSegmentBezierQuadratic = proxy.DrawSplineSegmentBezierQuadratic;
 /// Draw spline segment: Cubic Bezier, 2 points, 2 control points
-void DrawSplineSegmentBezierCubic(Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, double thick, Color color) => proxy.DrawSplineSegmentBezierCubic(p1, c2, c3, p4, thick, color);
+const DrawSplineSegmentBezierCubic = proxy.DrawSplineSegmentBezierCubic;
 
 // Spline segment point evaluation functions, for a given t [0.0f .. 1.0f]
 /// Get (evaluate) spline point: Linear
-Vector2 GetSplinePointLinear(Vector2 startPos, Vector2 endPos, double t) => proxy.GetSplinePointLinear(startPos, endPos, t);
+const GetSplinePointLinear = proxy.GetSplinePointLinear;
 /// Get (evaluate) spline point: B-Spline
-Vector2 GetSplinePointBasis(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double t) => proxy.GetSplinePointBasis(p1, p2, p3, p4, t);
+const GetSplinePointBasis = proxy.GetSplinePointBasis;
 /// Get (evaluate) spline point: Catmull-Rom
-Vector2 GetSplinePointCatmullRom(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, double t) => proxy.GetSplinePointCatmullRom(p1, p2, p3, p4, t);
+const GetSplinePointCatmullRom = proxy.GetSplinePointCatmullRom;
 /// Get (evaluate) spline point: Quadratic Bezier
-Vector2 GetSplinePointBezierQuad(Vector2 p1, Vector2 c2, Vector2 p3, double t) => proxy.GetSplinePointBezierQuad(p1, c2, p3, t);
+const GetSplinePointBezierQuad = proxy.GetSplinePointBezierQuad;
 /// Get (evaluate) spline point: Cubic Bezier
-Vector2 GetSplinePointBezierCubic(Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, double t) => proxy.GetSplinePointBezierCubic(p1, c2, c3, p4, t);
+const GetSplinePointBezierCubic = proxy.GetSplinePointBezierCubic;
 
 // Basic shapes collision detection functions
 /// Check collision between two rectangles
-bool CheckCollisionRecs(Rectangle rec1, Rectangle rec2) => proxy.CheckCollisionRecs(rec1, rec2);
+const CheckCollisionRecs = proxy.CheckCollisionRecs;
 /// Check collision between two circles
-bool CheckCollisionCircles(Vector2 center1, double radius1, Vector2 center2, double radius2) => proxy.CheckCollisionCircles(center1, radius1, center2, radius2);
+const CheckCollisionCircles = proxy.CheckCollisionCircles;
 /// Check collision between circle and rectangle
-bool CheckCollisionCircleRec(Vector2 center, double radius, Rectangle rec) => proxy.CheckCollisionCircleRec(center, radius, rec);
+const CheckCollisionCircleRec = proxy.CheckCollisionCircleRec;
 /// Check if circle collides with a line created betweeen two points [p1] and [p2]
-bool CheckCollisionCircleLine(Vector2 center, double radius, Vector2 p1, Vector2 p2) => proxy.CheckCollisionCircleLine(center, radius, p1, p2);
+const CheckCollisionCircleLine = proxy.CheckCollisionCircleLine;
 /// Check if point is inside rectangle
-bool CheckCollisionPointRec(Vector2 point, Rectangle rec) => proxy.CheckCollisionPointRec(point, rec);
+const CheckCollisionPointRec = proxy.CheckCollisionPointRec;
 /// Check if point is inside circle
-bool CheckCollisionPointCircle(Vector2 point, Vector2 center, double radius) => proxy.CheckCollisionPointCircle(point, center, radius);
+const CheckCollisionPointCircle = proxy.CheckCollisionPointCircle;
 /// Check if point is inside a triangle
-bool CheckCollisionPointTriangle(Vector2 point, Vector2 p1, Vector2 p2, Vector2 p3) => proxy.CheckCollisionPointTriangle(point, p1, p2, p3);
+const CheckCollisionPointTriangle = proxy.CheckCollisionPointTriangle;
 /// Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
-bool CheckCollisionPointLine(Vector2 point, Vector2 p1, Vector2 p2, int threshold) => proxy.CheckCollisionPointLine(point, p1, p2, threshold);
+const CheckCollisionPointLine = proxy.CheckCollisionPointLine;
 /// Check if point is within a polygon described by array of vertices
-bool CheckCollisionPointPoly(Vector2 point, List<Vector2> points) => proxy.CheckCollisionPointPoly(point, points);
+const CheckCollisionPointPoly = proxy.CheckCollisionPointPoly;
 /// Check the collision between two lines defined by two points each, returns collision point by reference
-bool CheckCollisionLines(Vector2 startPos1, Vector2 endPos1, Vector2 startPos2, Vector2 endPos2, List<Vector2> collisionPoint) => proxy.CheckCollisionLines(startPos1, endPos1, startPos2, endPos2, collisionPoint);
+const CheckCollisionLines = proxy.CheckCollisionLines;
 /// Get collision rectangle for two rectangles collision
-Rectangle GetCollisionRec(Rectangle rec1, Rectangle rec2) => proxy.GetCollisionRec(rec1, rec2);
+const GetCollisionRec = proxy.GetCollisionRec;
 
 

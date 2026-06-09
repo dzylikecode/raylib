@@ -14,7 +14,15 @@ void main() {
     MatchCode('const char *fpsText = 0;', 'late final String fpsText;'),
     CastCode.numericLoose,
     StructInitializer.vector2,
-    VariadicFunction.textFormat
+    VariadicFunction.textFormat,
+  });
+
+  translate('003_core_input_keys', {
+    Include.raylib,
+    MatchCode.main,
+    MatchCode.floatSuffix,
+    CastCode.numericLoose,
+    StructInitializer.vector2,
   });
 }
 

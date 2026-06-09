@@ -8,45 +8,45 @@ import 'structs.dart';
 
 // Basic geometric 3D shapes drawing functions
 /// Draw a line in 3D world space
-void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color) => proxy.DrawLine3D(startPos, endPos, color);
+const DrawLine3D = proxy.DrawLine3D;
 /// Draw a point in 3D space, actually a small line
-void DrawPoint3D(Vector3 position, Color color) => proxy.DrawPoint3D(position, color);
+const DrawPoint3D = proxy.DrawPoint3D;
 /// Draw a circle in 3D world space
-void DrawCircle3D(Vector3 center, double radius, Vector3 rotationAxis, double rotationAngle, Color color) => proxy.DrawCircle3D(center, radius, rotationAxis, rotationAngle, color);
+const DrawCircle3D = proxy.DrawCircle3D;
 /// Draw a color-filled triangle (vertex in counter-clockwise order!)
-void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color) => proxy.DrawTriangle3D(v1, v2, v3, color);
+const DrawTriangle3D = proxy.DrawTriangle3D;
 /// Draw a triangle strip defined by points
-void DrawTriangleStrip3D(List<Vector3> points, Color color) => proxy.DrawTriangleStrip3D(points, color);
+const DrawTriangleStrip3D = proxy.DrawTriangleStrip3D;
 /// Draw cube
-void DrawCube(Vector3 position, double width, double height, double length, Color color) => proxy.DrawCube(position, width, height, length, color);
+const DrawCube = proxy.DrawCube;
 /// Draw cube (Vector version)
-void DrawCubeV(Vector3 position, Vector3 size, Color color) => proxy.DrawCubeV(position, size, color);
+const DrawCubeV = proxy.DrawCubeV;
 /// Draw cube wires
-void DrawCubeWires(Vector3 position, double width, double height, double length, Color color) => proxy.DrawCubeWires(position, width, height, length, color);
+const DrawCubeWires = proxy.DrawCubeWires;
 /// Draw cube wires (Vector version)
-void DrawCubeWiresV(Vector3 position, Vector3 size, Color color) => proxy.DrawCubeWiresV(position, size, color);
+const DrawCubeWiresV = proxy.DrawCubeWiresV;
 /// Draw sphere
-void DrawSphere(Vector3 centerPos, double radius, Color color) => proxy.DrawSphere(centerPos, radius, color);
+const DrawSphere = proxy.DrawSphere;
 /// Draw sphere with extended parameters
-void DrawSphereEx(Vector3 centerPos, double radius, int rings, int slices, Color color) => proxy.DrawSphereEx(centerPos, radius, rings, slices, color);
+const DrawSphereEx = proxy.DrawSphereEx;
 /// Draw sphere wires
-void DrawSphereWires(Vector3 centerPos, double radius, int rings, int slices, Color color) => proxy.DrawSphereWires(centerPos, radius, rings, slices, color);
+const DrawSphereWires = proxy.DrawSphereWires;
 /// Draw a cylinder/cone
-void DrawCylinder(Vector3 position, double radiusTop, double radiusBottom, double height, int slices, Color color) => proxy.DrawCylinder(position, radiusTop, radiusBottom, height, slices, color);
+const DrawCylinder = proxy.DrawCylinder;
 /// Draw a cylinder with base at startPos and top at endPos
-void DrawCylinderEx(Vector3 startPos, Vector3 endPos, double startRadius, double endRadius, int sides, Color color) => proxy.DrawCylinderEx(startPos, endPos, startRadius, endRadius, sides, color);
+const DrawCylinderEx = proxy.DrawCylinderEx;
 /// Draw a cylinder/cone wires
-void DrawCylinderWires(Vector3 position, double radiusTop, double radiusBottom, double height, int slices, Color color) => proxy.DrawCylinderWires(position, radiusTop, radiusBottom, height, slices, color);
+const DrawCylinderWires = proxy.DrawCylinderWires;
 /// Draw a cylinder wires with base at startPos and top at endPos
-void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, double startRadius, double endRadius, int sides, Color color) => proxy.DrawCylinderWiresEx(startPos, endPos, startRadius, endRadius, sides, color);
+const DrawCylinderWiresEx = proxy.DrawCylinderWiresEx;
 /// Draw a capsule with the center of its sphere caps at startPos and endPos
-void DrawCapsule(Vector3 startPos, Vector3 endPos, double radius, int slices, int rings, Color color) => proxy.DrawCapsule(startPos, endPos, radius, slices, rings, color);
+const DrawCapsule = proxy.DrawCapsule;
 /// Draw capsule wireframe with the center of its sphere caps at startPos and endPos
-void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, double radius, int slices, int rings, Color color) => proxy.DrawCapsuleWires(startPos, endPos, radius, slices, rings, color);
+const DrawCapsuleWires = proxy.DrawCapsuleWires;
 /// Draw a plane XZ
-void DrawPlane(Vector3 centerPos, Vector2 size, Color color) => proxy.DrawPlane(centerPos, size, color);
+const DrawPlane = proxy.DrawPlane;
 /// Draw a ray line
-void DrawRay(Ray ray, Color color) => proxy.DrawRay(ray, color);
+const DrawRay = proxy.DrawRay;
 /// Draw a grid (centered at (0, 0, 0))
 void DrawGrid(int slices, double spacing) => raw.DrawGrid(slices, spacing);
 
@@ -56,120 +56,120 @@ void DrawGrid(int slices, double spacing) => raw.DrawGrid(slices, spacing);
 
 // Model management functions
 /// Load model from files (meshes and materials)
-Model LoadModel(String fileName) => proxy.LoadModel(fileName);
+const LoadModel = proxy.LoadModel;
 /// Load model from generated mesh (default material)
-Model LoadModelFromMesh(Mesh mesh) => proxy.LoadModelFromMesh(mesh);
+const LoadModelFromMesh = proxy.LoadModelFromMesh;
 /// Check if a model is valid (loaded in GPU, VAO/VBOs)
-bool IsModelValid(Model model) => proxy.IsModelValid(model);
+const IsModelValid = proxy.IsModelValid;
 /// Unload model (including meshes) from memory (RAM and/or VRAM)
-void UnloadModel(Model model) => proxy.UnloadModel(model);
+const UnloadModel = proxy.UnloadModel;
 /// Compute model bounding box limits (considers all meshes)
-BoundingBox GetModelBoundingBox(Model model) => proxy.GetModelBoundingBox(model);
+const GetModelBoundingBox = proxy.GetModelBoundingBox;
 
 // Model drawing functions
 /// Draw a model (with texture if set)
-void DrawModel(Model model, Vector3 position, double scale, Color tint) => proxy.DrawModel(model, position, scale, tint);
+const DrawModel = proxy.DrawModel;
 /// Draw a model with extended parameters
-void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, double rotationAngle, Vector3 scale, Color tint) => proxy.DrawModelEx(model, position, rotationAxis, rotationAngle, scale, tint);
+const DrawModelEx = proxy.DrawModelEx;
 /// Draw a model wires (with texture if set)
-void DrawModelWires(Model model, Vector3 position, double scale, Color tint) => proxy.DrawModelWires(model, position, scale, tint);
+const DrawModelWires = proxy.DrawModelWires;
 /// Draw a model wires (with texture if set) with extended parameters
-void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, double rotationAngle, Vector3 scale, Color tint) => proxy.DrawModelWiresEx(model, position, rotationAxis, rotationAngle, scale, tint);
+const DrawModelWiresEx = proxy.DrawModelWiresEx;
 /// Draw bounding box (wires)
-void DrawBoundingBox(BoundingBox box, Color color) => proxy.DrawBoundingBox(box, color);
+const DrawBoundingBox = proxy.DrawBoundingBox;
 /// Draw a billboard texture
-void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, double scale, Color tint) => proxy.DrawBillboard(camera, texture, position, scale, tint);
+const DrawBillboard = proxy.DrawBillboard;
 /// Draw a billboard texture defined by source
-void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint) => proxy.DrawBillboardRec(camera, texture, source, position, size, tint);
+const DrawBillboardRec = proxy.DrawBillboardRec;
 /// Draw a billboard texture defined by source and rotation
-void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, double rotation, Color tint) => proxy.DrawBillboardPro(camera, texture, source, position, up, size, origin, rotation, tint);
+const DrawBillboardPro = proxy.DrawBillboardPro;
 
 // Mesh management functions
 /// Upload mesh vertex data in GPU and provide VAO/VBO ids
-void UploadMesh(Mesh mesh, bool dynamic) => proxy.UploadMesh(mesh, dynamic);
+const UploadMesh = proxy.UploadMesh;
 /// Update mesh vertex data in GPU for a specific buffer index
-void UpdateMeshBuffer(Mesh mesh, int index, Uint8List data, int offset) => proxy.UpdateMeshBuffer(mesh, index, data, offset);
+const UpdateMeshBuffer = proxy.UpdateMeshBuffer;
 /// Unload mesh data from CPU and GPU
-void UnloadMesh(Mesh mesh) => proxy.UnloadMesh(mesh);
+const UnloadMesh = proxy.UnloadMesh;
 /// Draw a 3d mesh with material and transform
-void DrawMesh(Mesh mesh, Material material, Matrix transform) => proxy.DrawMesh(mesh, material, transform);
+const DrawMesh = proxy.DrawMesh;
 /// Draw multiple mesh instances with material and different transforms
-void DrawMeshInstanced(Mesh mesh, Material material, List<Matrix4> transforms) => proxy.DrawMeshInstanced(mesh, material, transforms);
+const DrawMeshInstanced = proxy.DrawMeshInstanced;
 /// Compute mesh bounding box limits
-BoundingBox GetMeshBoundingBox(Mesh mesh) => proxy.GetMeshBoundingBox(mesh);
+const GetMeshBoundingBox = proxy.GetMeshBoundingBox;
 /// Compute mesh tangents
-void GenMeshTangents(Mesh mesh) => proxy.GenMeshTangents(mesh);
+const GenMeshTangents = proxy.GenMeshTangents;
 /// Export mesh data to file, returns true on success
-bool ExportMesh(Mesh mesh, String fileName) => proxy.ExportMesh(mesh, fileName);
+const ExportMesh = proxy.ExportMesh;
 /// Export mesh as code file (.h) defining multiple arrays of vertex attributes
-bool ExportMeshAsCode(Mesh mesh, String fileName) => proxy.ExportMeshAsCode(mesh, fileName);
+const ExportMeshAsCode = proxy.ExportMeshAsCode;
 
 // Mesh generation functions
 /// Generate polygonal mesh
-Mesh GenMeshPoly(int sides, double radius) => proxy.GenMeshPoly(sides, radius);
+const GenMeshPoly = proxy.GenMeshPoly;
 /// Generate plane mesh (with subdivisions)
-Mesh GenMeshPlane(double width, double length, int resX, int resZ) => proxy.GenMeshPlane(width, length, resX, resZ);
+const GenMeshPlane = proxy.GenMeshPlane;
 /// Generate cuboid mesh
-Mesh GenMeshCube(double width, double height, double length) => proxy.GenMeshCube(width, height, length);
+const GenMeshCube = proxy.GenMeshCube;
 /// Generate sphere mesh (standard sphere)
-Mesh GenMeshSphere(double radius, int rings, int slices) => proxy.GenMeshSphere(radius, rings, slices);
+const GenMeshSphere = proxy.GenMeshSphere;
 /// Generate half-sphere mesh (no bottom cap)
-Mesh GenMeshHemiSphere(double radius, int rings, int slices) => proxy.GenMeshHemiSphere(radius, rings, slices);
+const GenMeshHemiSphere = proxy.GenMeshHemiSphere;
 /// Generate cylinder mesh
-Mesh GenMeshCylinder(double radius, double height, int slices) => proxy.GenMeshCylinder(radius, height, slices);
+const GenMeshCylinder = proxy.GenMeshCylinder;
 /// Generate cone/pyramid mesh
-Mesh GenMeshCone(double radius, double height, int slices) => proxy.GenMeshCone(radius, height, slices);
+const GenMeshCone = proxy.GenMeshCone;
 /// Generate torus mesh
-Mesh GenMeshTorus(double radius, double size, int radSeg, int sides) => proxy.GenMeshTorus(radius, size, radSeg, sides);
+const GenMeshTorus = proxy.GenMeshTorus;
 /// Generate trefoil knot mesh
-Mesh GenMeshKnot(double radius, double size, int radSeg, int sides) => proxy.GenMeshKnot(radius, size, radSeg, sides);
+const GenMeshKnot = proxy.GenMeshKnot;
 /// Generate heightmap mesh from image data
-Mesh GenMeshHeightmap(Image heightmap, Vector3 size) => proxy.GenMeshHeightmap(heightmap, size);
+const GenMeshHeightmap = proxy.GenMeshHeightmap;
 /// Generate cubes-based map mesh from image data
-Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize) => proxy.GenMeshCubicmap(cubicmap, cubeSize);
+const GenMeshCubicmap = proxy.GenMeshCubicmap;
 
 // Material loading/unloading functions
 /// Load materials from model file
-List<Material> LoadMaterials(String fileName) => proxy.LoadMaterials(fileName);
+const LoadMaterials = proxy.LoadMaterials;
 /// Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
-Material LoadMaterialDefault() => proxy.LoadMaterialDefault();
+const LoadMaterialDefault = proxy.LoadMaterialDefault;
 /// Check if a material is valid (shader assigned, map textures loaded in GPU)
-bool IsMaterialValid(Material material) => proxy.IsMaterialValid(material);
+const IsMaterialValid = proxy.IsMaterialValid;
 /// Unload material from GPU memory (VRAM)
-void UnloadMaterial(Material material) => proxy.UnloadMaterial(material);
+const UnloadMaterial = proxy.UnloadMaterial;
 /// Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
-void SetMaterialTexture(Material material, int mapType, Texture2D texture) => proxy.SetMaterialTexture(material, mapType, texture);
+const SetMaterialTexture = proxy.SetMaterialTexture;
 /// Set material for a mesh
-void SetModelMeshMaterial(Model model, int meshId, int materialId) => proxy.SetModelMeshMaterial(model, meshId, materialId);
+const SetModelMeshMaterial = proxy.SetModelMeshMaterial;
 
 // Model animations loading/unloading functions
 /// Load model animations from file
-List<ModelAnimation> LoadModelAnimations(String fileName) => proxy.LoadModelAnimations(fileName);
+const LoadModelAnimations = proxy.LoadModelAnimations;
 /// Update model animation pose (vertex buffers and bone matrices)
-void UpdateModelAnimation(Model model, ModelAnimation anim, double frame) => proxy.UpdateModelAnimation(model, anim, frame);
+const UpdateModelAnimation = proxy.UpdateModelAnimation;
 /// Update model animation pose, blending two animations
-void UpdateModelAnimationEx(Model model, ModelAnimation animA, double frameA, ModelAnimation animB, double frameB, double blend) => proxy.UpdateModelAnimationEx(model, animA, frameA, animB, frameB, blend);
+const UpdateModelAnimationEx = proxy.UpdateModelAnimationEx;
 /// Unload animation array data
-void UnloadModelAnimations(List<ModelAnimation> animations) => proxy.UnloadModelAnimations(animations);
+const UnloadModelAnimations = proxy.UnloadModelAnimations;
 /// Check model animation skeleton match
-bool IsModelAnimationValid(Model model, ModelAnimation anim) => proxy.IsModelAnimationValid(model, anim);
+const IsModelAnimationValid = proxy.IsModelAnimationValid;
 
 // Collision detection functions
 /// Check collision between two spheres
-bool CheckCollisionSpheres(Vector3 center1, double radius1, Vector3 center2, double radius2) => proxy.CheckCollisionSpheres(center1, radius1, center2, radius2);
+const CheckCollisionSpheres = proxy.CheckCollisionSpheres;
 /// Check collision between two bounding boxes
-bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2) => proxy.CheckCollisionBoxes(box1, box2);
+const CheckCollisionBoxes = proxy.CheckCollisionBoxes;
 /// Check collision between box and sphere
-bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, double radius) => proxy.CheckCollisionBoxSphere(box, center, radius);
+const CheckCollisionBoxSphere = proxy.CheckCollisionBoxSphere;
 /// Get collision info between ray and sphere
-RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, double radius) => proxy.GetRayCollisionSphere(ray, center, radius);
+const GetRayCollisionSphere = proxy.GetRayCollisionSphere;
 /// Get collision info between ray and box
-RayCollision GetRayCollisionBox(Ray ray, BoundingBox box) => proxy.GetRayCollisionBox(ray, box);
+const GetRayCollisionBox = proxy.GetRayCollisionBox;
 /// Get collision info between ray and mesh
-RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform) => proxy.GetRayCollisionMesh(ray, mesh, transform);
+const GetRayCollisionMesh = proxy.GetRayCollisionMesh;
 /// Get collision info between ray and triangle
-RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3) => proxy.GetRayCollisionTriangle(ray, p1, p2, p3);
+const GetRayCollisionTriangle = proxy.GetRayCollisionTriangle;
 /// Get collision info between ray and quad
-RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4) => proxy.GetRayCollisionQuad(ray, p1, p2, p3, p4);
+const GetRayCollisionQuad = proxy.GetRayCollisionQuad;
 
 

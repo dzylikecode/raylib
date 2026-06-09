@@ -9,9 +9,9 @@ import 'dart:typed_data';
 
 // Window-related functions
 /// Initialize window and OpenGL context
-void InitWindow(int width, int height, String title) => proxy.InitWindow(width, height, title);
+const InitWindow = proxy.InitWindow;
 /// Close window and unload OpenGL context
-void CloseWindow() => proxy.CloseWindow();
+const CloseWindow = proxy.CloseWindow;
 /// Check if application should close (KEY_ESCAPE pressed or windows close icon clicked)
 bool WindowShouldClose() => raw.WindowShouldClose();
 /// Check if window has been initialized successfully
@@ -29,11 +29,11 @@ bool IsWindowFocused() => raw.IsWindowFocused();
 /// Check if window has been resized last frame
 bool IsWindowResized() => raw.IsWindowResized();
 /// Check if one specific window flag is enabled
-bool IsWindowState(ConfigFlags flag) => proxy.IsWindowState(flag);
+const IsWindowState = proxy.IsWindowState;
 /// Set window configuration state using flags
-void SetWindowState(ConfigFlags flags) => proxy.SetWindowState(flags);
+const SetWindowState = proxy.SetWindowState;
 /// Clear window configuration state flags
-void ClearWindowState(ConfigFlags flags) => proxy.ClearWindowState(flags);
+const ClearWindowState = proxy.ClearWindowState;
 /// Toggle window state: fullscreen/windowed, resizes monitor to match window resolution
 void ToggleFullscreen() => raw.ToggleFullscreen();
 /// Toggle window state: borderless windowed, resizes window to match monitor resolution
@@ -45,11 +45,11 @@ void MinimizeWindow() => raw.MinimizeWindow();
 /// Restore window from being minimized/maximized
 void RestoreWindow() => raw.RestoreWindow();
 /// Set icon for window (single image, RGBA 32bit)
-void SetWindowIcon(Image image) => proxy.SetWindowIcon(image);
+const SetWindowIcon = proxy.SetWindowIcon;
 /// Set icon for window (multiple images, RGBA 32bit)
-void SetWindowIcons(List<Image> images, int count) => proxy.SetWindowIcons(images, count);
+const SetWindowIcons = proxy.SetWindowIcons;
 /// Set title for window
-void SetWindowTitle(String title) => proxy.SetWindowTitle(title);
+const SetWindowTitle = proxy.SetWindowTitle;
 /// Set window position on screen
 void SetWindowPosition(int x, int y) => raw.SetWindowPosition(x, y);
 /// Set monitor for the current window
@@ -65,7 +65,7 @@ void SetWindowOpacity(double opacity) => raw.SetWindowOpacity(opacity);
 /// Set window focused
 void SetWindowFocused() => raw.SetWindowFocused();
 /// Get native window handle
-int GetWindowHandle() => proxy.GetWindowHandle();
+const GetWindowHandle = proxy.GetWindowHandle;
 /// Get current screen width
 int GetScreenWidth() => raw.GetScreenWidth();
 /// Get current screen height
@@ -79,7 +79,7 @@ int GetMonitorCount() => raw.GetMonitorCount();
 /// Get current monitor where window is placed
 int GetCurrentMonitor() => raw.GetCurrentMonitor();
 /// Get specified monitor position
-Vector2 GetMonitorPosition(int monitor) => proxy.GetMonitorPosition(monitor);
+const GetMonitorPosition = proxy.GetMonitorPosition;
 /// Get specified monitor width (current video mode used by monitor)
 int GetMonitorWidth(int monitor) => raw.GetMonitorWidth(monitor);
 /// Get specified monitor height (current video mode used by monitor)
@@ -91,17 +91,17 @@ int GetMonitorPhysicalHeight(int monitor) => raw.GetMonitorPhysicalHeight(monito
 /// Get specified monitor refresh rate
 int GetMonitorRefreshRate(int monitor) => raw.GetMonitorRefreshRate(monitor);
 /// Get window position XY on monitor
-Vector2 GetWindowPosition() => proxy.GetWindowPosition();
+const GetWindowPosition = proxy.GetWindowPosition;
 /// Get window scale DPI factor
-Vector2 GetWindowScaleDPI() => proxy.GetWindowScaleDPI();
+const GetWindowScaleDPI = proxy.GetWindowScaleDPI;
 /// Get the human-readable, UTF-8 encoded name of the specified monitor
-String GetMonitorName(int monitor) => proxy.GetMonitorName(monitor);
+const GetMonitorName = proxy.GetMonitorName;
 /// Set clipboard text content
-void SetClipboardText(String text) => proxy.SetClipboardText(text);
+const SetClipboardText = proxy.SetClipboardText;
 /// Get clipboard text content
-String GetClipboardText() => proxy.GetClipboardText();
+const GetClipboardText = proxy.GetClipboardText;
 /// Get clipboard image content
-Image GetClipboardImage() => proxy.GetClipboardImage();
+const GetClipboardImage = proxy.GetClipboardImage;
 /// Enable waiting for events on EndDrawing(), no automatic event polling
 void EnableEventWaiting() => raw.EnableEventWaiting();
 /// Disable waiting for events on EndDrawing(), automatic events polling
@@ -123,29 +123,29 @@ bool IsCursorOnScreen() => raw.IsCursorOnScreen();
 
 // Drawing-related functions
 /// Set background color (framebuffer clear color)
-void ClearBackground(Color color) => proxy.ClearBackground(color);
+const ClearBackground = proxy.ClearBackground;
 /// Setup canvas (framebuffer) to start drawing
 void BeginDrawing() => raw.BeginDrawing();
 /// End canvas drawing and swap buffers (double buffering)
 void EndDrawing() => raw.EndDrawing();
 /// Begin 2D mode with custom camera (2D)
-void BeginMode2D(Camera2D camera) => proxy.BeginMode2D(camera);
+const BeginMode2D = proxy.BeginMode2D;
 /// Ends 2D mode with custom camera
 void EndMode2D() => raw.EndMode2D();
 /// Begin 3D mode with custom camera (3D)
-void BeginMode3D(Camera3D camera) => proxy.BeginMode3D(camera);
+const BeginMode3D = proxy.BeginMode3D;
 /// Ends 3D mode and returns to default 2D orthographic mode
 void EndMode3D() => raw.EndMode3D();
 /// Begin drawing to render texture
-void BeginTextureMode(RenderTexture2D target) => proxy.BeginTextureMode(target);
+const BeginTextureMode = proxy.BeginTextureMode;
 /// Ends drawing to render texture
 void EndTextureMode() => raw.EndTextureMode();
 /// Begin custom shader drawing
-void BeginShaderMode(Shader shader) => proxy.BeginShaderMode(shader);
+const BeginShaderMode = proxy.BeginShaderMode;
 /// End custom shader drawing (use default shader)
 void EndShaderMode() => raw.EndShaderMode();
 /// Begin blending mode (alpha, additive, multiplied, subtract, custom)
-void BeginBlendMode(BlendMode mode) => proxy.BeginBlendMode(mode);
+const BeginBlendMode = proxy.BeginBlendMode;
 /// End blending mode (reset to default: alpha blending)
 void EndBlendMode() => raw.EndBlendMode();
 /// Begin scissor mode (define screen area for following drawing)
@@ -153,56 +153,56 @@ void BeginScissorMode(int x, int y, int width, int height) => raw.BeginScissorMo
 /// End scissor mode
 void EndScissorMode() => raw.EndScissorMode();
 /// Begin stereo rendering (requires VR simulator)
-void BeginVrStereoMode(VrStereoConfig config) => proxy.BeginVrStereoMode(config);
+const BeginVrStereoMode = proxy.BeginVrStereoMode;
 /// End stereo rendering (requires VR simulator)
 void EndVrStereoMode() => raw.EndVrStereoMode();
 
 // VR stereo config functions for VR simulator
 /// Load VR stereo config for VR simulator device parameters
-VrStereoConfig LoadVrStereoConfig(VrDeviceInfo device) => proxy.LoadVrStereoConfig(device);
+const LoadVrStereoConfig = proxy.LoadVrStereoConfig;
 /// Unload VR stereo config
-void UnloadVrStereoConfig(VrStereoConfig config) => proxy.UnloadVrStereoConfig(config);
+const UnloadVrStereoConfig = proxy.UnloadVrStereoConfig;
 
 // Shader management functions
 // NOTE: Shader functionality is not available on OpenGL 1.1
 /// Load shader from files and bind default locations
-Shader LoadShader(String vsFileName, String fsFileName) => proxy.LoadShader(vsFileName, fsFileName);
+const LoadShader = proxy.LoadShader;
 /// Load shader from code strings and bind default locations
-Shader LoadShaderFromMemory(String vsCode, String fsCode) => proxy.LoadShaderFromMemory(vsCode, fsCode);
+const LoadShaderFromMemory = proxy.LoadShaderFromMemory;
 /// Check if a shader is valid (loaded on GPU)
-bool IsShaderValid(Shader shader) => proxy.IsShaderValid(shader);
+const IsShaderValid = proxy.IsShaderValid;
 /// Get shader uniform location
-int GetShaderLocation(Shader shader, String uniformName) => proxy.GetShaderLocation(shader, uniformName);
+const GetShaderLocation = proxy.GetShaderLocation;
 /// Get shader attribute location
-int GetShaderLocationAttrib(Shader shader, String attribName) => proxy.GetShaderLocationAttrib(shader, attribName);
+const GetShaderLocationAttrib = proxy.GetShaderLocationAttrib;
 /// Set shader uniform value
-void SetShaderValue(Shader shader, int locIndex, TypedData value, ShaderUniformDataType uniformType) => proxy.SetShaderValue(shader, locIndex, value, uniformType);
+const SetShaderValue = proxy.SetShaderValue;
 /// Set shader uniform value vector
-void SetShaderValueV(Shader shader, int locIndex, TypedData value, ShaderUniformDataType uniformType, int count) => proxy.SetShaderValueV(shader, locIndex, value, uniformType, count);
+const SetShaderValueV = proxy.SetShaderValueV;
 /// Set shader uniform value (matrix 4x4)
-void SetShaderValueMatrix(Shader shader, int locIndex, Matrix mat) => proxy.SetShaderValueMatrix(shader, locIndex, mat);
+const SetShaderValueMatrix = proxy.SetShaderValueMatrix;
 /// Set shader uniform value and bind the texture (sampler2d)
-void SetShaderValueTexture(Shader shader, int locIndex, Texture2D texture) => proxy.SetShaderValueTexture(shader, locIndex, texture);
+const SetShaderValueTexture = proxy.SetShaderValueTexture;
 /// Unload shader from GPU memory (VRAM)
-void UnloadShader(Shader shader) => proxy.UnloadShader(shader);
+const UnloadShader = proxy.UnloadShader;
 
 // Screen-space-related functions
 /// Get a ray trace from screen position (i.e mouse)
-Ray GetScreenToWorldRay(Vector2 position, Camera camera) => proxy.GetScreenToWorldRay(position, camera);
+const GetScreenToWorldRay = proxy.GetScreenToWorldRay;
 /// Get a ray trace from screen position (i.e mouse) in a viewport
-Ray GetScreenToWorldRayEx(Vector2 position, Camera camera, int width, int height) => proxy.GetScreenToWorldRayEx(position, camera, width, height);
+const GetScreenToWorldRayEx = proxy.GetScreenToWorldRayEx;
 /// Get the screen space position for a 3d world space position
-Vector2 GetWorldToScreen(Vector3 position, Camera camera) => proxy.GetWorldToScreen(position, camera);
+const GetWorldToScreen = proxy.GetWorldToScreen;
 /// Get size position for a 3d world space position
-Vector2 GetWorldToScreenEx(Vector3 position, Camera camera, int width, int height) => proxy.GetWorldToScreenEx(position, camera, width, height);
+const GetWorldToScreenEx = proxy.GetWorldToScreenEx;
 /// Get the screen space position for a 2d camera world space position
-Vector2 GetWorldToScreen2D(Vector2 position, Camera2D camera) => proxy.GetWorldToScreen2D(position, camera);
+const GetWorldToScreen2D = proxy.GetWorldToScreen2D;
 /// Get the world space position for a 2d camera screen space position
-Vector2 GetScreenToWorld2D(Vector2 position, Camera2D camera) => proxy.GetScreenToWorld2D(position, camera);
+const GetScreenToWorld2D = proxy.GetScreenToWorld2D;
 /// Get camera transform matrix (view matrix)
-Matrix GetCameraMatrix(Camera camera) => proxy.GetCameraMatrix(camera);
+const GetCameraMatrix = proxy.GetCameraMatrix;
 /// Get camera 2d transform matrix
-Matrix GetCameraMatrix2D(Camera2D camera) => proxy.GetCameraMatrix2D(camera);
+const GetCameraMatrix2D = proxy.GetCameraMatrix2D;
 
 // Timing-related functions
 /// Set target FPS (maximum)
@@ -231,149 +231,149 @@ void SetRandomSeed(int seed) => raw.SetRandomSeed(seed);
 /// Get a random value between min and max (both included)
 int GetRandomValue(int min, int max) => raw.GetRandomValue(min, max);
 /// Load random values sequence, no values repeated
-List<int> LoadRandomSequence(int count, int min, int max) => proxy.LoadRandomSequence(count, min, max);
+const LoadRandomSequence = proxy.LoadRandomSequence;
 /// Unload random values sequence
-void UnloadRandomSequence(List<int> sequence) => proxy.UnloadRandomSequence(sequence);
+const UnloadRandomSequence = proxy.UnloadRandomSequence;
 
 // Misc. functions
 /// Takes a screenshot of current screen (filename extension defines format)
-void TakeScreenshot(String fileName) => proxy.TakeScreenshot(fileName);
+const TakeScreenshot = proxy.TakeScreenshot;
 /// Setup init configuration flags (view FLAGS)
-void SetConfigFlags(ConfigFlags flags) => proxy.SetConfigFlags(flags);
+const SetConfigFlags = proxy.SetConfigFlags;
 /// Open URL with default system browser (if available)
-void OpenURL(String url) => proxy.OpenURL(url);
+const OpenURL = proxy.OpenURL;
 
 // Logging system
 /// Set the current threshold (minimum) log level
-void SetTraceLogLevel(TraceLogLevel logLevel) => proxy.SetTraceLogLevel(logLevel);
+const SetTraceLogLevel = proxy.SetTraceLogLevel;
 /// Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
-void TraceLog(TraceLogLevel logLevel, String text, List<Object> args) => proxy.TraceLog(logLevel, text, args);
+const TraceLog = proxy.TraceLog;
 /// Set custom trace log
-void SetTraceLogCallback(TraceLogCallback callback) => proxy.SetTraceLogCallback(callback);
+const SetTraceLogCallback = proxy.SetTraceLogCallback;
 
 // Memory management, using internal allocators
 /// Internal memory allocator
-int MemAlloc(int size) => proxy.MemAlloc(size);
+const MemAlloc = proxy.MemAlloc;
 /// Internal memory reallocator
-int MemRealloc(int ptr, int size) => proxy.MemRealloc(ptr, size);
+const MemRealloc = proxy.MemRealloc;
 /// Internal memory free
-void MemFree(int ptr) => proxy.MemFree(ptr);
+const MemFree = proxy.MemFree;
 
 // File system management functions
 /// Load file data as byte array (read)
-Uint8List LoadFileData(String fileName) => proxy.LoadFileData(fileName);
+const LoadFileData = proxy.LoadFileData;
 /// Unload file data allocated by LoadFileData()
-void UnloadFileData(Uint8List data) => proxy.UnloadFileData(data);
+const UnloadFileData = proxy.UnloadFileData;
 /// Save data to file from byte array (write), returns true on success
-bool SaveFileData(String fileName, Uint8List data) => proxy.SaveFileData(fileName, data);
+const SaveFileData = proxy.SaveFileData;
 /// Export data to code (.h), returns true on success
-bool ExportDataAsCode(Uint8List data, String fileName) => proxy.ExportDataAsCode(data, fileName);
+const ExportDataAsCode = proxy.ExportDataAsCode;
 /// Load text data from file (read), returns a '\0' terminated string
-String LoadFileText(String fileName) => proxy.LoadFileText(fileName);
+const LoadFileText = proxy.LoadFileText;
 /// Unload file text data allocated by LoadFileText()
-void UnloadFileText(String text) => proxy.UnloadFileText(text);
+const UnloadFileText = proxy.UnloadFileText;
 /// Save text data to file (write), string must be '\0' terminated, returns true on success
-bool SaveFileText(String fileName, String text) => proxy.SaveFileText(fileName, text);
+const SaveFileText = proxy.SaveFileText;
 
 // File access custom callbacks
 // WARNING: Callbacks setup is intended for advanced users
 /// Set custom file binary data loader
-void SetLoadFileDataCallback(LoadFileDataCallback callback) => proxy.SetLoadFileDataCallback(callback);
+const SetLoadFileDataCallback = proxy.SetLoadFileDataCallback;
 /// Set custom file binary data saver
-void SetSaveFileDataCallback(SaveFileDataCallback callback) => proxy.SetSaveFileDataCallback(callback);
+const SetSaveFileDataCallback = proxy.SetSaveFileDataCallback;
 /// Set custom file text data loader
-void SetLoadFileTextCallback(LoadFileTextCallback callback) => proxy.SetLoadFileTextCallback(callback);
+const SetLoadFileTextCallback = proxy.SetLoadFileTextCallback;
 /// Set custom file text data saver
-void SetSaveFileTextCallback(SaveFileTextCallback callback) => proxy.SetSaveFileTextCallback(callback);
+const SetSaveFileTextCallback = proxy.SetSaveFileTextCallback;
 
 /// Rename file (if exists)
-int FileRename(String fileName, String fileRename) => proxy.FileRename(fileName, fileRename);
+const FileRename = proxy.FileRename;
 /// Remove file (if exists)
-int FileRemove(String fileName) => proxy.FileRemove(fileName);
+const FileRemove = proxy.FileRemove;
 /// Copy file from one path to another, dstPath created if it doesn't exist
-int FileCopy(String srcPath, String dstPath) => proxy.FileCopy(srcPath, dstPath);
+const FileCopy = proxy.FileCopy;
 /// Move file from one directory to another, dstPath created if it doesn't exist
-int FileMove(String srcPath, String dstPath) => proxy.FileMove(srcPath, dstPath);
+const FileMove = proxy.FileMove;
 /// Replace text in an existing file
-int FileTextReplace(String fileName, String search, String replacement) => proxy.FileTextReplace(fileName, search, replacement);
+const FileTextReplace = proxy.FileTextReplace;
 /// Find text in existing file
-int FileTextFindIndex(String fileName, String search) => proxy.FileTextFindIndex(fileName, search);
+const FileTextFindIndex = proxy.FileTextFindIndex;
 /// Check if file exists
-bool FileExists(String fileName) => proxy.FileExists(fileName);
+const FileExists = proxy.FileExists;
 /// Check if a directory path exists
-bool DirectoryExists(String dirPath) => proxy.DirectoryExists(dirPath);
+const DirectoryExists = proxy.DirectoryExists;
 /// Check file extension (recommended include point: .png, .wav)
-bool IsFileExtension(String fileName, String ext) => proxy.IsFileExtension(fileName, ext);
+const IsFileExtension = proxy.IsFileExtension;
 /// Get file length in bytes (NOTE: GetFileSize() conflicts with windows.h)
-int GetFileLength(String fileName) => proxy.GetFileLength(fileName);
+const GetFileLength = proxy.GetFileLength;
 /// Get file modification time (last write time)
-int GetFileModTime(String fileName) => proxy.GetFileModTime(fileName);
+const GetFileModTime = proxy.GetFileModTime;
 /// Get pointer to extension for a filename string (includes dot: '.png')
-String GetFileExtension(String fileName) => proxy.GetFileExtension(fileName);
+const GetFileExtension = proxy.GetFileExtension;
 /// Get pointer to filename for a path string
-String GetFileName(String filePath) => proxy.GetFileName(filePath);
+const GetFileName = proxy.GetFileName;
 /// Get filename string without extension (uses static string)
-String GetFileNameWithoutExt(String filePath) => proxy.GetFileNameWithoutExt(filePath);
+const GetFileNameWithoutExt = proxy.GetFileNameWithoutExt;
 /// Get full path for a given fileName with path (uses static string)
-String GetDirectoryPath(String filePath) => proxy.GetDirectoryPath(filePath);
+const GetDirectoryPath = proxy.GetDirectoryPath;
 /// Get previous directory path for a given path (uses static string)
-String GetPrevDirectoryPath(String dirPath) => proxy.GetPrevDirectoryPath(dirPath);
+const GetPrevDirectoryPath = proxy.GetPrevDirectoryPath;
 /// Get current working directory (uses static string)
-String GetWorkingDirectory() => proxy.GetWorkingDirectory();
+const GetWorkingDirectory = proxy.GetWorkingDirectory;
 /// Get the directory of the running application (uses static string)
-String GetApplicationDirectory() => proxy.GetApplicationDirectory();
+const GetApplicationDirectory = proxy.GetApplicationDirectory;
 /// Create directories (including full path requested), returns 0 on success
-int MakeDirectory(String dirPath) => proxy.MakeDirectory(dirPath);
+const MakeDirectory = proxy.MakeDirectory;
 /// Change working directory, return true on success
-bool ChangeDirectory(String dirPath) => proxy.ChangeDirectory(dirPath);
+const ChangeDirectory = proxy.ChangeDirectory;
 /// Check if a given path is a file or a directory
-bool IsPathFile(String path) => proxy.IsPathFile(path);
+const IsPathFile = proxy.IsPathFile;
 /// Check if fileName is valid for the platform/OS
-bool IsFileNameValid(String fileName) => proxy.IsFileNameValid(fileName);
+const IsFileNameValid = proxy.IsFileNameValid;
 /// Load directory filepaths, files and directories, no subdirs scan
-FilePathList LoadDirectoryFiles(String dirPath) => proxy.LoadDirectoryFiles(dirPath);
+const LoadDirectoryFiles = proxy.LoadDirectoryFiles;
 /// Load directory filepaths with extension filtering and subdir scan; some filters available: "*.*", "FILES*", "DIRS*"
-FilePathList LoadDirectoryFilesEx(String basePath, String filter, bool scanSubdirs) => proxy.LoadDirectoryFilesEx(basePath, filter, scanSubdirs);
+const LoadDirectoryFilesEx = proxy.LoadDirectoryFilesEx;
 /// Unload filepaths
-void UnloadDirectoryFiles(FilePathList files) => proxy.UnloadDirectoryFiles(files);
+const UnloadDirectoryFiles = proxy.UnloadDirectoryFiles;
 /// Check if a file has been dropped into window
 bool IsFileDropped() => raw.IsFileDropped();
 /// Load dropped filepaths
-FilePathList LoadDroppedFiles() => proxy.LoadDroppedFiles();
+const LoadDroppedFiles = proxy.LoadDroppedFiles;
 /// Unload dropped filepaths
-void UnloadDroppedFiles(FilePathList files) => proxy.UnloadDroppedFiles(files);
+const UnloadDroppedFiles = proxy.UnloadDroppedFiles;
 /// Get the file count in a directory
-int GetDirectoryFileCount(String dirPath) => proxy.GetDirectoryFileCount(dirPath);
+const GetDirectoryFileCount = proxy.GetDirectoryFileCount;
 /// Get the file count in a directory with extension filtering and recursive directory scan. Use 'DIR' in the filter string to include directories in the result
-int GetDirectoryFileCountEx(String basePath, String filter, bool scanSubdirs) => proxy.GetDirectoryFileCountEx(basePath, filter, scanSubdirs);
+const GetDirectoryFileCountEx = proxy.GetDirectoryFileCountEx;
 
 // Compression/Encoding functionality
 /// Compress data (DEFLATE algorithm), memory must be MemFree()
-Uint8List CompressData(Uint8List data) => proxy.CompressData(data);
+const CompressData = proxy.CompressData;
 /// Decompress data (DEFLATE algorithm), memory must be MemFree()
-Uint8List DecompressData(Uint8List compData) => proxy.DecompressData(compData);
+const DecompressData = proxy.DecompressData;
 /// Encode data to Base64 string (includes NULL terminator), memory must be MemFree()
-String EncodeDataBase64(Uint8List data) => proxy.EncodeDataBase64(data);
+const EncodeDataBase64 = proxy.EncodeDataBase64;
 /// Decode Base64 string (expected NULL terminated), memory must be MemFree()
-Uint8List DecodeDataBase64(Uint8List data) => proxy.DecodeDataBase64(data);
+const DecodeDataBase64 = proxy.DecodeDataBase64;
 /// Compute CRC32 hash code
-int ComputeCRC32(Uint8List data) => proxy.ComputeCRC32(data);
+const ComputeCRC32 = proxy.ComputeCRC32;
 /// Compute MD5 hash code, returns static int[4] (16 bytes)
-Uint8List ComputeMD5(Uint8List data) => proxy.ComputeMD5(data);
+const ComputeMD5 = proxy.ComputeMD5;
 /// Compute SHA1 hash code, returns static int[5] (20 bytes)
-Uint8List ComputeSHA1(Uint8List data) => proxy.ComputeSHA1(data);
+const ComputeSHA1 = proxy.ComputeSHA1;
 /// Compute SHA256 hash code, returns static int[8] (32 bytes)
-Uint8List ComputeSHA256(Uint8List data) => proxy.ComputeSHA256(data);
+const ComputeSHA256 = proxy.ComputeSHA256;
 
 // Automation events functionality
 /// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
-AutomationEventList LoadAutomationEventList(String fileName) => proxy.LoadAutomationEventList(fileName);
+const LoadAutomationEventList = proxy.LoadAutomationEventList;
 /// Unload automation events list from file
-void UnloadAutomationEventList(AutomationEventList list) => proxy.UnloadAutomationEventList(list);
+const UnloadAutomationEventList = proxy.UnloadAutomationEventList;
 /// Export automation events list as text file
-bool ExportAutomationEventList(AutomationEventList list, String fileName) => proxy.ExportAutomationEventList(list, fileName);
+const ExportAutomationEventList = proxy.ExportAutomationEventList;
 /// Set automation event list to record to
-void SetAutomationEventList(AutomationEventList list) => proxy.SetAutomationEventList(list);
+const SetAutomationEventList = proxy.SetAutomationEventList;
 /// Set automation event internal base frame to start recording
 void SetAutomationEventBaseFrame(int frame) => raw.SetAutomationEventBaseFrame(frame);
 /// Start recording automation events (AutomationEventList must be set)
@@ -381,7 +381,7 @@ void StartAutomationEventRecording() => raw.StartAutomationEventRecording();
 /// Stop recording automation events
 void StopAutomationEventRecording() => raw.StopAutomationEventRecording();
 /// Play a recorded automation event
-void PlayAutomationEvent(AutomationEvent event) => proxy.PlayAutomationEvent(event);
+const PlayAutomationEvent = proxy.PlayAutomationEvent;
 
 //------------------------------------------------------------------------------------
 // Input Handling Functions (Module: core)
@@ -389,65 +389,65 @@ void PlayAutomationEvent(AutomationEvent event) => proxy.PlayAutomationEvent(eve
 
 // Input-related functions: keyboard
 /// Check if a key has been pressed once
-bool IsKeyPressed(KeyboardKey key) => proxy.IsKeyPressed(key);
+const IsKeyPressed = proxy.IsKeyPressed;
 /// Check if a key has been pressed again
-bool IsKeyPressedRepeat(KeyboardKey key) => proxy.IsKeyPressedRepeat(key);
+const IsKeyPressedRepeat = proxy.IsKeyPressedRepeat;
 /// Check if a key is being pressed
-bool IsKeyDown(KeyboardKey key) => proxy.IsKeyDown(key);
+const IsKeyDown = proxy.IsKeyDown;
 /// Check if a key has been released once
-bool IsKeyReleased(KeyboardKey key) => proxy.IsKeyReleased(key);
+const IsKeyReleased = proxy.IsKeyReleased;
 /// Check if a key is NOT being pressed
-bool IsKeyUp(KeyboardKey key) => proxy.IsKeyUp(key);
+const IsKeyUp = proxy.IsKeyUp;
 /// Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
-KeyboardKey GetKeyPressed() => proxy.GetKeyPressed();
+const GetKeyPressed = proxy.GetKeyPressed;
 /// Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
 int GetCharPressed() => raw.GetCharPressed();
 /// Get name of a QWERTY key on the current keyboard layout (eg returns string 'q' for KEY_A on an AZERTY keyboard)
-String GetKeyName(KeyboardKey key) => proxy.GetKeyName(key);
+const GetKeyName = proxy.GetKeyName;
 /// Set a custom key to exit program (default is ESC)
-void SetExitKey(KeyboardKey key) => proxy.SetExitKey(key);
+const SetExitKey = proxy.SetExitKey;
 
 // Input-related functions: gamepads
 /// Check if a gamepad is available
 bool IsGamepadAvailable(int gamepad) => raw.IsGamepadAvailable(gamepad);
 /// Get gamepad internal name id
-String GetGamepadName(int gamepad) => proxy.GetGamepadName(gamepad);
+const GetGamepadName = proxy.GetGamepadName;
 /// Check if a gamepad button has been pressed once
-bool IsGamepadButtonPressed(int gamepad, GamepadButton button) => proxy.IsGamepadButtonPressed(gamepad, button);
+const IsGamepadButtonPressed = proxy.IsGamepadButtonPressed;
 /// Check if a gamepad button is being pressed
-bool IsGamepadButtonDown(int gamepad, GamepadButton button) => proxy.IsGamepadButtonDown(gamepad, button);
+const IsGamepadButtonDown = proxy.IsGamepadButtonDown;
 /// Check if a gamepad button has been released once
-bool IsGamepadButtonReleased(int gamepad, GamepadButton button) => proxy.IsGamepadButtonReleased(gamepad, button);
+const IsGamepadButtonReleased = proxy.IsGamepadButtonReleased;
 /// Check if a gamepad button is NOT being pressed
-bool IsGamepadButtonUp(int gamepad, GamepadButton button) => proxy.IsGamepadButtonUp(gamepad, button);
+const IsGamepadButtonUp = proxy.IsGamepadButtonUp;
 /// Get the last gamepad button pressed
-GamepadButton GetGamepadButtonPressed() => proxy.GetGamepadButtonPressed();
+const GetGamepadButtonPressed = proxy.GetGamepadButtonPressed;
 /// Get axis count for a gamepad
 int GetGamepadAxisCount(int gamepad) => raw.GetGamepadAxisCount(gamepad);
 /// Get movement value for a gamepad axis
-double GetGamepadAxisMovement(int gamepad, GamepadAxis axis) => proxy.GetGamepadAxisMovement(gamepad, axis);
+const GetGamepadAxisMovement = proxy.GetGamepadAxisMovement;
 /// Set internal gamepad mappings (SDL_GameControllerDB)
-int SetGamepadMappings(String mappings) => proxy.SetGamepadMappings(mappings);
+const SetGamepadMappings = proxy.SetGamepadMappings;
 /// Set gamepad vibration for both motors (duration in seconds)
 void SetGamepadVibration(int gamepad, double leftMotor, double rightMotor, double duration) => raw.SetGamepadVibration(gamepad, leftMotor, rightMotor, duration);
 
 // Input-related functions: mouse
 /// Check if a mouse button has been pressed once
-bool IsMouseButtonPressed(MouseButton button) => proxy.IsMouseButtonPressed(button);
+const IsMouseButtonPressed = proxy.IsMouseButtonPressed;
 /// Check if a mouse button is being pressed
-bool IsMouseButtonDown(MouseButton button) => proxy.IsMouseButtonDown(button);
+const IsMouseButtonDown = proxy.IsMouseButtonDown;
 /// Check if a mouse button has been released once
-bool IsMouseButtonReleased(MouseButton button) => proxy.IsMouseButtonReleased(button);
+const IsMouseButtonReleased = proxy.IsMouseButtonReleased;
 /// Check if a mouse button is NOT being pressed
-bool IsMouseButtonUp(MouseButton button) => proxy.IsMouseButtonUp(button);
+const IsMouseButtonUp = proxy.IsMouseButtonUp;
 /// Get mouse position X
 int GetMouseX() => raw.GetMouseX();
 /// Get mouse position Y
 int GetMouseY() => raw.GetMouseY();
 /// Get mouse position XY
-Vector2 GetMousePosition() => proxy.GetMousePosition();
+const GetMousePosition = proxy.GetMousePosition;
 /// Get mouse delta between frames
-Vector2 GetMouseDelta() => proxy.GetMouseDelta();
+const GetMouseDelta = proxy.GetMouseDelta;
 /// Set mouse position XY
 void SetMousePosition(int x, int y) => raw.SetMousePosition(x, y);
 /// Set mouse offset
@@ -457,9 +457,9 @@ void SetMouseScale(double scaleX, double scaleY) => raw.SetMouseScale(scaleX, sc
 /// Get mouse wheel movement for X or Y, whichever is larger
 double GetMouseWheelMove() => raw.GetMouseWheelMove();
 /// Get mouse wheel movement for both X and Y
-Vector2 GetMouseWheelMoveV() => proxy.GetMouseWheelMoveV();
+const GetMouseWheelMoveV = proxy.GetMouseWheelMoveV;
 /// Set mouse cursor
-void SetMouseCursor(MouseCursor cursor) => proxy.SetMouseCursor(cursor);
+const SetMouseCursor = proxy.SetMouseCursor;
 
 // Input-related functions: touch
 /// Get touch position X for touch point 0 (relative to screen size)
@@ -467,7 +467,7 @@ int GetTouchX() => raw.GetTouchX();
 /// Get touch position Y for touch point 0 (relative to screen size)
 int GetTouchY() => raw.GetTouchY();
 /// Get touch position XY for a touch point index (relative to screen size)
-Vector2 GetTouchPosition(int index) => proxy.GetTouchPosition(index);
+const GetTouchPosition = proxy.GetTouchPosition;
 /// Get touch point identifier for given index
 int GetTouchPointId(int index) => raw.GetTouchPointId(index);
 /// Get number of touch points
@@ -477,19 +477,19 @@ int GetTouchPointCount() => raw.GetTouchPointCount();
 // Gestures and Touch Handling Functions (Module: rgestures)
 //------------------------------------------------------------------------------------
 /// Enable a set of gestures using flags
-void SetGesturesEnabled(Gesture gesture) => proxy.SetGesturesEnabled(gesture);
+const SetGesturesEnabled = proxy.SetGesturesEnabled;
 /// Check if a gesture have been detected
-bool IsGestureDetected(Gesture gesture) => proxy.IsGestureDetected(gesture);
+const IsGestureDetected = proxy.IsGestureDetected;
 /// Get latest detected gesture
-Gesture GetGestureDetected() => proxy.GetGestureDetected();
+const GetGestureDetected = proxy.GetGestureDetected;
 /// Get gesture hold time in seconds
 double GetGestureHoldDuration() => raw.GetGestureHoldDuration();
 /// Get gesture drag vector
-Vector2 GetGestureDragVector() => proxy.GetGestureDragVector();
+const GetGestureDragVector = proxy.GetGestureDragVector;
 /// Get gesture drag angle
 double GetGestureDragAngle() => raw.GetGestureDragAngle();
 /// Get gesture pinch delta
-Vector2 GetGesturePinchVector() => proxy.GetGesturePinchVector();
+const GetGesturePinchVector = proxy.GetGesturePinchVector;
 /// Get gesture pinch angle
 double GetGesturePinchAngle() => raw.GetGesturePinchAngle();
 
@@ -497,8 +497,8 @@ double GetGesturePinchAngle() => raw.GetGesturePinchAngle();
 // Camera System Functions (Module: rcamera)
 //------------------------------------------------------------------------------------
 /// Update camera position for selected mode
-void UpdateCamera(Camera3D camera, CameraMode mode) => proxy.UpdateCamera(camera, mode);
+const UpdateCamera = proxy.UpdateCamera;
 /// Update camera movement/rotation
-void UpdateCameraPro(Camera3D camera, Vector3 movement, Vector3 rotation, double zoom) => proxy.UpdateCameraPro(camera, movement, rotation, zoom);
+const UpdateCameraPro = proxy.UpdateCameraPro;
 
 
