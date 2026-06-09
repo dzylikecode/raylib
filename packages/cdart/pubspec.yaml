@@ -1,6 +1,6 @@
 name: cdart
 description: A Dart library that provides C-compatible utilities and bindings, enabling direct code porting from C to Dart with minimal modifications.
-version: 0.0.2
+version: 0.0.3
 repository: https://github.com/dzylikecode/raylib/tree/main/packages/cdart
 
 environment:

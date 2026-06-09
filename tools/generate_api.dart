@@ -73,9 +73,7 @@ void main() async {
   for (final MapEntry(key: name, value: overrides) in modules.entries) {
     final api = await apiOf(name);
     final proxy = await proxyOf(name);
-    final rule = ApiMapRule(
-      topLevelFunctionNamesFromSource(proxy),
-    );
+    final rule = ApiMapRule(proxyInterface(proxy));
     final dartApi = translate(api, rule);
     await generateModule(name, overrides.deps, dartApi);
   }
@@ -135,13 +133,13 @@ class ApiMapRule {
   String call(String api) {
     final function = parseCFunctionPrototype(api);
     final func = function.name;
-    if (!proxyFunctions.contains(func)) {
-      final returnType = toDartType(function.returnType);
-      final interfaceFunc =
-          '$returnType $func(${funcParamList(function.params)})';
-      return '$interfaceFunc => raw.$func(${funcCall(function.params)});';
+    if (proxyFunctions.contains(func)) {
+      return 'const $func = proxy.$func;';
     }
-    return 'const $func = proxy.$func;';
+    final returnType = toDartType(function.returnType);
+    final interfaceFunc =
+        '$returnType $func(${funcParamList(function.params)})';
+    return '$interfaceFunc => raw.$func(${funcCall(function.params)});';
   }
 
   String funcCall(List<CParam> params) {
@@ -192,7 +190,7 @@ String translate(String source, ApiMapRule rule) {
   return translatedLines.join('\n');
 }
 
-Set<String> topLevelFunctionNamesFromSource(String source) {
+Set<String> proxyInterface(String source) {
   final result = parseString(content: source, throwIfDiagnostics: false);
 
   return {
