@@ -43,7 +43,7 @@
             },
             version = "5.5"
         },
-        ["raylib 6.0#f56260b5"] = {
+        ["raylib 6.0#16fb575b"] = {
             branch = "6.0",
             repo = {
                 branch = "master",

@@ -3,8 +3,5 @@ tools/
 /src/
 ref_code/
 build/
-example/c/
-example/generated/
-packages/
 cheatsheet/
 dist/

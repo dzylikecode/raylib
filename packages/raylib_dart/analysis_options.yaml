@@ -27,4 +27,4 @@ include: package:lints/recommended.yaml
 # https://dart.dev/go/core-lints
 
 # For additional information about configuring this file, see
-# https://dart.dev/tools/analysis
+# https://dart.dev/guides/language/analysis-options

@@ -1,3 +1,58 @@
-## 1.0.0
+## 0.0.1
 
-- Initial version.
+- test add it from pub
+
+## 0.0.2
+
+- fix: pubignore for /src/
+
+## 0.0.3
+
+- pub: need git clone by self
+
+## 0.0.4
+
+- fix: git clone dest dir
+
+## 0.0.5
+
+- shallow clone
+
+## 0.0.6
+
+- use tag
+
+## 0.0.7
+
+- check repo exists
+
+## 0.0.8
+
+- fix: windows path
+
+## 0.0.9
+
+- fix: windows dll path
+
+## 0.0.10
+
+- fix: set dll path
+- export more api
+
+## 0.0.11
+
+- maintain backward compatibility
+- keep API consistent with C
+
+## 0.0.12
+
+- pubignore: rm build & add example
+
+## 0.0.13
+
+- fix: Camera initialization
+- test: Camera finalizer
+
+## 6.0.0
+
+- raylib 6.0.0
