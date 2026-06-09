@@ -1,8 +1,7 @@
 name: raylib_dart
 description: FFI bindings for raylib, a simple and easy-to-use library for creating games and multimedia applications with Dart.
 version: 6.0.2
-repository: https://github.com/dzylikecode/raylib
-homepage: https://github.com/dzylikecode/raylib
+repository: https://github.com/dzylikecode/raylib/tree/main/packages/raylib_dart
 
 environment:
   sdk: ^3.11.0
