@@ -4,6 +4,10 @@
 
 [raylib](https://github.com/raysan5/raylib) 对 dart 的 ffi 绑定. 将 C 代码复制粘贴到 dart 中，稍微一改即可运行。
 
+> [!NOTE]
+>
+> raylib 后端是 [xmake](https://xmake.io/zh/)。执行 dart 代码的时候，hooks 会自动下载 xmake
+
 ## quick start
 
 ```dart
