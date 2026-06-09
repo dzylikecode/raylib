@@ -296,7 +296,7 @@ void OpenURL(String url) => ffi.using((arena) {
 
 final _logger = Logger('raylib');
 
-Level _toLevel(int raylibLevel) => switch (raylibLevel) {
+Level _toLevel(int level) => switch (level) {
   1 => .FINEST,
   2 => .FINE,
   3 => .INFO,
@@ -315,12 +315,35 @@ void SetTraceLogCallback(TraceLogCallback? handler) {
   _subscription = handler != null ? _logger.onRecord.listen(handler) : null;
 }
 
-// dart format off
-void TraceLog(TraceLogLevel level, String text, List<Object> args) => ffi.using((arena) {
-  final str = sprintf(text, args)!;
-  return raw.TraceLog(level.value, str.toNativeUtf8(allocator: arena).cast<Char>());
+void TraceLog(
+  TraceLogLevel level,
+  String text, [
+  Object? arg1,
+  Object? arg2,
+  Object? arg3,
+  Object? arg4,
+  Object? arg5,
+  Object? arg6,
+  Object? arg7,
+  Object? arg8,
+  Object? arg9,
+]) => ffi.using((arena) {
+  final str = sprintf(text, [
+    ?arg1,
+    ?arg2,
+    ?arg3,
+    ?arg4,
+    ?arg5,
+    ?arg6,
+    ?arg7,
+    ?arg8,
+    ?arg9,
+  ])!;
+  return raw.TraceLog(
+    level.value,
+    str.toNativeUtf8(allocator: arena).cast<Char>(),
+  );
 });
-// dart format on
 
 int MemAlloc(int size) => 0;
 int MemRealloc(int ptr, int size) => 0;

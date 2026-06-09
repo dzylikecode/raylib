@@ -31,6 +31,14 @@ void main() {
     CastCode.numericLoose,
     StructInitializer.vector2,
   });
+
+  translate('005_core_input_mouse_wheel', {
+    Include.raylib,
+    MatchCode.main,
+    MatchCode.floatSuffix,
+    CastCode.numericLoose,
+    StructInitializer.vector2,
+  });
 }
 
 @isTest

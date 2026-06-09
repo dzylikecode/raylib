@@ -35,216 +35,25 @@ int main()
 
 ## example
 
-对于 c 的 example
+c 的 example，是由 [extract_examples](tools/extract_examples.dart) 生成的，执行以下命令可以运行：
 
 ```bash
 xmake
 xmake run 001_core_basic_window
 ```
 
-对于 dart 的 example，直接点击运行
-
-
-## 渔法
-
-每个函数的封装策略见下方各小节。
-
-### 不代理
-
-
-- `MemAlloc / MemRealloc / MemFree` — 不暴露给用户
-
-### char 类型
-
-C 的 `const char *` 参数换成 Dart `String`，在函数体内用 Arena 临时分配 native 内存：
-
-```dart
-void InitWindow(int width, int height, String title) => ffi.using((arena) {
-  raylib.InitWindow(width, height, title.toNativeUtf8(allocator: arena).cast());
-});
-```
-
-### 格式化输出
-
-```c
-TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps);
-```
-
-将变量用数组传入
-
-```dart
-TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps]);
-```
-
-### TextCopy
-
-Dart 的函数参数是**值传递（pass-by-value）**。当传入对象时，传递的是**对象引用的值**，而不是像 C/C++ 那样直接传递可操作的内存指针。因此，在函数内部重新给参数赋值，只会改变函数内部的引用副本，不会影响外部变量。这也是 Dart 中通常不会设计类似 `TextCopy(dst, src)` 这种通过修改目标内存完成拷贝的接口的原因。
-
-**示例**
-
-```dart
-void textCopy(String dst, String src) {
-  dst = src;   // 只改变函数内部的 dst 引用
-}
-
-void main() {
-  String a = "hello";
-  String b = "world";
-
-  textCopy(a, b);
-
-  print(a); // 仍然输出 "hello"
-}
-```
-
-在这个例子中，`textCopy` 内部对 `dst` 的赋值只改变了函数内部的引用副本，并不会修改外部变量 `a` 的值。
-
-
-### List（数组 + count）
-
-C 的 `T* array, int count` 换成 Dart `List<T>`，消除 count 参数：
-
-```dart
-void DrawTriangleStrip(List<Vector2> points, Color color) => ffi.using((arena) {
-  raylib.DrawTriangleStrip(arena.vector2s(points), points.length, color.ptr.ref);
-});
-```
-
-### enum 或宏
-
-C 的裸 `int` 参数（枚举/宏）换成 Dart enum，具备更好的语义和 dot-shorthands。同时保留原 C 常量名并标注 `@Deprecated`，让从 C 迁移过来的代码无需立即修改也能编译，逐步过渡到 Dart 风格：
-
-```dart
-enum KeyboardKey {
-  a(.KEY_A),
-  // ...
-}
-
-// 保留原 C 常量名，兼容旧写法，但引导用户迁移到 enum
-@Deprecated('Use .a instead')
-const KeyboardKey KEY_A = .a;
-```
-
-函数签名同步替换：
-
-```dart
-// C 风格
-bool IsKeyDown(int key) => ...
-
-// Dart 风格
-bool IsKeyDown(KeyboardKey key) => raylib.IsKeyDown(key.value);
-```
-
-### Uint8List（原始字节）
-
-`void*` / `unsigned char*` 像素或文件数据参数换成 `Uint8List`，函数内部用 Arena 复制到 native 内存：
-
-```dart
-void UpdateTexture(Texture texture, Uint8List pixels) => ffi.using((arena) {
-  final ptr = arena<Uint8>(pixels.length);
-  ptr.asTypedList(pixels.length).setAll(0, pixels);
-  raylib.UpdateTexture(arena.texture(texture).ref, ptr.cast());
-});
-```
-
-### Record（out 参数）
-
-C 的 out 参数（`int* bytesRead`、`bool* collided`）换成 Dart record：
-
-```dart
-// C: int GetCodepoint(const char *text, int *codepointSize)
-(int codepoint, int bytesRead) GetCodepoint(String text) => ffi.using((arena) {
-  final sizePtr = arena<Int>();
-  final cp = raylib.GetCodepoint(text.toNativeUtf8(allocator: arena).cast(), sizePtr);
-  return (cp, sizePtr.value);
-});
-
-// C: bool CheckCollisionLines(..., Vector2 *collisionPoint)
-(bool collided, Vector2? point) CheckCollisionLines(...) => ffi.using((arena) {
-  final out = arena<raylib.Vector2>();
-  final hit = raylib.CheckCollisionLines(..., out);
-  return (hit, hit ? out.ref.toDart() : null);
-});
-```
-
-### 纯数据对象（copy）
-
-函数只读取数据、不保留引用，用 Arena 做临时 native 内存，调用完自动释放：
-
-- `Vector2 / Vector3 / Ray` — 传参时拷贝到 Arena，返回时拷贝回 Dart
-- `Texture / RenderTexture2D` — 不透明 GPU 句柄，只存 `id` 等整数字段，值类型传参
-- `LoadRandomSequence` — 返回纯数据，拷贝成 `List<int>` 后立即 `UnloadRandomSequence`；对外提供空壳 `UnloadRandomSequence` 保持 API 兼容
-
-### 副作用数据（pointer + Finalizer）
-
-C 结构体需要在多次调用之间保持稳定地址（如 `Camera2D` 被 `BeginMode2D` 读取），用 Dart 类持有原生指针，并注册 `Finalizer` 自动释放：
-
-- `Image` 虽然有库，但 raylib 的 Image 与 dart 的库相差太大，仅仅提供互相转换的接口
-
-```dart
-class Camera2D {
-  final Pointer<raylib.Camera2D> ptr;
-  static final _finalizer = Finalizer<Pointer<raylib.Camera2D>>(ffi.malloc.free);
-  Camera2D._(this.ptr) { _finalizer.attach(this, ptr, detach: this); }
-  // ...
-  void dispose() { _finalizer.detach(this); ffi.malloc.free(ptr); }
-}
-```
-
-对外 Unload API 转发到 dispose：
-
-```
-UnloadXxx(用户) → dispose() → C UnloadXxx / ffi.malloc.free
-```
-
-需要 Finalizer 的类型：`Camera2D`、`Camera3D`、`Shader`、`VrStereoConfig`、`AutomationEventList`。
-
-GPU 资源（`Texture`、`RenderTexture2D`）不注册 Finalizer：OpenGL context 销毁后无法安全调用 GPU 释放函数，必须由用户显式 Unload。
-
-### 自动 Unload（Load → Dart 类型）
-
-Load 函数返回需要手动 Unload 的 C 资源，但 Dart 侧只需要数据时，在函数内部完成 Load → 转换 → Unload 三步，对外直接返回 Dart 类型：
-
-```dart
-// C: FilePathList LoadDirectoryFiles(const char *dirPath)
-List<String> LoadDirectoryFiles(String path) => ffi.using((arena) {
-  final list = raylib.LoadDirectoryFiles(...);
-  final result = [for (var i = 0; i < list.count; i++) list.paths[i].cast<Utf8>().toDartString()];
-  raylib.UnloadDirectoryFiles(list);
-  return result;
-});
-```
-
-### Dart 回调
-
-C 的函数指针回调（`SetLoadFileDataCallback` 等）换成 Dart 函数，内部用 `NativeCallable` 桥接：
-
-```dart
-// 使用默认回调
-SetLoadFileDataCallback(null);
-// 注入 Dart 实现
-SetLoadFileDataCallback((filename) => File(filename).readAsBytesSync());
-```
-
-### 尚未代理
-
-以下模块因对应 C struct 尚未封装成 Dart 类，暂时注释掉，留作后续实现：
-
-- `Image` — `LoadImage*`、`GenImage*`、`Image*` 操作（rtextures.dart）
-- `Font` — `LoadFont*`、`DrawTextEx`、`MeasureTextEx` 等（rtext.dart）
-- `Wave / Sound / Music / AudioStream` — 全部音频播放 API（raudio.dart）
-- `Model / Mesh / Material / ModelAnimation / BoundingBox / RayCollision` — 3D 模型 API（rmodels.dart）
-
-### Dart 生态替代
-
-C 的某些数据类型，在 Dart 生态中已有成熟的对应库，直接用它们替代，而不是自己造轮子：
-
-- `Vector2 / Vector3 / Matrix / Ray` — 用 [vector_math](https://pub.dev/packages/vector_math)，同名类型，直接对应
-
-封装层负责在 Dart 类型和 C struct 之间做转换桥接（通过 Arena 临时复制），对调用者完全透明：
-
-### 去除 pointCount
-
+对于 dart 的 example 是由 [example_test](test/example_test.dart) 自动化翻译 c 代码生成的
+
+## 迁移
+
+- MemAlloc/MemRealloc/MemFree — 什么都不会做的
+- `char *`被当作 utf-8 字节流
+- TextFormat/TraceLog 最多支持 9 个参数传递。只是为了兼容 C 的代码，dart 本身有有更好的选择，比如字符串模板
+- TextCopy 改变了函数接口，因为 dart 是值传递，传递的是对象引用的值
+- C 的接口 `T* array, int count` 换成 Dart `List<T>`，消除了 count 参数。在兼容和简洁的冲突中，选择了简洁
+- C 的裸 `int` 参数（枚举/宏）换成 Dart enum，具备更好的语义和 dot-shorthands。同时保留原 C 常量名
+- LoadRandomSequence 返回的纯dart对象，UnloadRandomSequence无操作，仅仅是兼容代码
+- Vector2/Vector3/Matrix/Ray 被 [vector_math](https://pub.dev/packages/vector_math) 所代理
 
 ## 从 C 迁移
 
