@@ -62,6 +62,10 @@ class MatchCode extends TranslateRule {
     RegExp(r'(?<![A-Za-z_])(\d+\.\d*|\.\d+|\d+)[fF]\b'),
     r'$1',
   );
+  static const cFloatCast = CastCode.float;
+  static const cDoubleCast = CastCode.double_;
+  static const cFloatingCast = CastCode.floating;
+  static const cNumericCastLoose = CastCode.numericLoose;
 
   final Pattern pattern;
   final String replacement;
@@ -77,14 +81,53 @@ class MatchCode extends TranslateRule {
   int get hashCode => Object.hash(pattern, replacement);
 }
 
+class CastCode extends TranslateRule {
+  const CastCode(this.conversions);
+
+  static const float = CastCode({'float': 'toDouble'});
+  static const double_ = CastCode({'double': 'toDouble'});
+  static const floating = CastCode({'float': 'toDouble', 'double': 'toDouble'});
+  static const numericLoose = CastCode({
+    'char': 'toInt',
+    'signed char': 'toInt',
+    'unsigned char': 'toInt',
+    'short': 'toInt',
+    'signed short': 'toInt',
+    'unsigned short': 'toInt',
+    'int': 'toInt',
+    'signed int': 'toInt',
+    'unsigned int': 'toInt',
+    'long': 'toInt',
+    'signed long': 'toInt',
+    'unsigned long': 'toInt',
+    'float': 'toDouble',
+    'double': 'toDouble',
+  });
+
+  final Map<String, String> conversions;
+
+  @override
+  bool operator ==(Object other) => switch (other) {
+    CastCode(:final conversions) => _mapEquals(this.conversions, conversions),
+    _ => false,
+  };
+
+  @override
+  int get hashCode => Object.hashAll(
+    conversions.entries.map((entry) => Object.hash(entry.key, entry.value)),
+  );
+}
+
 class RaylibTranslator {
   final Set<TranslateRule> rules;
   final Set<Include> includes;
   final Set<MatchCode> matchCodes;
+  final Set<CastCode> castCodes;
 
   RaylibTranslator(this.rules)
     : includes = rules.whereType<Include>().toSet(),
-      matchCodes = rules.whereType<MatchCode>().toSet();
+      matchCodes = rules.whereType<MatchCode>().toSet(),
+      castCodes = rules.whereType<CastCode>().toSet();
 
   String call(String content) {
     final lines = content.split('\n');
@@ -115,6 +158,9 @@ class RaylibTranslator {
           translatedLines.add("import '${include.dart}';");
         case .other:
           var translatedLine = line;
+          for (final castCode in castCodes) {
+            translatedLine = _replaceCast(translatedLine, castCode);
+          }
           for (final matchCode in matchCodes) {
             translatedLine = _replacePattern(translatedLine, matchCode);
           }
@@ -124,6 +170,35 @@ class RaylibTranslator {
 
     return translatedLines.join('\n');
   }
+}
+
+bool _mapEquals(Map<String, String> a, Map<String, String> b) {
+  if (a.length != b.length) return false;
+  for (final entry in a.entries) {
+    if (b[entry.key] != entry.value) return false;
+  }
+  return true;
+}
+
+String _replaceCast(String source, CastCode castCode) {
+  if (castCode.conversions.isEmpty) return source;
+  final typePattern = castCode.conversions.keys
+      .map(RegExp.escape)
+      .join('|')
+      .replaceAll(r'\ ', r'\s+');
+  final castPattern = RegExp(
+    r'\(\s*('
+    '$typePattern'
+    r')\s*\)\s*(\([^()]*\)|[A-Za-z_]\w*(?:\s*(?:\.[A-Za-z_]\w*|\[[^\]]+\]|\([^()]*\)))*)',
+  );
+
+  return source.replaceAllMapped(castPattern, (match) {
+    final type = match.group(1)!.trim().replaceAll(RegExp(r'\s+'), ' ');
+    final operand = match.group(2)!;
+    final method = castCode.conversions[type];
+    if (method == null) return match.group(0)!;
+    return '$operand.$method()';
+  });
 }
 
 String _replacePattern(String source, MatchCode matchCode) {

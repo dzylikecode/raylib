@@ -32,8 +32,8 @@ int main()
     int currentFps = 60;
 
     // Store the position for the both of the circles
-    Vector2 deltaCircle = { 0, (float)screenHeight/3.0 };
-    Vector2 frameCircle = { 0, (float)screenHeight*(2.0/3.0) };
+    Vector2 deltaCircle = { 0, screenHeight.toDouble()/3.0 };
+    Vector2 frameCircle = { 0, screenHeight.toDouble()*(2.0/3.0) };
 
     // The speed applied to both circles
     const float speed = 10.0;
@@ -51,7 +51,7 @@ int main()
         float mouseWheel = GetMouseWheelMove();
         if (mouseWheel != 0)
         {
-            currentFps += (int)mouseWheel;
+            currentFps += mouseWheel.toInt();
             if (currentFps < 0) currentFps = 0;
             SetTargetFPS(currentFps);
         }
