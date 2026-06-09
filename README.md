@@ -2,7 +2,7 @@
 
 [中文](README_zh.md) | [English](README_en.md)
 
-[raylib](https://github.com/raysan5/raylib) 对 dart 的 ffi 绑定. API 基本与 C 的一致。将 C 代码复制粘贴到 dart 中，稍微做一些改动即可运行。
+[raylib](https://github.com/raysan5/raylib) 对 dart 的 ffi 绑定. 将 C 代码复制粘贴到 dart 中，稍微一改即可运行。
 
 ## quick start
 
@@ -94,7 +94,6 @@ float a = 1.0.f;
 (leftStickX*20).toInt()
 ```
 
-
 ## 封装原则
 
 ### 尽可能保持 C API
@@ -113,6 +112,11 @@ Color color = .red; // Recommended
 KeyboardKey key = KEY_A; // Deprecated
 KeyboardKey key = .a; // Recommended
 ```
+
+## TODO
+
+- [ ] 迁移 raylib 的 example
+- [ ] 支持 web
 
 ## issue
 
