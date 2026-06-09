@@ -36,4 +36,32 @@ void main() {
       'int value = data[i].toInt() + offset.toInt();',
     );
   });
+
+  test('converts struct initializers when enabled', () {
+    final translator = RaylibTranslator({StructInitializer.vector2});
+
+    expect(
+      translator('Vector2 deltaCircle = { 0, screenHeight.toDouble()/3.0 };'),
+      'Vector2 deltaCircle = Vector2(0, screenHeight.toDouble()/3.0);',
+    );
+
+    expect(
+      translator('DrawLineV((Vector2){0, y}, (Vector2){ width, y }, RED);'),
+      'DrawLineV(Vector2(0, y), Vector2(width, y), RED);',
+    );
+  });
+
+  test('wraps variadic function arguments in a list when enabled', () {
+    final translator = RaylibTranslator({VariadicFunction.textFormat});
+
+    expect(
+      translator('TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps)'),
+      'TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps])',
+    );
+
+    expect(
+      translator('TextFormat("%i", Clamp(GetFPS(), 0, 60), currentFps)'),
+      'TextFormat("%i", [Clamp(GetFPS(), 0, 60), currentFps])',
+    );
+  });
 }

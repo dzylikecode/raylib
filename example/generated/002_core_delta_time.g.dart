@@ -32,8 +32,8 @@ int main()
     int currentFps = 60;
 
     // Store the position for the both of the circles
-    Vector2 deltaCircle = { 0, screenHeight.toDouble()/3.0 };
-    Vector2 frameCircle = { 0, screenHeight.toDouble()*(2.0/3.0) };
+    Vector2 deltaCircle = Vector2(0, screenHeight.toDouble()/3.0);
+    Vector2 frameCircle = Vector2(0, screenHeight.toDouble()*(2.0/3.0));
 
     // The speed applied to both circles
     const float speed = 10.0;
@@ -89,10 +89,10 @@ int main()
             // Draw the help text
             // Determine what help text to show depending on the current FPS target
             late final String fpsText;
-            if (currentFps <= 0) fpsText = TextFormat("FPS: unlimited (%i)", GetFPS());
-            else fpsText = TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps);
+            if (currentFps <= 0) fpsText = TextFormat("FPS: unlimited (%i)", [GetFPS()]);
+            else fpsText = TextFormat("FPS: %i (target: %i)", [GetFPS(), currentFps]);
             DrawText(fpsText, 10, 10, 20, DARKGRAY);
-            DrawText(TextFormat("Frame time: %02.02 ms", GetFrameTime()), 10, 30, 20, DARKGRAY);
+            DrawText(TextFormat("Frame time: %02.02 ms", [GetFrameTime()]), 10, 30, 20, DARKGRAY);
             DrawText("Use the scroll wheel to change the fps limit, r to reset", 10, 50, 20, DARKGRAY);
 
             // Draw the text above the circles

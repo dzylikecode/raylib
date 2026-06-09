@@ -12,7 +12,9 @@ void main() {
     MatchCode.main,
     MatchCode.floatSuffix,
     MatchCode('const char *fpsText = 0;', 'late final String fpsText;'),
-    CastCode.numericLoose
+    CastCode.numericLoose,
+    StructInitializer.vector2,
+    VariadicFunction.textFormat
   });
 }
 
