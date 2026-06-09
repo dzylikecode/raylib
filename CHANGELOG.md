@@ -52,3 +52,7 @@
 
 - fix: Camera initialization
 - test: Camera finalizer
+
+## 6.0.0
+
+- raylib 6.0.0
