@@ -54,20 +54,37 @@ class Include extends TranslateRule {
 
 class MatchCode extends TranslateRule {
   const MatchCode(this.pattern, this.replacement);
-  static const main = MatchCode(r'\bint\s*main\s*\(void\)', 'int main()');
+  static final main = MatchCode(
+    RegExp(r'\bint\s*main\s*\(void\)'),
+    'int main()',
+  );
+  static final floatSuffix = MatchCode(
+    RegExp(r'(?<![A-Za-z_])(\d+\.\d*|\.\d+|\d+)[fF]\b'),
+    r'$1',
+  );
 
-  final String pattern;
+  final Pattern pattern;
   final String replacement;
+
+  @override
+  bool operator ==(Object other) => switch (other) {
+    MatchCode(:final pattern, :final replacement) =>
+      this.pattern == pattern && this.replacement == replacement,
+    _ => false,
+  };
+
+  @override
+  int get hashCode => Object.hash(pattern, replacement);
 }
 
 class RaylibTranslator {
   final Set<TranslateRule> rules;
   final Set<Include> includes;
-  final List<MatchCode> matchCodes;
+  final Set<MatchCode> matchCodes;
 
   RaylibTranslator(this.rules)
     : includes = rules.whereType<Include>().toSet(),
-      matchCodes = rules.whereType<MatchCode>().toList();
+      matchCodes = rules.whereType<MatchCode>().toSet();
 
   String call(String content) {
     final lines = content.split('\n');
@@ -99,10 +116,7 @@ class RaylibTranslator {
         case .other:
           var translatedLine = line;
           for (final matchCode in matchCodes) {
-            translatedLine = translatedLine.replaceAll(
-              RegExp(matchCode.pattern),
-              matchCode.replacement,
-            );
+            translatedLine = _replacePattern(translatedLine, matchCode);
           }
           translatedLines.add(translatedLine);
       }
@@ -110,4 +124,23 @@ class RaylibTranslator {
 
     return translatedLines.join('\n');
   }
+}
+
+String _replacePattern(String source, MatchCode matchCode) {
+  final pattern = matchCode.pattern;
+  if (pattern is RegExp) {
+    return source.replaceAllMapped(
+      pattern,
+      (match) => _expandReplacement(matchCode.replacement, match),
+    );
+  }
+
+  return source.replaceAll(pattern, matchCode.replacement);
+}
+
+String _expandReplacement(String replacement, Match match) {
+  return replacement.replaceAllMapped(RegExp(r'\$(\d+)'), (groupMatch) {
+    final groupIndex = int.parse(groupMatch.group(1)!);
+    return match.group(groupIndex) ?? '';
+  });
 }

@@ -32,12 +32,12 @@ int main()
     int currentFps = 60;
 
     // Store the position for the both of the circles
-    Vector2 deltaCircle = { 0, (float)screenHeight/3.0f };
-    Vector2 frameCircle = { 0, (float)screenHeight*(2.0f/3.0f) };
+    Vector2 deltaCircle = { 0, (float)screenHeight/3.0 };
+    Vector2 frameCircle = { 0, (float)screenHeight*(2.0/3.0) };
 
     // The speed applied to both circles
-    const float speed = 10.0f;
-    const float circleRadius = 32.0f;
+    const float speed = 10.0;
+    const float circleRadius = 32.0;
 
     SetTargetFPS(currentFps);
     //--------------------------------------------------------------------------------------
@@ -61,9 +61,9 @@ int main()
 
         // Multiply by 6.0 (an arbitrary value) in order to make the speed
         // visually closer to the other circle (at 60 fps), for comparison
-        deltaCircle.x += GetFrameTime()*6.0f*speed;
+        deltaCircle.x += GetFrameTime()*6.0*speed;
         // This circle can move faster or slower visually depending on the FPS
-        frameCircle.x += 0.1f*speed;
+        frameCircle.x += 0.1*speed;
 
         // If either circle is off the screen, reset it back to the start
         if (deltaCircle.x > screenWidth) deltaCircle.x = 0;
@@ -88,11 +88,11 @@ int main()
 
             // Draw the help text
             // Determine what help text to show depending on the current FPS target
-            const char *fpsText = 0;
+            late final String fpsText;
             if (currentFps <= 0) fpsText = TextFormat("FPS: unlimited (%i)", GetFPS());
             else fpsText = TextFormat("FPS: %i (target: %i)", GetFPS(), currentFps);
             DrawText(fpsText, 10, 10, 20, DARKGRAY);
-            DrawText(TextFormat("Frame time: %02.02f ms", GetFrameTime()), 10, 30, 20, DARKGRAY);
+            DrawText(TextFormat("Frame time: %02.02 ms", GetFrameTime()), 10, 30, 20, DARKGRAY);
             DrawText("Use the scroll wheel to change the fps limit, r to reset", 10, 50, 20, DARKGRAY);
 
             // Draw the text above the circles
