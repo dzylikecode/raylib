@@ -35,6 +35,11 @@ void main() {
       translator('int value = (unsigned char)data[i] + (int)offset;'),
       'int value = data[i].toInt() + offset.toInt();',
     );
+
+    expect(
+      translator('scroll += (int)(GetMouseWheelMove()*scrollSpeed);'),
+      'scroll += (GetMouseWheelMove()*scrollSpeed).toInt();',
+    );
   });
 
   test('converts struct initializers when enabled', () {

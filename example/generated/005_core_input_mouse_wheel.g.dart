@@ -27,7 +27,7 @@ int main()
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input mouse wheel");
 
-    int boxPositionY = screenHeight/2 - 40;
+    int boxPositionY = screenHeight~/2 - 40;
     int scrollSpeed = 4;            // Scrolling speed in pixels
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
@@ -38,7 +38,7 @@ int main()
     {
         // Update
         //----------------------------------------------------------------------------------
-        boxPositionY -= (int)(GetMouseWheelMove()*scrollSpeed);
+        boxPositionY -= (GetMouseWheelMove()*scrollSpeed).toInt();
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -47,7 +47,7 @@ int main()
 
             ClearBackground(RAYWHITE);
 
-            DrawRectangle(screenWidth/2 - 40, boxPositionY, 80, 80, MAROON);
+            DrawRectangle(screenWidth~/2 - 40, boxPositionY, 80, 80, MAROON);
 
             DrawText("Use mouse wheel to move the cube up and down!", 10, 10, 20, GRAY);
             DrawText(TextFormat("Box position Y: %03i", boxPositionY), 10, 40, 20, LIGHTGRAY);

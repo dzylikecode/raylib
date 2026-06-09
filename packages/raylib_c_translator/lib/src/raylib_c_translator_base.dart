@@ -218,16 +218,119 @@ String _replaceCast(String source, CastCode castCode) {
   final castPattern = RegExp(
     r'\(\s*('
     '$typePattern'
-    r')\s*\)\s*(\([^()]*\)|[A-Za-z_]\w*(?:\s*(?:\.[A-Za-z_]\w*|\[[^\]]+\]|\([^()]*\)))*)',
+    r')\s*\)\s*',
   );
+  final buffer = StringBuffer();
+  var start = 0;
+  var searchFrom = 0;
 
-  return source.replaceAllMapped(castPattern, (match) {
+  while (true) {
+    final match = castPattern.firstMatch(source.substring(searchFrom));
+    if (match == null) break;
+
+    final castStart = searchFrom + match.start;
+    final operandStart = searchFrom + match.end;
+    final operandEnd = _findCastOperandEnd(source, operandStart);
+    if (operandEnd == operandStart) {
+      searchFrom = operandStart;
+      continue;
+    }
+
     final type = match.group(1)!.trim().replaceAll(RegExp(r'\s+'), ' ');
-    final operand = match.group(2)!;
     final method = castCode.conversions[type];
-    if (method == null) return match.group(0)!;
-    return '$operand.$method()';
-  });
+    if (method == null) {
+      searchFrom = operandEnd;
+      continue;
+    }
+
+    buffer
+      ..write(source.substring(start, castStart))
+      ..write(source.substring(operandStart, operandEnd))
+      ..write('.')
+      ..write(method)
+      ..write('()');
+    start = operandEnd;
+    searchFrom = operandEnd;
+  }
+
+  if (start == 0) return source;
+  buffer.write(source.substring(start));
+  return buffer.toString();
+}
+
+int _findCastOperandEnd(String source, int operandStart) {
+  if (operandStart >= source.length) return operandStart;
+  if (source[operandStart] == '(') {
+    final closeParen = _findClosingBracket(source, operandStart, '(', ')');
+    return closeParen == -1 ? operandStart : closeParen + 1;
+  }
+
+  final identifier = RegExp(
+    r'[A-Za-z_]\w*',
+  ).matchAsPrefix(source, operandStart);
+  if (identifier == null) return operandStart;
+
+  var end = identifier.end;
+  while (end < source.length) {
+    final char = source[end];
+    if (char == '.') {
+      final property = RegExp(r'\.[A-Za-z_]\w*').matchAsPrefix(source, end);
+      if (property == null) break;
+      end = property.end;
+      continue;
+    }
+    if (char == '[') {
+      final closeBracket = _findClosingBracket(source, end, '[', ']');
+      if (closeBracket == -1) break;
+      end = closeBracket + 1;
+      continue;
+    }
+    if (char == '(') {
+      final closeParen = _findClosingBracket(source, end, '(', ')');
+      if (closeParen == -1) break;
+      end = closeParen + 1;
+      continue;
+    }
+    break;
+  }
+
+  return end;
+}
+
+int _findClosingBracket(
+  String source,
+  int openIndex,
+  String openBracket,
+  String closeBracket,
+) {
+  var depth = 0;
+  var inString = false;
+  var quote = '';
+  var escaped = false;
+  for (var i = openIndex; i < source.length; i++) {
+    final char = source[i];
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (char == r'\') {
+        escaped = true;
+      } else if (char == quote) {
+        inString = false;
+      }
+      continue;
+    }
+    if (char == '"' || char == "'") {
+      inString = true;
+      quote = char;
+      continue;
+    }
+    if (char == openBracket) depth++;
+    if (char == closeBracket) {
+      depth--;
+      if (depth == 0) return i;
+    }
+  }
+  return -1;
 }
 
 String _replaceStructInitializer(

@@ -37,7 +37,8 @@ void main() {
     MatchCode.main,
     MatchCode.floatSuffix,
     CastCode.numericLoose,
-    StructInitializer.vector2,
+    MatchCode('screenHeight/2', 'screenHeight~/2'),
+    MatchCode('screenWidth/2', 'screenWidth~/2'),
   });
 }
 
