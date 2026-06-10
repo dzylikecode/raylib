@@ -45,7 +45,7 @@ void SetWindowIcons(List<Image> images, [int? count]) {
     final imageArray = arena<raw.Image>(count!);
     for (var i = 0; i < count; i++) {
       final imgPtr = arena.image(images[i]);
-      (imageArray + i).ref
+      imageArray[i]
         ..data = imgPtr.ref.data
         ..width = imgPtr.ref.width
         ..height = imgPtr.ref.height
@@ -364,7 +364,7 @@ Uint8List LoadFileData(String fileName) => ffi.using((arena) {
   return bytes;
 });
 
-void UnloadFileData(Uint8List data) => 0;
+void UnloadFileData(Uint8List data) {}
 
 bool SaveFileData(String fileName, Uint8List data) => ffi.using((arena) {
   final ptr = arena<Uint8>(data.length);
