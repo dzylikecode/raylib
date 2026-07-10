@@ -114,3 +114,20 @@ KeyboardKey key = .a; // Recommended
 ## issue
 
 - [ ] [函数转发](https://github.com/Dart-Code/Dart-Code/issues/6081)
+- xmake 第一次安装后需要重启一下 vscode 才能识别 xmake 的命令行工具
+- windows 需要配置 visual studio 的环境变量
+
+## debug hooks
+
+```bash
+.../dart.exe --observe  --pause-isolates-on-start  --packages=.../package_config.json .../hook.dill --config=.../input.json
+```
+
+1. 添加flag `--observe --pause-isolates-on-start`使得进入调试模式并且暂停在 main 函数
+2. 运行命令后，执行vscode: Dart: Attach to Dart Process, 输入调试地址
+3. vscode 对 hook/build.dart 打断点不行，需要在 dart dev tools 中先打断点，后续就可以在 vscode 中调试了
+
+> [!NOTE]
+>
+> 在调试的时候，在vscode的底部需要开启  "debug my code + packages + SDK", 否则无法调试到依赖的代码
+
